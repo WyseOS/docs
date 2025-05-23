@@ -1,0 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900&family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Silkscreen:wght@400;700&display=swap");
+
+[data-theme="dark"] {
+  // accent colors
+  --vp-c-accent: rgb(105, 85, 235);
+  --vp-c-accent-bg: rgb(105, 85, 235);
+  --font-family: "Montserrat";
+  font-weight: 500;
+  --content-width: 960px;
+  --vp-c-gutter: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] {
+  --vp-c-accent: rgb(105, 85, 235);
+  --vp-c-accent-bg: rgb(105, 85, 235);
+  --font-family: "Montserrat";
+  font-weight: 500;
+  --content-width: 960px;
+  --vp-c-gutter: #dfdfdf;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+}
