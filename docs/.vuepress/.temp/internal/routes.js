@@ -1,9 +1,11 @@
 export const redirects = JSON.parse("{}")
 
 export const routes = Object.fromEntries([
+  ["/API.html", { loader: () => import(/* webpackChunkName: "API.html" */"/Users/lindawu/Documents/wyse/docs/docs/.vuepress/.temp/pages/API.html.js"), meta: {"title":"API"} }],
   ["/", { loader: () => import(/* webpackChunkName: "index.html" */"/Users/lindawu/Documents/wyse/docs/docs/.vuepress/.temp/pages/index.html.js"), meta: {"title":"WyseOS: The AgentOS for Web Automation"} }],
   ["/zh/", { loader: () => import(/* webpackChunkName: "zh_index.html" */"/Users/lindawu/Documents/wyse/docs/docs/.vuepress/.temp/pages/zh/index.html.js"), meta: {"title":"WyseOS：面向 web 自动化的 AgentOS"} }],
   ["/404.html", { loader: () => import(/* webpackChunkName: "404.html" */"/Users/lindawu/Documents/wyse/docs/docs/.vuepress/.temp/pages/404.html.js"), meta: {"title":""} }],
+  ["/zh/API.html", { loader: () => import(/* webpackChunkName: "zh_API.html" */"/Users/lindawu/Documents/wyse/docs/docs/.vuepress/.temp/pages/zh/API.html.js"), meta: {"title":"API"} }],
 ]);
 
 if (import.meta.webpackHot) {

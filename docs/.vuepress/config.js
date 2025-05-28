@@ -8,6 +8,8 @@ export default defineUserConfig({
   description: "WyseOS: The AgentOS for Web Automation",
   theme: defaultTheme({
     logo: "https://wyseos.com/images/logo.svg",
+    sidebar: ["/", "API"],
+    navbar: ["/API"],
   }),
   bundler: viteBundler(),
   locales: {
