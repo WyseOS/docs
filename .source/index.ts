@@ -1,0 +1,21 @@
+// @ts-nocheck -- skip type checking
+import * as meta_0 from "../content/docs/meta.json?collection=meta&hash=1748931160357"
+import * as docs_14 from "../content/docs/messages.mdx?collection=docs&hash=1748931160357"
+import * as docs_13 from "../content/docs/listsTeams.mdx?collection=docs&hash=1748931160357"
+import * as docs_12 from "../content/docs/listsAgents.mdx?collection=docs&hash=1748931160357"
+import * as docs_11 from "../content/docs/listAPIKeys.mdx?collection=docs&hash=1748931160357"
+import * as docs_10 from "../content/docs/index.mdx?collection=docs&hash=1748931160357"
+import * as docs_9 from "../content/docs/fetchTeamById.mdx?collection=docs&hash=1748931160357"
+import * as docs_8 from "../content/docs/fetchSession.mdx?collection=docs&hash=1748931160357"
+import * as docs_7 from "../content/docs/fetchAgentById.mdx?collection=docs&hash=1748931160357"
+import * as docs_6 from "../content/docs/deleteAPIKey.mdx?collection=docs&hash=1748931160357"
+import * as docs_5 from "../content/docs/createSession.mdx?collection=docs&hash=1748931160357"
+import * as docs_4 from "../content/docs/createAPIKey.mdx?collection=docs&hash=1748931160357"
+import * as docs_3 from "../content/docs/callsListsWithFilters.mdx?collection=docs&hash=1748931160357"
+import * as docs_2 from "../content/docs/callsLists.mdx?collection=docs&hash=1748931160357"
+import * as docs_1 from "../content/docs/browserDetail.mdx?collection=docs&hash=1748931160357"
+import * as docs_0 from "../content/docs/InProgressSession.mdx?collection=docs&hash=1748931160357"
+import { _runtime } from "fumadocs-mdx"
+import * as _source from "../source.config"
+export const docs = _runtime.doc<typeof _source.docs>([{ info: {"path":"InProgressSession.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/InProgressSession.mdx"}, data: docs_0 }, { info: {"path":"browserDetail.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/browserDetail.mdx"}, data: docs_1 }, { info: {"path":"callsLists.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/callsLists.mdx"}, data: docs_2 }, { info: {"path":"callsListsWithFilters.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/callsListsWithFilters.mdx"}, data: docs_3 }, { info: {"path":"createAPIKey.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/createAPIKey.mdx"}, data: docs_4 }, { info: {"path":"createSession.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/createSession.mdx"}, data: docs_5 }, { info: {"path":"deleteAPIKey.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/deleteAPIKey.mdx"}, data: docs_6 }, { info: {"path":"fetchAgentById.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/fetchAgentById.mdx"}, data: docs_7 }, { info: {"path":"fetchSession.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/fetchSession.mdx"}, data: docs_8 }, { info: {"path":"fetchTeamById.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/fetchTeamById.mdx"}, data: docs_9 }, { info: {"path":"index.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/index.mdx"}, data: docs_10 }, { info: {"path":"listAPIKeys.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/listAPIKeys.mdx"}, data: docs_11 }, { info: {"path":"listsAgents.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/listsAgents.mdx"}, data: docs_12 }, { info: {"path":"listsTeams.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/listsTeams.mdx"}, data: docs_13 }, { info: {"path":"messages.mdx","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/messages.mdx"}, data: docs_14 }]);
+export const meta = _runtime.meta<typeof _source.meta>([{ info: {"path":"meta.json","absolutePath":"/Users/lindawu/Documents/wyse/next-docs/content/docs/meta.json"}, data: meta_0 }]);

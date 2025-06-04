@@ -1,0 +1,3029 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "wyse_mate_go",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "user"
+    },
+    {
+      "name": "browser"
+    },
+    {
+      "name": "team"
+    },
+    {
+      "name": "agent"
+    },
+    {
+      "name": "session"
+    },
+    {
+      "name": "open_api"
+    }
+  ],
+  "paths": {
+    "/browser/info/{browser_id}": {
+      "get": {
+        "summary": "browser信息",
+        "x-apifox-folder": "browser",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "通过BrowserID查看浏览器详情",
+        "tags": ["browser"],
+        "parameters": [
+          {
+            "name": "browser_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "78c21ac1-dab4-4268-bd1f-071f0bb7099c",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "browser_id": {
+                          "type": "string"
+                        },
+                        "user_id": {
+                          "type": "string"
+                        },
+                        "session_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "width": {
+                          "type": "integer"
+                        },
+                        "height": {
+                          "type": "integer"
+                        },
+                        "ws_endpoint": {
+                          "type": "string"
+                        },
+                        "solve_captcha": {
+                          "type": "boolean"
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "user_agent": {
+                          "type": "string"
+                        },
+                        "duration_seconds": {
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "browser_id",
+                        "user_id",
+                        "session_id",
+                        "status",
+                        "width",
+                        "height",
+                        "ws_endpoint",
+                        "solve_captcha",
+                        "timezone",
+                        "user_agent",
+                        "duration_seconds",
+                        "created_at"
+                      ],
+                      "x-apifox-orders": [
+                        "browser_id",
+                        "user_id",
+                        "session_id",
+                        "status",
+                        "width",
+                        "height",
+                        "ws_endpoint",
+                        "solve_captcha",
+                        "timezone",
+                        "user_agent",
+                        "duration_seconds",
+                        "created_at"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "required": ["code", "msg", "data"],
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": {
+                      "code": 0,
+                      "msg": "Success",
+                      "data": {
+                        "browser_id": "1a95f317-b838-4a51-93fb-db72352cfafd",
+                        "user_id": "67b7e460-6dd6-413c-9769-240a784cca6c",
+                        "session_id": "session_12345",
+                        "status": "created",
+                        "width": 1440,
+                        "height": 900,
+                        "ws_endpoint": "",
+                        "solve_captcha": false,
+                        "timezone": "",
+                        "user_agent": "Mozilla/5.2 (X11; Linux x86_64) AppleWebKit/545.36 (KHTML, like Gecko) Chrome/88.0.4390.132 Safari/524.36.01347420270511",
+                        "duration_seconds": 0,
+                        "created_at": "2025-01-11T11:52:21Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-248947459-run"
+      }
+    },
+    "/team/lists": {
+      "get": {
+        "summary": "Team清单",
+        "x-apifox-folder": "team",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": ["team"],
+        "parameters": [
+          {
+            "name": "page_num",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "10",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "page_num": {
+                          "type": "integer"
+                        },
+                        "page_size": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "total_page": {
+                          "type": "integer"
+                        },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "team_id": {
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "component_type": {
+                                "type": "string"
+                              },
+                              "team_type": {
+                                "type": "string"
+                              },
+                              "agents": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "agent_id": {
+                                      "type": "string"
+                                    },
+                                    "user_id": {
+                                      "type": "string"
+                                    },
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "system_message": {
+                                      "type": "string"
+                                    },
+                                    "component_type": {
+                                      "type": "string"
+                                    },
+                                    "agent_type": {
+                                      "type": "string"
+                                    },
+                                    "parameters": {
+                                      "type": "object",
+                                      "properties": {
+                                        "system_prompt_role": {
+                                          "type": "string"
+                                        },
+                                        "system_prompt_task_skill": {
+                                          "type": "string"
+                                        },
+                                        "temperature": {
+                                          "type": "integer"
+                                        }
+                                      },
+                                      "required": [
+                                        "system_prompt_role",
+                                        "system_prompt_task_skill",
+                                        "temperature"
+                                      ],
+                                      "x-apifox-orders": [
+                                        "system_prompt_role",
+                                        "system_prompt_task_skill",
+                                        "temperature"
+                                      ],
+                                      "x-apifox-ignore-properties": []
+                                    },
+                                    "created_at": {
+                                      "type": "string"
+                                    },
+                                    "updated_at": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "agent_id",
+                                    "user_id",
+                                    "name",
+                                    "description",
+                                    "system_message",
+                                    "component_type",
+                                    "agent_type",
+                                    "parameters",
+                                    "created_at",
+                                    "updated_at"
+                                  ],
+                                  "x-apifox-orders": [
+                                    "agent_id",
+                                    "user_id",
+                                    "name",
+                                    "description",
+                                    "system_message",
+                                    "component_type",
+                                    "agent_type",
+                                    "parameters",
+                                    "created_at",
+                                    "updated_at"
+                                  ],
+                                  "x-apifox-ignore-properties": []
+                                }
+                              },
+                              "termination": {
+                                "type": "string"
+                              },
+                              "model": {
+                                "type": "object",
+                                "properties": {
+                                  "system_model_id": {
+                                    "type": "string"
+                                  },
+                                  "user_id": {
+                                    "type": "string"
+                                  },
+                                  "provider": {
+                                    "type": "string"
+                                  },
+                                  "model_type": {
+                                    "type": "string"
+                                  },
+                                  "base_url": {
+                                    "type": "string"
+                                  },
+                                  "api_key": {
+                                    "type": "string"
+                                  },
+                                  "icon_url": {
+                                    "type": "string"
+                                  },
+                                  "created_at": {
+                                    "type": "string"
+                                  },
+                                  "updated_at": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "system_model_id",
+                                  "user_id",
+                                  "provider",
+                                  "model_type",
+                                  "base_url",
+                                  "api_key",
+                                  "icon_url",
+                                  "created_at",
+                                  "updated_at"
+                                ],
+                                "x-apifox-orders": [
+                                  "system_model_id",
+                                  "user_id",
+                                  "provider",
+                                  "model_type",
+                                  "base_url",
+                                  "api_key",
+                                  "icon_url",
+                                  "created_at",
+                                  "updated_at"
+                                ],
+                                "x-apifox-ignore-properties": []
+                              },
+                              "parameters": {
+                                "type": "object",
+                                "properties": {
+                                  "system_prompt_role": {
+                                    "type": "string"
+                                  },
+                                  "system_prompt_task_skill": {
+                                    "type": "string"
+                                  },
+                                  "max_turns": {
+                                    "type": "integer"
+                                  },
+                                  "temperature": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "system_prompt_role",
+                                  "system_prompt_task_skill",
+                                  "max_turns",
+                                  "temperature"
+                                ],
+                                "x-apifox-orders": [
+                                  "system_prompt_role",
+                                  "system_prompt_task_skill",
+                                  "max_turns",
+                                  "temperature"
+                                ],
+                                "x-apifox-ignore-properties": []
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "updated_at": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "team_id",
+                              "user_id",
+                              "name",
+                              "description",
+                              "component_type",
+                              "team_type",
+                              "agents",
+                              "termination",
+                              "model",
+                              "parameters",
+                              "created_at",
+                              "updated_at"
+                            ],
+                            "x-apifox-orders": [
+                              "team_id",
+                              "user_id",
+                              "name",
+                              "description",
+                              "component_type",
+                              "team_type",
+                              "agents",
+                              "termination",
+                              "model",
+                              "parameters",
+                              "created_at",
+                              "updated_at"
+                            ],
+                            "x-apifox-ignore-properties": []
+                          }
+                        }
+                      },
+                      "required": [
+                        "page_num",
+                        "page_size",
+                        "total",
+                        "total_page",
+                        "data"
+                      ],
+                      "x-apifox-orders": [
+                        "page_num",
+                        "page_size",
+                        "total",
+                        "total_page",
+                        "data"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "required": ["code", "msg", "data"],
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "x-apifox-refs": {},
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": {
+                      "code": 0,
+                      "msg": "Success",
+                      "data": {
+                        "page_num": 1,
+                        "page_size": 10,
+                        "total": 2,
+                        "total_page": 1,
+                        "data": [
+                          {
+                            "team_id": "fdc7f460-ebb1-4f01-82be-9d4ccfc3d4e2",
+                            "user_id": "d55f0098-9e8f-4eba-a5f4-c2e8000946b5",
+                            "name": "律乙萍",
+                            "description": "步全团林机往标则况。验情可思天力将矿类。参展市不。会传科切表九有。部现形本六每法各切委。",
+                            "component_type": "wyse_team",
+                            "team_type": "wyse_web_groupchat",
+                            "agents": [
+                              {
+                                "agent_id": "34b068ce-fc21-449a-891c-89df66b37a76",
+                                "user_id": "d55f0098-9e8f-4eba-a5f4-c2e8000946b5",
+                                "name": "Workflow Agent",
+                                "description": "An agent about engine flow proxy, it can invoke metalist api to query the operations information and get the api desciption.",
+                                "system_message": "An agent about engine flow proxy, it can invoke metalist api to query the operations information and get the api desciption. Search the hot topic you may do those steps: First you need to deploy the flow by function flow_deploy, then get a flow_instance_id. Second invoke function flow_fire to execute the flow. If not contains twitter or x then return 'TERMINATE'. Reply 'TERMINATE' in the end when everything is done.",
+                                "component_type": "wyse_agent",
+                                "agent_type": "wyse_engine_flow_proxy_agent",
+                                "parameters": {
+                                  "system_prompt_role": "You are a workflow agent.",
+                                  "system_prompt_task_skill": "You are a workflow agent.",
+                                  "temperature": 0
+                                },
+                                "created_at": "2025-02-16T11:09:15.021311Z",
+                                "updated_at": "2025-02-16T11:09:15.021311Z"
+                              }
+                            ],
+                            "termination": "{}",
+                            "model": {
+                              "system_model_id": "58612030-0189-42a2-9ad9-1ae5ac64002d",
+                              "user_id": "",
+                              "provider": "OpenAI",
+                              "model_type": "gpt-4o",
+                              "base_url": "",
+                              "api_key": "",
+                              "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                              "created_at": "",
+                              "updated_at": ""
+                            },
+                            "parameters": {
+                              "system_prompt_role": "aliquip in do ad eiusmod",
+                              "system_prompt_task_skill": "pariatur mollit veniam",
+                              "max_turns": 10,
+                              "temperature": 0
+                            },
+                            "created_at": "2025-02-17T07:31:47.918758Z",
+                            "updated_at": "2025-02-17T07:31:47.918758Z"
+                          },
+                          {
+                            "team_id": "d08daf1e-49d1-4815-954e-bd7d94f40cf0",
+                            "user_id": "d55f0098-9e8f-4eba-a5f4-c2e8000946b5",
+                            "name": "Default Web Browser Team",
+                            "description": "A web browser team with default web browser agent, file reader agent and workflow agent.",
+                            "component_type": "wyse_team",
+                            "team_type": "wyse_web_groupchat",
+                            "agents": [
+                              {
+                                "agent_id": "34b068ce-fc21-449a-891c-89df66b37a76",
+                                "user_id": "d55f0098-9e8f-4eba-a5f4-c2e8000946b5",
+                                "name": "Workflow Agent",
+                                "description": "An agent about engine flow proxy, it can invoke metalist api to query the operations information and get the api desciption.",
+                                "system_message": "An agent about engine flow proxy, it can invoke metalist api to query the operations information and get the api desciption. Search the hot topic you may do those steps: First you need to deploy the flow by function flow_deploy, then get a flow_instance_id. Second invoke function flow_fire to execute the flow. If not contains twitter or x then return 'TERMINATE'. Reply 'TERMINATE' in the end when everything is done.",
+                                "component_type": "wyse_agent",
+                                "agent_type": "wyse_engine_flow_proxy_agent",
+                                "parameters": {
+                                  "system_prompt_role": "You are a workflow agent.",
+                                  "system_prompt_task_skill": "You are a workflow agent.",
+                                  "temperature": 0
+                                },
+                                "created_at": "2025-02-16T11:09:15.021311Z",
+                                "updated_at": "2025-02-16T11:09:15.021311Z"
+                              },
+                              {
+                                "agent_id": "24e4494d-0ff9-4805-87d5-8e40486e1403",
+                                "user_id": "d55f0098-9e8f-4eba-a5f4-c2e8000946b5",
+                                "name": "File Reader Agent",
+                                "description": "An agent that uses tools to read and navigate local files.",
+                                "system_message": "You are a helpful assistant specialized in reading and navigating local files. You can ask them to perform operations like reading file contents, listing directory contents, searching for files, and understanding file metadata. They can help analyze text files, provide summaries, answer questions about file contents, and assist with basic file system navigation. They prioritize security and will only access files within allowed directories.",
+                                "component_type": "wyse_agent",
+                                "agent_type": "wyse_file_reader_agent",
+                                "parameters": {
+                                  "system_prompt_role": "You are a file reader agent.",
+                                  "system_prompt_task_skill": "You are a file reader agent.",
+                                  "temperature": 0
+                                },
+                                "created_at": "2025-02-16T11:09:15.021328Z",
+                                "updated_at": "2025-02-16T11:09:15.021328Z"
+                              },
+                              {
+                                "agent_id": "a5cbd6f7-8a39-4405-ae4f-481b5d502f02",
+                                "user_id": "d55f0098-9e8f-4eba-a5f4-c2e8000946b5",
+                                "name": "Web Browser Agent",
+                                "description": "A multimodal agent that acts as a web browser that can search the web and visit web pages.",
+                                "system_message": "You are a helpful assistant with access to a web browser. Ask them to perform web searches, open pages, and interact with content (e.g., clicking links, scrolling the viewport, etc., filling in form fields, etc.) It can also summarize the entire page, or answer questions based on the content of the page. It can also be asked to sleep and wait for pages to load, in cases where the pages seem to be taking a while to load.",
+                                "component_type": "wyse_agent",
+                                "agent_type": "wyse_web_browser_agent",
+                                "parameters": {
+                                  "system_prompt_role": "You are a web browser agent.",
+                                  "system_prompt_task_skill": "You are a web browser agent.",
+                                  "temperature": 0
+                                },
+                                "created_at": "2025-02-16T11:09:15.021333Z",
+                                "updated_at": "2025-02-16T11:09:15.021333Z"
+                              }
+                            ],
+                            "termination": "{}",
+                            "model": {
+                              "system_model_id": "b713fcbf-5642-4922-bac3-7bda9f3ca7b1",
+                              "user_id": "",
+                              "provider": "OpenAI",
+                              "model_type": "gpt-4o",
+                              "base_url": "",
+                              "api_key": "",
+                              "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                              "created_at": "",
+                              "updated_at": ""
+                            },
+                            "parameters": {
+                              "system_prompt_role": "You are a web browser team with default web browser agent, file reader agent and workflow agent.",
+                              "system_prompt_task_skill": "You are a web browser team with default web browser agent, file reader agent and workflow agent.",
+                              "max_turns": 10,
+                              "temperature": 0
+                            },
+                            "created_at": "2025-02-16T11:09:38.453751Z",
+                            "updated_at": "2025-02-16T19:10:30.888366Z"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-248974485-run"
+      }
+    },
+    "/team/info/{team_id}": {
+      "get": {
+        "summary": "Team详情",
+        "x-apifox-folder": "team",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "暂时不鉴权",
+        "tags": ["team"],
+        "parameters": [
+          {
+            "name": "team_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "team_id": {
+                          "type": "string"
+                        },
+                        "user_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "component_type": {
+                          "type": "string"
+                        },
+                        "team_type": {
+                          "type": "string"
+                        },
+                        "agents": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "agent_id": {
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "system_message": {
+                                "type": "string"
+                              },
+                              "component_type": {
+                                "type": "string"
+                              },
+                              "agent_type": {
+                                "type": "string"
+                              },
+                              "parameters": {
+                                "type": "object",
+                                "properties": {
+                                  "system_prompt_role": {
+                                    "type": "string"
+                                  },
+                                  "system_prompt_task_skill": {
+                                    "type": "string"
+                                  },
+                                  "temperature": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "system_prompt_role",
+                                  "system_prompt_task_skill",
+                                  "temperature"
+                                ],
+                                "x-apifox-orders": [
+                                  "system_prompt_role",
+                                  "system_prompt_task_skill",
+                                  "temperature"
+                                ],
+                                "x-apifox-ignore-properties": []
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "updated_at": {
+                                "type": "string"
+                              }
+                            },
+                            "x-apifox-orders": [
+                              "agent_id",
+                              "user_id",
+                              "name",
+                              "description",
+                              "system_message",
+                              "component_type",
+                              "agent_type",
+                              "parameters",
+                              "created_at",
+                              "updated_at"
+                            ],
+                            "x-apifox-ignore-properties": []
+                          }
+                        },
+                        "termination": {
+                          "type": "string"
+                        },
+                        "model": {
+                          "type": "object",
+                          "properties": {
+                            "system_model_id": {
+                              "type": "string"
+                            },
+                            "user_id": {
+                              "type": "string"
+                            },
+                            "provider": {
+                              "type": "string"
+                            },
+                            "model_type": {
+                              "type": "string"
+                            },
+                            "base_url": {
+                              "type": "string"
+                            },
+                            "api_key": {
+                              "type": "string"
+                            },
+                            "icon_url": {
+                              "type": "string"
+                            },
+                            "created_at": {
+                              "type": "string"
+                            },
+                            "updated_at": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "system_model_id",
+                            "user_id",
+                            "provider",
+                            "model_type",
+                            "base_url",
+                            "api_key",
+                            "icon_url",
+                            "created_at",
+                            "updated_at"
+                          ],
+                          "x-apifox-orders": [
+                            "system_model_id",
+                            "user_id",
+                            "provider",
+                            "model_type",
+                            "base_url",
+                            "api_key",
+                            "icon_url",
+                            "created_at",
+                            "updated_at"
+                          ],
+                          "x-apifox-ignore-properties": []
+                        },
+                        "parameters": {
+                          "type": "object",
+                          "properties": {
+                            "system_prompt_role": {
+                              "type": "string"
+                            },
+                            "system_prompt_task_skill": {
+                              "type": "string"
+                            },
+                            "max_turns": {
+                              "type": "integer"
+                            },
+                            "temperature": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "system_prompt_role",
+                            "system_prompt_task_skill",
+                            "max_turns",
+                            "temperature"
+                          ],
+                          "x-apifox-orders": [
+                            "system_prompt_role",
+                            "system_prompt_task_skill",
+                            "max_turns",
+                            "temperature"
+                          ],
+                          "x-apifox-ignore-properties": []
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "team_id",
+                        "user_id",
+                        "name",
+                        "description",
+                        "component_type",
+                        "team_type",
+                        "agents",
+                        "termination",
+                        "model",
+                        "parameters",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "x-apifox-orders": [
+                        "team_id",
+                        "user_id",
+                        "name",
+                        "description",
+                        "component_type",
+                        "team_type",
+                        "agents",
+                        "termination",
+                        "model",
+                        "parameters",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "required": ["code", "msg", "data"],
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "x-apifox-refs": {},
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": {
+                      "code": 0,
+                      "msg": "Success",
+                      "data": {
+                        "team_id": "fdc7f460-ebb1-4f01-82be-9d4ccfc3d4e2",
+                        "user_id": "d55f0098-9e8f-4eba-a5f4-c2e8000946b5",
+                        "name": "律乙萍",
+                        "description": "步全团林机往标则况。验情可思天力将矿类。参展市不。会传科切表九有。部现形本六每法各切委。",
+                        "component_type": "wyse_team",
+                        "team_type": "wyse_web_groupchat",
+                        "agents": [
+                          {
+                            "agent_id": "34b068ce-fc21-449a-891c-89df66b37a76",
+                            "user_id": "d55f0098-9e8f-4eba-a5f4-c2e8000946b5",
+                            "name": "Workflow Agent",
+                            "description": "An agent about engine flow proxy, it can invoke metalist api to query the operations information and get the api desciption.",
+                            "system_message": "An agent about engine flow proxy, it can invoke metalist api to query the operations information and get the api desciption. Search the hot topic you may do those steps: First you need to deploy the flow by function flow_deploy, then get a flow_instance_id. Second invoke function flow_fire to execute the flow. If not contains twitter or x then return 'TERMINATE'. Reply 'TERMINATE' in the end when everything is done.",
+                            "component_type": "wyse_agent",
+                            "agent_type": "wyse_engine_flow_proxy_agent",
+                            "parameters": {
+                              "system_prompt_role": "You are a workflow agent.",
+                              "system_prompt_task_skill": "You are a workflow agent.",
+                              "temperature": 0
+                            },
+                            "created_at": "2025-02-16T11:09:15.021311Z",
+                            "updated_at": "2025-02-16T11:09:15.021311Z"
+                          }
+                        ],
+                        "termination": "{}",
+                        "model": {
+                          "system_model_id": "58612030-0189-42a2-9ad9-1ae5ac64002d",
+                          "user_id": "",
+                          "provider": "OpenAI",
+                          "model_type": "gpt-4o",
+                          "base_url": "",
+                          "api_key": "",
+                          "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                          "created_at": "",
+                          "updated_at": ""
+                        },
+                        "parameters": {
+                          "system_prompt_role": "aliquip in do ad eiusmod",
+                          "system_prompt_task_skill": "pariatur mollit veniam",
+                          "max_turns": 10,
+                          "temperature": 0
+                        },
+                        "created_at": "2025-02-17T07:31:47.918758Z",
+                        "updated_at": "2025-02-17T07:31:47.918758Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-248993314-run"
+      }
+    },
+    "/session/info/{session_id}": {
+      "get": {
+        "summary": "会话详情",
+        "x-apifox-folder": "session",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "注意：\n- 返回的message列表只包含最近5条消息\n- visibility表示会话可见性，默认是private，公开可见是access_by_url\n- name是会话名称",
+        "tags": ["session"],
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "session_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "browser_id": {
+                          "type": "string"
+                        },
+                        "team_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "task": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "role": {
+                                "type": "string"
+                              },
+                              "content": {
+                                "type": "string"
+                              }
+                            },
+                            "x-apifox-orders": ["role", "content"],
+                            "x-apifox-ignore-properties": []
+                          }
+                        },
+                        "task_result": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "source": {
+                              "type": "string"
+                            },
+                            "content": {
+                              "type": "string"
+                            }
+                          },
+                          "required": ["type", "source", "content"],
+                          "x-apifox-orders": ["type", "source", "content"],
+                          "x-apifox-ignore-properties": []
+                        },
+                        "messages": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "message_id": {
+                                "type": "string"
+                              },
+                              "source": {
+                                "type": "string"
+                              },
+                              "content": {
+                                "type": "string"
+                              },
+                              "message_type": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "type": "string"
+                              },
+                              "source_type": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "message_id",
+                              "source",
+                              "content",
+                              "message_type",
+                              "created_at",
+                              "type",
+                              "source_type"
+                            ],
+                            "x-apifox-orders": [
+                              "message_id",
+                              "source",
+                              "content",
+                              "message_type",
+                              "created_at",
+                              "type",
+                              "source_type"
+                            ],
+                            "x-apifox-ignore-properties": []
+                          }
+                        },
+                        "duration": {
+                          "type": "integer"
+                        },
+                        "error_message": {
+                          "type": "string"
+                        },
+                        "tokens": {
+                          "type": "object",
+                          "properties": {
+                            "models": {
+                              "type": "object",
+                              "properties": {},
+                              "x-apifox-orders": [],
+                              "x-apifox-ignore-properties": []
+                            }
+                          },
+                          "required": ["models"],
+                          "x-apifox-orders": ["models"],
+                          "x-apifox-ignore-properties": []
+                        },
+                        "platform": {
+                          "type": "string"
+                        },
+                        "visibility": {
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "session_id",
+                        "status",
+                        "browser_id",
+                        "team_id",
+                        "name",
+                        "task",
+                        "task_result",
+                        "messages",
+                        "duration",
+                        "error_message",
+                        "tokens",
+                        "platform",
+                        "visibility",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "x-apifox-orders": [
+                        "session_id",
+                        "status",
+                        "browser_id",
+                        "team_id",
+                        "name",
+                        "task",
+                        "task_result",
+                        "messages",
+                        "duration",
+                        "error_message",
+                        "tokens",
+                        "platform",
+                        "visibility",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "required": ["code", "msg", "data"],
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": {
+                      "code": 0,
+                      "msg": "Success",
+                      "data": {
+                        "session_id": "1e5aa4b5-bf64-456d-bf40-c47a60251b65",
+                        "status": "released",
+                        "browser_id": "25ad039b-07b8-4958-a166-dbab229d24e0",
+                        "team_id": "715032cd-3f68-4e4a-8dfa-1d54983a1b0c",
+                        "name": "建议成人一天摄入多少咖啡因",
+                        "task": [
+                          {
+                            "role": "user",
+                            "content": "建议成人一天摄入多少咖啡因"
+                          }
+                        ],
+                        "task_result": {
+                          "type": "",
+                          "source": "",
+                          "content": ""
+                        },
+                        "messages": [
+                          {
+                            "message_id": "5711a3cf-077d-4be4-8db1-744dcb0121d7",
+                            "source": "MagenticOneOrchestrator",
+                            "content": "Please perform a web search to find the recommended daily caffeine intake for adults from a reliable health organization such as the WHO, FDA, or EFSA.",
+                            "message_type": "MessageText",
+                            "created_at": "2025-03-11T14:54:07Z",
+                            "type": "TextMessage",
+                            "source_type": "MagenticOneOrchestrator"
+                          },
+                          {
+                            "message_id": "e96d9cdb-3069-44cf-85be-c6b64f816eed",
+                            "source": "5644526b-0056-4678-8a8c-c679bb73bfee",
+                            "content": "wyse_web_browser_agent__5644526b005646788a8cc679bb73bfee has an error, please try again.",
+                            "message_type": "MessageText",
+                            "created_at": "2025-03-11T14:54:11Z",
+                            "type": "TextMessage",
+                            "source_type": "wyse_web_browser_agent"
+                          },
+                          {
+                            "message_id": "decaf973-ed56-4654-bb90-cd76b75cb4b9",
+                            "source": "MagenticOneOrchestrator",
+                            "content": "\nWe are working to address the following user request:\n\n建议成人一天摄入多少咖啡因\n\n\nTo answer this request we have assembled the following team:\n\nwyse_web_browser_agent__5644526b005646788a8cc679bb73bfee: A helpful assistant with access to a web browser. Ask them to perform web searches, open pages, and interact with content (e.g., clicking links, scrolling the viewport, etc., filling in form fields, etc.) It can also summarize the entire page, or answer questions based on the content of the page. It can also be asked to sleep and wait for pages to load, in cases where the pages seem to be taking a while to load.\n\n\nHere is an initial fact sheet to consider:\n\nHere is the updated fact sheet:\n\n1. GIVEN OR VERIFIED FACTS\n   - The request is in Chinese and translates to \"How much caffeine is recommended for adults to consume in a day?\"\n\n2. FACTS TO LOOK UP\n   - Recommended daily caffeine intake for adults. This information can typically be found on health organization websites such as the World Health Organization (WHO), the U.S. Food and Drug Administration (FDA), or the European Food Safety Authority (EFSA).\n   - Due to technical difficulties, we have not yet been able to verify this information through web searches.\n\n3. FACTS TO DERIVE\n   - None specifically, as the request is straightforward and does not require derivation beyond looking up established guidelines.\n\n4. EDUCATED GUESSES\n   - From memory, the commonly recommended maximum daily caffeine intake for most adults is around 400 milligrams, which is roughly equivalent to four 8-ounce cups of brewed coffee.\n   - Given the repeated technical issues with web browsing, it might be useful to rely on memory or previously known information until the technical issues are resolved.\n   - The persistent technical error suggests that the web browsing tool is currently unreliable, so relying on established knowledge or alternative sources might be necessary for the time being.\n\n\nHere is the plan to follow as best as possible:\n\n**Explanation of What Went Wrong:**\n\nThe primary issue encountered was a persistent technical error with the web browsing agent, which prevented it from successfully performing web searches and retrieving information. The error message indicated an internal error related to evaluating scripts, which suggests a problem with the web browsing functionality itself.\n\n**New Plan:**\n\n- **Troubleshoot the Web Browser Agent:**\n  - Attempt to reset or restart the web browser agent to see if this resolves the internal error.\n  - If possible, check for any updates or patches for the web browsing tool that might address the issue.\n\n- **Alternative Information Retrieval:**\n  - If the web browser agent continues to fail, consider using alternative methods to retrieve information, such as relying on memory or previously known data.\n  - Use the educated guess of 400 milligrams as a temporary answer, while clearly stating that this is based on common knowledge and not verified through the current session.\n\n- **Documentation and Reporting:**\n  - Document the error messages and any troubleshooting steps taken for future reference and potential reporting to technical support.\n  - If the issue persists, consider reporting the problem to the appropriate technical team for further investigation.\n\n- **Communication:**\n  - Clearly communicate any limitations or assumptions made in the final response to ensure transparency with the user.\n",
+                            "message_type": "MessageText",
+                            "created_at": "2025-03-11T14:54:26Z",
+                            "type": "TextMessage",
+                            "source_type": "MagenticOneOrchestrator"
+                          },
+                          {
+                            "message_id": "83e6926b-bc40-4b1e-8813-2aa96b6bfe50",
+                            "source": "MagenticOneOrchestrator",
+                            "content": "\nWe are working to address the following user request:\n\n建议成人一天摄入多少咖啡因\n\n\nTo answer this request we have assembled the following team:\n\nwyse_web_browser_agent__5644526b005646788a8cc679bb73bfee: A helpful assistant with access to a web browser. Ask them to perform web searches, open pages, and interact with content (e.g., clicking links, scrolling the viewport, etc., filling in form fields, etc.) It can also summarize the entire page, or answer questions based on the content of the page. It can also be asked to sleep and wait for pages to load, in cases where the pages seem to be taking a while to load.\n\n\nHere is an initial fact sheet to consider:\n\nHere is the updated fact sheet:\n\n1. GIVEN OR VERIFIED FACTS\n   - The request is in Chinese and translates to \"How much caffeine is recommended for adults to consume in a day?\"\n\n2. FACTS TO LOOK UP\n   - Recommended daily caffeine intake for adults. This information can typically be found on health organization websites such as the World Health Organization (WHO), the U.S. Food and Drug Administration (FDA), or the European Food Safety Authority (EFSA).\n   - Due to technical difficulties, we have not yet been able to verify this information through web searches.\n\n3. FACTS TO DERIVE\n   - None specifically, as the request is straightforward and does not require derivation beyond looking up established guidelines.\n\n4. EDUCATED GUESSES\n   - From memory, the commonly recommended maximum daily caffeine intake for most adults is around 400 milligrams, which is roughly equivalent to four 8-ounce cups of brewed coffee.\n   - Given the repeated technical issues with web browsing, it might be useful to rely on memory or previously known information until the technical issues are resolved.\n   - The persistent technical error suggests that the web browsing tool is currently unreliable, so relying on established knowledge or alternative sources might be necessary for the time being.\n   - It is reasonable to assume that the 400 milligrams recommendation is a widely accepted guideline, as it is often cited by multiple health organizations and experts. This assumption is based on the consistency of this figure in health-related discussions and literature.\n\n\nHere is the plan to follow as best as possible:\n\n**Explanation of What Went Wrong:**\n\nThe primary issue encountered was a persistent technical error with the web browsing agent, which prevented it from successfully performing web searches and retrieving information. The error message indicated an internal error related to evaluating scripts, which suggests a problem with the web browsing functionality itself.\n\n**New Plan:**\n\n- **Troubleshoot the Web Browser Agent:**\n  - Attempt to reset or restart the web browser agent to see if this resolves the internal error.\n  - If possible, check for any updates or patches for the web browsing tool that might address the issue.\n\n- **Alternative Information Retrieval:**\n  - If the web browser agent continues to fail, consider using alternative methods to retrieve information, such as relying on memory or previously known data.\n  - Use the educated guess of 400 milligrams as a temporary answer, while clearly stating that this is based on common knowledge and not verified through the current session.\n\n- **Documentation and Reporting:**\n  - Document the error messages and any troubleshooting steps taken for future reference and potential reporting to technical support.\n  - If the issue persists, consider reporting the problem to the appropriate technical team for further investigation.\n\n- **Communication:**\n  - Clearly communicate any limitations or assumptions made in the final response to ensure transparency with the user.\n",
+                            "message_type": "MessageText",
+                            "created_at": "2025-03-11T14:54:39Z",
+                            "type": "TextMessage",
+                            "source_type": "MagenticOneOrchestrator"
+                          },
+                          {
+                            "message_id": "f91efc0a-b88d-48ff-96bd-ad555c00e870",
+                            "source": "MagenticOneOrchestrator",
+                            "content": "\nWe are working to address the following user request:\n\n建议成人一天摄入多少咖啡因\n\n\nTo answer this request we have assembled the following team:\n\nwyse_web_browser_agent__5644526b005646788a8cc679bb73bfee: A helpful assistant with access to a web browser. Ask them to perform web searches, open pages, and interact with content (e.g., clicking links, scrolling the viewport, etc., filling in form fields, etc.) It can also summarize the entire page, or answer questions based on the content of the page. It can also be asked to sleep and wait for pages to load, in cases where the pages seem to be taking a while to load.\n\n\nHere is an initial fact sheet to consider:\n\nHere is the updated fact sheet:\n\n1. GIVEN OR VERIFIED FACTS\n   - The request is in Chinese and translates to \"How much caffeine is recommended for adults to consume in a day?\"\n   - The commonly recommended maximum daily caffeine intake for most adults is around 400 milligrams, which is roughly equivalent to four 8-ounce cups of brewed coffee. This is a widely accepted guideline cited by multiple health organizations and experts.\n\n2. FACTS TO LOOK UP\n   - Verify the recommended daily caffeine intake for adults from authoritative sources such as the World Health Organization (WHO), the U.S. Food and Drug Administration (FDA), or the European Food Safety Authority (EFSA).\n\n3. FACTS TO DERIVE\n   - None specifically, as the request is straightforward and does not require derivation beyond looking up established guidelines.\n\n4. EDUCATED GUESSES\n   - Given the technical difficulties with web browsing, relying on memory or previously known information is currently necessary.\n   - The 400 milligrams recommendation is likely accurate and reliable, as it is consistently mentioned in health-related discussions and literature.\n   - If the web browsing tool becomes functional, it would be beneficial to verify this information to ensure accuracy and provide the most up-to-date guidance.\n\n\nHere is the plan to follow as best as possible:\n\n**Explanation of What Went Wrong:**\n\nThe primary issue encountered was a persistent technical error with the web browsing agent, which prevented it from successfully performing web searches and retrieving information. The error message indicated an internal error related to evaluating scripts, which suggests a problem with the web browsing functionality itself.\n\n**New Plan:**\n\n- **Troubleshoot the Web Browser Agent:**\n  - Attempt to reset or restart the web browser agent to see if this resolves the internal error.\n  - If possible, check for any updates or patches for the web browsing tool that might address the issue.\n\n- **Alternative Information Retrieval:**\n  - If the web browser agent continues to fail, consider using alternative methods to retrieve information, such as relying on memory or previously known data.\n  - Use the educated guess of 400 milligrams as a temporary answer, while clearly stating that this is based on common knowledge and not verified through the current session.\n\n- **Documentation and Reporting:**\n  - Document the error messages and any troubleshooting steps taken for future reference and potential reporting to technical support.\n  - If the issue persists, consider reporting the problem to the appropriate technical team for further investigation.\n\n- **Communication:**\n  - Clearly communicate any limitations or assumptions made in the final response to ensure transparency with the user.\n",
+                            "message_type": "MessageText",
+                            "created_at": "2025-03-11T14:54:52Z",
+                            "type": "TextMessage",
+                            "source_type": "MagenticOneOrchestrator"
+                          },
+                          {
+                            "message_id": "6da581b6-dc6a-465a-a964-aebb9502f846",
+                            "source": "MagenticOneOrchestrator",
+                            "content": "Please search for the recommended daily caffeine intake for adults from authoritative sources such as the World Health Organization (WHO), the U.S. Food and Drug Administration (FDA), or the European Food Safety Authority (EFSA).",
+                            "message_type": "MessageText",
+                            "created_at": "2025-03-11T14:54:57Z",
+                            "type": "TextMessage",
+                            "source_type": "MagenticOneOrchestrator"
+                          },
+                          {
+                            "message_id": "b2e75781-1af0-45e6-8472-034694f7001f",
+                            "source": "5644526b-0056-4678-8a8c-c679bb73bfee",
+                            "content": "wyse_web_browser_agent__5644526b005646788a8cc679bb73bfee has an error, please try again.",
+                            "message_type": "MessageText",
+                            "created_at": "2025-03-11T14:55:01Z",
+                            "type": "TextMessage",
+                            "source_type": "wyse_web_browser_agent"
+                          },
+                          {
+                            "message_id": "25442bc5-4062-443f-8137-699bd07413f3",
+                            "source": "MagenticOneOrchestrator",
+                            "content": "\nWe are working to address the following user request:\n\n建议成人一天摄入多少咖啡因\n\n\nTo answer this request we have assembled the following team:\n\nwyse_web_browser_agent__5644526b005646788a8cc679bb73bfee: A helpful assistant with access to a web browser. Ask them to perform web searches, open pages, and interact with content (e.g., clicking links, scrolling the viewport, etc., filling in form fields, etc.) It can also summarize the entire page, or answer questions based on the content of the page. It can also be asked to sleep and wait for pages to load, in cases where the pages seem to be taking a while to load.\n\n\nHere is an initial fact sheet to consider:\n\nHere is the updated fact sheet:\n\n1. GIVEN OR VERIFIED FACTS\n   - The request is in Chinese and translates to \"How much caffeine is recommended for adults to consume in a day?\"\n   - The commonly recommended maximum daily caffeine intake for most adults is around 400 milligrams, which is roughly equivalent to four 8-ounce cups of brewed coffee. This is a widely accepted guideline cited by multiple health organizations and experts.\n\n2. FACTS TO LOOK UP\n   - Verify the recommended daily caffeine intake for adults from authoritative sources such as the World Health Organization (WHO), the U.S. Food and Drug Administration (FDA), or the European Food Safety Authority (EFSA).\n\n3. FACTS TO DERIVE\n   - None specifically, as the request is straightforward and does not require derivation beyond looking up established guidelines.\n\n4. EDUCATED GUESSES\n   - Given the persistent technical difficulties with web browsing, relying on memory or previously known information is currently necessary.\n   - The 400 milligrams recommendation is likely accurate and reliable, as it is consistently mentioned in health-related discussions and literature.\n   - It is reasonable to assume that the 400 milligrams guideline is still current, as it has been a standard recommendation for several years. However, without recent verification, this remains an educated guess.\n   - If the web browsing tool becomes functional, it would be beneficial to verify this information to ensure accuracy and provide the most up-to-date guidance.\n\n\nHere is the plan to follow as best as possible:\n\n**Explanation of What Went Wrong:**\n\nThe primary issue encountered was a persistent technical error with the web browsing agent, which prevented it from successfully performing web searches and retrieving information. The error message indicated an internal error related to evaluating scripts, which suggests a problem with the web browsing functionality itself.\n\n**New Plan:**\n\n- **Troubleshoot the Web Browser Agent:**\n  - Attempt to reset or restart the web browser agent to see if this resolves the internal error.\n  - If possible, check for any updates or patches for the web browsing tool that might address the issue.\n\n- **Alternative Information Retrieval:**\n  - If the web browser agent continues to fail, consider using alternative methods to retrieve information, such as relying on memory or previously known data.\n  - Use the educated guess of 400 milligrams as a temporary answer, while clearly stating that this is based on common knowledge and not verified through the current session.\n\n- **Documentation and Reporting:**\n  - Document the error messages and any troubleshooting steps taken for future reference and potential reporting to technical support.\n  - If the issue persists, consider reporting the problem to the appropriate technical team for further investigation.\n\n- **Communication:**\n  - Clearly communicate any limitations or assumptions made in the final response to ensure transparency with the user.\n",
+                            "message_type": "MessageText",
+                            "created_at": "2025-03-11T14:55:16Z",
+                            "type": "TextMessage",
+                            "source_type": "MagenticOneOrchestrator"
+                          },
+                          {
+                            "message_id": "f7b5f063-786d-4825-a70c-6b819bad501f",
+                            "source": "MagenticOneOrchestrator",
+                            "content": "成人每天建议摄入的咖啡因量通常不超过400毫克，这大约相当于四杯8盎司的煮咖啡。这是多个健康组织和专家普遍接受的指导方针。不过，具体的摄入量也可能因个体差异而有所不同，建议根据个人健康状况进行调整。如果有任何健康方面的疑虑，最好咨询专业的医疗人员。",
+                            "message_type": "MessageText",
+                            "created_at": "2025-03-11T14:55:18Z",
+                            "type": "TextMessage",
+                            "source_type": "MagenticOneOrchestrator"
+                          },
+                          {
+                            "message_id": "caa3ac7c-2ec1-47f0-9799-8d03e0070215",
+                            "source": "System",
+                            "content": "Max rounds reached.",
+                            "message_type": "MessageText",
+                            "created_at": "2025-03-11T14:55:18Z",
+                            "type": "TaskResult",
+                            "source_type": "System"
+                          }
+                        ],
+                        "duration": 301,
+                        "error_message": "",
+                        "tokens": {
+                          "models": {}
+                        },
+                        "platform": "engine",
+                        "visibility": "private",
+                        "created_at": "2025-03-11T06:53:11Z",
+                        "updated_at": "2025-03-11T17:26:53Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-249469114-run"
+      }
+    },
+    "/agent/lists": {
+      "get": {
+        "summary": "Agent清单",
+        "x-apifox-folder": "agent",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": ["agent"],
+        "parameters": [
+          {
+            "name": "page_num",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "10",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "page_num": {
+                          "type": "integer"
+                        },
+                        "page_size": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "total_page": {
+                          "type": "integer"
+                        },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "agent_id": {
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "type": "string"
+                              },
+                              "avatar": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "system_message": {
+                                "type": "string"
+                              },
+                              "component_type": {
+                                "type": "string"
+                              },
+                              "model": {
+                                "type": "object",
+                                "properties": {
+                                  "system_model_id": {
+                                    "type": "string"
+                                  },
+                                  "provider": {
+                                    "type": "string"
+                                  },
+                                  "model_type": {
+                                    "type": "string"
+                                  },
+                                  "icon_url": {
+                                    "type": "string"
+                                  },
+                                  "created_at": {
+                                    "type": "string"
+                                  },
+                                  "updated_at": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "system_model_id",
+                                  "provider",
+                                  "model_type",
+                                  "icon_url",
+                                  "created_at",
+                                  "updated_at"
+                                ],
+                                "x-apifox-orders": [
+                                  "system_model_id",
+                                  "provider",
+                                  "model_type",
+                                  "icon_url",
+                                  "created_at",
+                                  "updated_at"
+                                ],
+                                "x-apifox-ignore-properties": []
+                              },
+                              "agent_type": {
+                                "type": "string"
+                              },
+                              "parameters": {
+                                "type": "object",
+                                "properties": {
+                                  "system_prompt_role": {
+                                    "type": "string"
+                                  },
+                                  "system_prompt_task_skill": {
+                                    "type": "string"
+                                  },
+                                  "temperature": {
+                                    "type": ["number", "integer"]
+                                  }
+                                },
+                                "required": [
+                                  "system_prompt_role",
+                                  "system_prompt_task_skill",
+                                  "temperature"
+                                ],
+                                "x-apifox-orders": [
+                                  "system_prompt_role",
+                                  "system_prompt_task_skill",
+                                  "temperature"
+                                ],
+                                "x-apifox-ignore-properties": []
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "updated_at": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "agent_id",
+                              "user_id",
+                              "avatar",
+                              "name",
+                              "description",
+                              "system_message",
+                              "component_type",
+                              "model",
+                              "agent_type",
+                              "parameters",
+                              "created_at",
+                              "updated_at"
+                            ],
+                            "x-apifox-orders": [
+                              "agent_id",
+                              "user_id",
+                              "avatar",
+                              "name",
+                              "description",
+                              "system_message",
+                              "component_type",
+                              "model",
+                              "agent_type",
+                              "parameters",
+                              "created_at",
+                              "updated_at"
+                            ],
+                            "x-apifox-ignore-properties": []
+                          }
+                        }
+                      },
+                      "required": [
+                        "page_num",
+                        "page_size",
+                        "total",
+                        "total_page",
+                        "data"
+                      ],
+                      "x-apifox-orders": [
+                        "page_num",
+                        "page_size",
+                        "total",
+                        "total_page",
+                        "data"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "required": ["code", "msg", "data"],
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "x-apifox-refs": {},
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": {
+                      "code": 0,
+                      "msg": "Success",
+                      "data": {
+                        "page_num": 1,
+                        "page_size": 10,
+                        "total": 8,
+                        "total_page": 1,
+                        "data": [
+                          {
+                            "agent_id": "24c3ac79-870d-4b38-bdfb-a046a7ca7614",
+                            "user_id": "7be0a6f1-fd33-4cfa-8a4b-eae705a74c3d",
+                            "avatar": "",
+                            "name": "DeFi Agent",
+                            "description": "You are DeFi Agent, a specialized agent for retrieving DeFi analytics and data through the DeFiLlama API. You can provide information about historical TVL for blockchain networks, protocol details, stablecoin metrics, DEX trading volumes, and options trading data.",
+                            "system_message": "You are DeFi Agent, an AI assistant specialized in retrieving and analyzing data from DeFiLlama.\nYour capabilities include:\n1. Fetching historical Total Value Locked (TVL) data for various blockchain networks;\n2. Retrieving protocol-specific details and metrics;\n3. Providing stablecoin statistics and information;\n4. Fetching DEX (decentralized exchange) trading summaries;\n5. Retrieving options trading overviews across different chains.",
+                            "component_type": "wyse_agent",
+                            "model": {
+                              "system_model_id": "58612030-0189-42a2-9ad9-1ae5ac64002d",
+                              "provider": "OpenAI",
+                              "model_type": "gpt-4o",
+                              "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                              "created_at": "",
+                              "updated_at": ""
+                            },
+                            "agent_type": "wyse_defi_agent",
+                            "parameters": {
+                              "system_prompt_role": "You are DeFi Agent, an AI assistant specialized in retrieving and analyzing data from DeFiLlama.\nYour capabilities include:\n1. Fetching historical Total Value Locked (TVL) data for various blockchain networks;\n2. Retrieving protocol-specific details and metrics;\n3. Providing stablecoin statistics and information;\n4. Fetching DEX (decentralized exchange) trading summaries;\n5. Retrieving options trading overviews across different chains.",
+                              "system_prompt_task_skill": "",
+                              "temperature": 0.3
+                            },
+                            "created_at": "2025-03-22T02:27:44.482881Z",
+                            "updated_at": "2025-03-22T02:27:44.482881Z"
+                          },
+                          {
+                            "agent_id": "b90e5b04-2f0c-4adc-ae0f-3d04e7131623",
+                            "user_id": "7be0a6f1-fd33-4cfa-8a4b-eae705a74c3d",
+                            "avatar": "https://img.wyseos.com/agent/20250321/b90e5b04-2f0c-4adc-ae0f-3d04e7131623.png",
+                            "name": "NFT Agent",
+                            "description": "A specialized NFT data agent that provides comprehensive information about NFT collections across multiple blockchain networks (ETH, BNB, Polygon, Optimism, Base), including market statistics, rankings, and collection-specific details.",
+                            "system_message": "You are a specialized NFT data agent with capabilities to retrieve and analyze NFT collection information across multiple blockchain networks (ETH, BNB, Polygon, Optimism, Base). You can perform three main functions: 1) Search for NFT collections by keywords with optional market metrics, 2) Query NFT rankings based on different criteria and time ranges, and 3) Retrieve detailed NFT data for specific collections using their contract addresses. You excel at providing structured data about NFT market activity, collection performance, and individual NFT details to help users make informed decisions in the NFT space.",
+                            "component_type": "wyse_agent",
+                            "model": {
+                              "system_model_id": "58612030-0189-42a2-9ad9-1ae5ac64002d",
+                              "provider": "OpenAI",
+                              "model_type": "gpt-4o",
+                              "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                              "created_at": "",
+                              "updated_at": ""
+                            },
+                            "agent_type": "wyse_nft_agent",
+                            "parameters": {
+                              "system_prompt_role": "You are a specialized NFT data agent with capabilities to retrieve and analyze NFT collection information across multiple blockchain networks (ETH, BNB, Polygon, Optimism, Base). You can perform three main functions: 1) Search for NFT collections by keywords with optional market metrics, 2) Query NFT rankings based on different criteria and time ranges, and 3) Retrieve detailed NFT data for specific collections using their contract addresses. You excel at providing structured data about NFT market activity, collection performance, and individual NFT details to help users make informed decisions in the NFT space.",
+                              "system_prompt_task_skill": "",
+                              "temperature": 0.3
+                            },
+                            "created_at": "2025-03-21T06:45:53.689626Z",
+                            "updated_at": "2025-03-21T16:35:31.735056Z"
+                          },
+                          {
+                            "agent_id": "1528df87-b734-4e60-85f6-a3711f419a8f",
+                            "user_id": "7be0a6f1-fd33-4cfa-8a4b-eae705a74c3d",
+                            "avatar": "",
+                            "name": "CoinGecko Agent",
+                            "description": "A specialized cryptocurrency data agent that integrates with the CoinGecko API to provide comprehensive, real-time information about cryptocurrencies, tokens, exchanges, and market trends.",
+                            "system_message": "You are a specialized CoinGecko API agent designed to retrieve accurate and up-to-date cryptocurrency information. You can access real-time and historical price data, market capitalization, trading volume, and exchange information for thousands of cryptocurrencies and tokens. Your capabilities include tracking price movements, comparing different assets, analyzing market trends, retrieving tokenomics data, and providing insights about blockchain projects. You excel at presenting complex crypto market data in clear, organized formats to help users make informed decisions about digital assets.",
+                            "component_type": "wyse_agent",
+                            "model": {
+                              "system_model_id": "58612030-0189-42a2-9ad9-1ae5ac64002d",
+                              "provider": "OpenAI",
+                              "model_type": "gpt-4o",
+                              "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                              "created_at": "",
+                              "updated_at": ""
+                            },
+                            "agent_type": "wyse_coingecko_api_agent",
+                            "parameters": {
+                              "system_prompt_role": "You are a specialized CoinGecko API agent designed to retrieve accurate and up-to-date cryptocurrency information. You can access real-time and historical price data, market capitalization, trading volume, and exchange information for thousands of cryptocurrencies and tokens. Your capabilities include tracking price movements, comparing different assets, analyzing market trends, retrieving tokenomics data, and providing insights about blockchain projects. You excel at presenting complex crypto market data in clear, organized formats to help users make informed decisions about digital assets.",
+                              "system_prompt_task_skill": "",
+                              "temperature": 0.3
+                            },
+                            "created_at": "2025-03-19T08:29:02.966842Z",
+                            "updated_at": "2025-03-19T08:29:02.966842Z"
+                          },
+                          {
+                            "agent_id": "311ed317-79ea-4284-ad07-d8e5a4ba67fd",
+                            "user_id": "7be0a6f1-fd33-4cfa-8a4b-eae705a74c3d",
+                            "avatar": "",
+                            "name": "Google Search Agent",
+                            "description": "Search RootData API for blockchain projects or venture capital institutions based on keywords. The returned URL can be opened via a browser agent (if available in the team) to get more detailed information.",
+                            "system_message": "You are a specialized Google Search agent designed to retrieve precise and relevant information from the web. You can perform targeted search queries, filter results by relevance and recency, extract key information from search snippets, and provide concise summaries of search findings. Your capabilities include understanding complex search intent, reformulating queries for optimal results, and presenting information in a structured and easily digestible format. The returned LINK should be opened by a browser agent (if available) to find more detailed information.",
+                            "component_type": "wyse_agent",
+                            "model": {
+                              "system_model_id": "58612030-0189-42a2-9ad9-1ae5ac64002d",
+                              "provider": "OpenAI",
+                              "model_type": "gpt-4o",
+                              "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                              "created_at": "",
+                              "updated_at": ""
+                            },
+                            "agent_type": "wyse_google_search_agent",
+                            "parameters": {
+                              "system_prompt_role": "You are a specialized Google Search agent designed to retrieve precise and relevant information from the web. You can perform targeted search queries, filter results by relevance and recency, extract key information from search snippets, and provide concise summaries of search findings. Your capabilities include understanding complex search intent, reformulating queries for optimal results, and presenting information in a structured and easily digestible format. The returned LINK should be opened by a browser agent (if available) to find more detailed information.",
+                              "system_prompt_task_skill": "",
+                              "temperature": 0.3
+                            },
+                            "created_at": "2025-03-19T03:20:38.967071Z",
+                            "updated_at": "2025-03-19T03:20:38.967071Z"
+                          },
+                          {
+                            "agent_id": "298afe46-183f-4569-9576-b00b8c7a10a1",
+                            "user_id": "7be0a6f1-fd33-4cfa-8a4b-eae705a74c3d",
+                            "avatar": "",
+                            "name": "RootData Agent",
+                            "description": "Search project/VC/people information from RootData API based on keywords. Returns details including introduction, name, logo URL, and a URL to the entity's webpage on RootData. The returned URL should be opened by a browser agent (if available) to find more detailed information about the entity.",
+                            "system_message": "You are a specialized RootData API agent designed to search and provide basic information about blockchain projects, venture capital firms, and key individuals in the crypto ecosystem. Your primary function is to:1. Accept search queries about crypto entities (projects, organizations, people);2. Return basic information including ID, type, name, brief introduction, and logo URL;3. Importantly, you provide a URL to the entity's detailed webpage on RootData.When you return results, always emphasize that the URL should be opened by a browser agent (if available in the agent team) to access comprehensive information. You should suggest specific information that might be found by visiting these URLs, such as detailed investment history, token metrics, team composition, or market activities.You excel at presenting the initial search results in a clear, structured format while guiding users to leverage browser agents for deeper investigation of the entities you've found. Your role bridges the gap between initial discovery and detailed research in the blockchain ecosystem.",
+                            "component_type": "wyse_agent",
+                            "model": {
+                              "system_model_id": "58612030-0189-42a2-9ad9-1ae5ac64002d",
+                              "provider": "OpenAI",
+                              "model_type": "gpt-4o",
+                              "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                              "created_at": "",
+                              "updated_at": ""
+                            },
+                            "agent_type": "wyse_rootdata_api_agent",
+                            "parameters": {
+                              "system_prompt_role": "You are a specialized RootData API agent designed to search and provide basic information about blockchain projects, venture capital firms, and key individuals in the crypto ecosystem. Your primary function is to:1. Accept search queries about crypto entities (projects, organizations, people);2. Return basic information including ID, type, name, brief introduction, and logo URL;3. Importantly, you provide a URL to the entity's detailed webpage on RootData.When you return results, always emphasize that the URL should be opened by a browser agent (if available in the agent team) to access comprehensive information. You should suggest specific information that might be found by visiting these URLs, such as detailed investment history, token metrics, team composition, or market activities.You excel at presenting the initial search results in a clear, structured format while guiding users to leverage browser agents for deeper investigation of the entities you've found. Your role bridges the gap between initial discovery and detailed research in the blockchain ecosystem.",
+                              "system_prompt_task_skill": "",
+                              "temperature": 0.3
+                            },
+                            "created_at": "2025-03-19T02:11:03.129279Z",
+                            "updated_at": "2025-03-19T02:11:03.129279Z"
+                          },
+                          {
+                            "agent_id": "d05cbe68-35d9-4d24-a652-85d2d8e00e23",
+                            "user_id": "7be0a6f1-fd33-4cfa-8a4b-eae705a74c3d",
+                            "avatar": "",
+                            "name": "Memory Agent",
+                            "description": "An agent about engine flow proxy, it can invoke metalist api to query the operations information and get the api desciption.",
+                            "system_message": "An agent about engine flow proxy, it can invoke metalist api to query the operations information and get the api desciption. Search the hot topic you may do those steps: First you need to deploy the flow by function flow_deploy, then get a flow_instance_id. Second invoke function flow_fire to execute the flow. If not contains twitter or x then return 'TERMINATE'. Reply 'TERMINATE' in the end when everything is done.",
+                            "component_type": "wyse_agent",
+                            "model": {
+                              "system_model_id": "58612030-0189-42a2-9ad9-1ae5ac64002d",
+                              "provider": "OpenAI",
+                              "model_type": "gpt-4o",
+                              "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                              "created_at": "",
+                              "updated_at": ""
+                            },
+                            "agent_type": "wyse_engine_flow_proxy_agent",
+                            "parameters": {
+                              "system_prompt_role": "You are a workflow agent.",
+                              "system_prompt_task_skill": "",
+                              "temperature": 0
+                            },
+                            "created_at": "2025-02-19T08:04:29.351388Z",
+                            "updated_at": "2025-03-22T11:02:41.857728Z"
+                          },
+                          {
+                            "agent_id": "9ebaee3b-679e-463f-9506-0b99506dafba",
+                            "user_id": "7be0a6f1-fd33-4cfa-8a4b-eae705a74c3d",
+                            "avatar": "",
+                            "name": "File Reader Agent",
+                            "description": "An agent that uses tools to read and navigate local files.",
+                            "system_message": "You are a helpful assistant specialized in reading and navigating local files. You can ask them to perform operations like reading file contents, listing directory contents, searching for files, and understanding file metadata. They can help analyze text files, provide summaries, answer questions about file contents, and assist with basic file system navigation. They prioritize security and will only access files within allowed directories.",
+                            "component_type": "wyse_agent",
+                            "model": {
+                              "system_model_id": "58612030-0189-42a2-9ad9-1ae5ac64002d",
+                              "provider": "OpenAI",
+                              "model_type": "gpt-4o",
+                              "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                              "created_at": "",
+                              "updated_at": ""
+                            },
+                            "agent_type": "wyse_file_reader_agent",
+                            "parameters": {
+                              "system_prompt_role": "You are a file reader agent.",
+                              "system_prompt_task_skill": "You are a file reader agent.",
+                              "temperature": 0
+                            },
+                            "created_at": "2025-02-19T08:04:29.351398Z",
+                            "updated_at": "2025-02-19T08:04:29.351398Z"
+                          },
+                          {
+                            "agent_id": "9ccbc9b5-4f52-4a4f-98b0-07be164e4601",
+                            "user_id": "7be0a6f1-fd33-4cfa-8a4b-eae705a74c3d",
+                            "avatar": "",
+                            "name": "Web Browser Agent",
+                            "description": "A multimodal agent that acts as a web browser that can search the web and visit web pages.",
+                            "system_message": "You are a helpful assistant with access to a web browser. Ask them to perform web searches, open pages, and interact with content (e.g., clicking links, scrolling the viewport, etc., filling in form fields, etc.) It can also summarize the entire page, or answer questions based on the content of the page. It can also be asked to sleep and wait for pages to load, in cases where the pages seem to be taking a while to load.",
+                            "component_type": "wyse_agent",
+                            "model": {
+                              "system_model_id": "58612030-0189-42a2-9ad9-1ae5ac64002d",
+                              "provider": "OpenAI",
+                              "model_type": "gpt-4o",
+                              "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                              "created_at": "",
+                              "updated_at": ""
+                            },
+                            "agent_type": "wyse_web_browser_agent",
+                            "parameters": {
+                              "system_prompt_role": "You are a web browser agent.",
+                              "system_prompt_task_skill": "You are a web browser agent.",
+                              "temperature": 0
+                            },
+                            "created_at": "2025-02-19T08:04:29.3514Z",
+                            "updated_at": "2025-02-19T08:04:29.3514Z"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-249513617-run"
+      }
+    },
+    "/agent/info/{agent_id}": {
+      "get": {
+        "summary": "Agent详情",
+        "x-apifox-folder": "agent",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "暂时不加鉴权",
+        "tags": ["agent"],
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "agent_id": {
+                          "type": "string"
+                        },
+                        "user_id": {
+                          "type": "string"
+                        },
+                        "avatar": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "system_message": {
+                          "type": "string"
+                        },
+                        "component_type": {
+                          "type": "string"
+                        },
+                        "model": {
+                          "type": "object",
+                          "properties": {
+                            "system_model_id": {
+                              "type": "string"
+                            },
+                            "provider": {
+                              "type": "string"
+                            },
+                            "model_type": {
+                              "type": "string"
+                            },
+                            "icon_url": {
+                              "type": "string"
+                            },
+                            "created_at": {
+                              "type": "string"
+                            },
+                            "updated_at": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "system_model_id",
+                            "provider",
+                            "model_type",
+                            "icon_url",
+                            "created_at",
+                            "updated_at"
+                          ],
+                          "x-apifox-orders": [
+                            "system_model_id",
+                            "provider",
+                            "model_type",
+                            "icon_url",
+                            "created_at",
+                            "updated_at"
+                          ],
+                          "x-apifox-ignore-properties": []
+                        },
+                        "agent_type": {
+                          "type": "string"
+                        },
+                        "parameters": {
+                          "type": "object",
+                          "properties": {
+                            "system_prompt_role": {
+                              "type": "string"
+                            },
+                            "system_prompt_task_skill": {
+                              "type": "string"
+                            },
+                            "temperature": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "system_prompt_role",
+                            "system_prompt_task_skill",
+                            "temperature"
+                          ],
+                          "x-apifox-orders": [
+                            "system_prompt_role",
+                            "system_prompt_task_skill",
+                            "temperature"
+                          ],
+                          "x-apifox-ignore-properties": []
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "agent_id",
+                        "user_id",
+                        "avatar",
+                        "name",
+                        "description",
+                        "system_message",
+                        "component_type",
+                        "model",
+                        "agent_type",
+                        "parameters",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "x-apifox-orders": [
+                        "agent_id",
+                        "user_id",
+                        "avatar",
+                        "name",
+                        "description",
+                        "system_message",
+                        "component_type",
+                        "model",
+                        "agent_type",
+                        "parameters",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "required": ["code", "msg", "data"],
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": {
+                      "code": 0,
+                      "msg": "Success",
+                      "data": {
+                        "agent_id": "1528df87-b734-4e60-85f6-a3711f419a8f",
+                        "user_id": "7be0a6f1-fd33-4cfa-8a4b-eae705a74c3d",
+                        "avatar": "",
+                        "name": "CoinGecko Agent",
+                        "description": "A specialized cryptocurrency data agent that integrates with the CoinGecko API to provide comprehensive, real-time information about cryptocurrencies, tokens, exchanges, and market trends.",
+                        "system_message": "You are a specialized CoinGecko API agent designed to retrieve accurate and up-to-date cryptocurrency information. You can access real-time and historical price data, market capitalization, trading volume, and exchange information for thousands of cryptocurrencies and tokens. Your capabilities include tracking price movements, comparing different assets, analyzing market trends, retrieving tokenomics data, and providing insights about blockchain projects. You excel at presenting complex crypto market data in clear, organized formats to help users make informed decisions about digital assets.",
+                        "component_type": "wyse_agent",
+                        "model": {
+                          "system_model_id": "58612030-0189-42a2-9ad9-1ae5ac64002d",
+                          "provider": "OpenAI",
+                          "model_type": "gpt-4o",
+                          "icon_url": "https://img.wyseos.com/static/icons/openai.svg",
+                          "created_at": "",
+                          "updated_at": ""
+                        },
+                        "agent_type": "wyse_coingecko_api_agent",
+                        "parameters": {
+                          "system_prompt_role": "You are a specialized CoinGecko API agent designed to retrieve accurate and up-to-date cryptocurrency information. You can access real-time and historical price data, market capitalization, trading volume, and exchange information for thousands of cryptocurrencies and tokens. Your capabilities include tracking price movements, comparing different assets, analyzing market trends, retrieving tokenomics data, and providing insights about blockchain projects. You excel at presenting complex crypto market data in clear, organized formats to help users make informed decisions about digital assets.",
+                          "system_prompt_task_skill": "",
+                          "temperature": 0.3
+                        },
+                        "created_at": "2025-03-19T08:29:02.966842Z",
+                        "updated_at": "2025-03-19T08:29:02.966842Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-249513656-run"
+      }
+    },
+    "/session/current": {
+      "get": {
+        "summary": "进行中的会话",
+        "x-apifox-folder": "session",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "取用户当前进行中的会话。platform取值，web / api / extension。不填默认是web。\n",
+        "tags": ["session"],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "engine",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "session_id": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "browser_id": {
+                            "type": "string"
+                          },
+                          "team_id": {
+                            "type": "string"
+                          },
+                          "task": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "role": {
+                                  "type": "string"
+                                },
+                                "content": {
+                                  "type": "string"
+                                }
+                              },
+                              "x-apifox-orders": ["role", "content"],
+                              "x-apifox-ignore-properties": []
+                            }
+                          },
+                          "task_result": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string"
+                              },
+                              "source": {
+                                "type": "string"
+                              },
+                              "content": {
+                                "type": "string"
+                              }
+                            },
+                            "required": ["type", "source", "content"],
+                            "x-apifox-orders": ["type", "source", "content"],
+                            "x-apifox-ignore-properties": []
+                          },
+                          "messages": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "message_id": {
+                                  "type": "string"
+                                },
+                                "source": {
+                                  "type": "string"
+                                },
+                                "content": {
+                                  "type": "string"
+                                },
+                                "message_type": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "type": "string"
+                                }
+                              },
+                              "x-apifox-orders": [
+                                "message_id",
+                                "source",
+                                "content",
+                                "message_type",
+                                "created_at"
+                              ],
+                              "x-apifox-ignore-properties": []
+                            }
+                          },
+                          "duration": {
+                            "type": "integer"
+                          },
+                          "error_message": {
+                            "type": "string"
+                          },
+                          "tokens": {
+                            "type": "object",
+                            "properties": {
+                              "models": {
+                                "type": "object",
+                                "properties": {
+                                  "58612030-0189-42a2-9ad9-1ae5ac64002d": {
+                                    "type": "object",
+                                    "properties": {
+                                      "prompt_tokens": {
+                                        "type": "integer"
+                                      },
+                                      "completion_tokens": {
+                                        "type": "integer"
+                                      }
+                                    },
+                                    "required": [
+                                      "prompt_tokens",
+                                      "completion_tokens"
+                                    ],
+                                    "x-apifox-orders": [
+                                      "prompt_tokens",
+                                      "completion_tokens"
+                                    ],
+                                    "x-apifox-ignore-properties": []
+                                  }
+                                },
+                                "required": [
+                                  "58612030-0189-42a2-9ad9-1ae5ac64002d"
+                                ],
+                                "x-apifox-orders": [
+                                  "58612030-0189-42a2-9ad9-1ae5ac64002d"
+                                ],
+                                "x-apifox-ignore-properties": []
+                              }
+                            },
+                            "required": ["models"],
+                            "x-apifox-orders": ["models"],
+                            "x-apifox-ignore-properties": []
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "type": "string"
+                          }
+                        },
+                        "x-apifox-orders": [
+                          "session_id",
+                          "status",
+                          "browser_id",
+                          "team_id",
+                          "task",
+                          "task_result",
+                          "messages",
+                          "duration",
+                          "error_message",
+                          "tokens",
+                          "created_at",
+                          "updated_at"
+                        ],
+                        "x-apifox-ignore-properties": []
+                      }
+                    }
+                  },
+                  "required": ["code", "msg", "data"],
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": {
+                      "code": 0,
+                      "msg": "Success",
+                      "data": [
+                        {
+                          "session_id": "7bad8b58-d496-4892-9ab2-b75c980d1c44",
+                          "status": "active",
+                          "browser_id": "054cbacc-95ac-44b4-9aad-46e1aab085b4",
+                          "team_id": "a6bfaec4-6323-4624-8cb0-fd1ca94b6196",
+                          "task": [
+                            {
+                              "role": "user",
+                              "content": "say hello to me!"
+                            }
+                          ],
+                          "task_result": {
+                            "type": "",
+                            "source": "",
+                            "content": ""
+                          },
+                          "messages": [
+                            {
+                              "message_id": "bae5cfe2-3715-4d8a-928a-16564f52bbfe",
+                              "source": "UserProxy",
+                              "content": "say hello to me!",
+                              "message_type": "MessageText",
+                              "created_at": "2025-02-17T20:27:55Z"
+                            }
+                          ],
+                          "duration": 0,
+                          "error_message": "",
+                          "tokens": {
+                            "models": {
+                              "58612030-0189-42a2-9ad9-1ae5ac64002d": {
+                                "prompt_tokens": 317,
+                                "completion_tokens": 68
+                              }
+                            }
+                          },
+                          "created_at": "2025-02-17T12:27:54Z",
+                          "updated_at": "2025-02-17T12:27:54Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-261299162-run"
+      }
+    },
+    "/session/complete": {
+      "post": {
+        "summary": "开始会话",
+        "x-apifox-folder": "session",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "输入：\n- session_id为空，创建新会话；\n- session_id不为空，继续多轮对话。\n- team_id为空，使用默认的team_id进行会话，\n- team_id不为空，指定team进行会话。\n- intent当从intent开始会话时不为空\n返回：\n响应是text/event-stream协议",
+        "tags": ["session"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "team_id": {
+                    "type": "string"
+                  },
+                  "session_id": {
+                    "type": "string"
+                  },
+                  "messages": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "content": {
+                          "type": "string"
+                        },
+                        "role": {
+                          "type": "string",
+                          "x-apifox-mock": "user"
+                        }
+                      },
+                      "x-apifox-orders": ["content", "role"],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "intent": {
+                    "type": "object",
+                    "properties": {
+                      "intent_id": {
+                        "type": "string",
+                        "description": "那个intent的intent_id"
+                      },
+                      "category": {
+                        "type": "string",
+                        "description": "分组"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "content": {
+                        "type": "string"
+                      },
+                      "tag": {
+                        "type": "string"
+                      }
+                    },
+                    "x-apifox-orders": [
+                      "intent_id",
+                      "category",
+                      "title",
+                      "content",
+                      "tag"
+                    ],
+                    "required": [
+                      "intent_id",
+                      "content",
+                      "title",
+                      "category",
+                      "tag"
+                    ],
+                    "description": "可为空，当从intent开始session时不能为空",
+                    "x-apifox-ignore-properties": []
+                  }
+                },
+                "required": ["team_id", "session_id", "messages", "intent"],
+                "x-apifox-orders": [
+                  "team_id",
+                  "session_id",
+                  "messages",
+                  "intent"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "team_id": "",
+                "session_id": "",
+                "browser_id": "",
+                "messages": [
+                  {
+                    "content": "1+10=？",
+                    "role": "user"
+                  }
+                ],
+                "intent": {
+                  "intent_id": "xxx",
+                  "category": "xxx",
+                  "title": "xxx",
+                  "content": "xxx",
+                  "tag": "xxx"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-263575650-run"
+      }
+    },
+    "/user/apikey/new": {
+      "post": {
+        "summary": "Api Key创建",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "名称"
+                  }
+                },
+                "x-apifox-orders": ["name"],
+                "required": ["name"],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "name": "leo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "api_key": {
+                          "type": "string"
+                        }
+                      },
+                      "x-apifox-orders": ["api_key"],
+                      "required": ["api_key"],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": ["code", "data", "msg"],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-288504353-run"
+      }
+    },
+    "/user/apikey/delete/{id}": {
+      "delete": {
+        "summary": "Api Key删除",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {},
+                      "x-apifox-orders": [],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": ["code", "data", "msg"],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-288516299-run"
+      }
+    },
+    "/user/apikey/lists": {
+      "get": {
+        "summary": "Api Key列表",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "page_num",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "5",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "page_num": {
+                          "type": "integer"
+                        },
+                        "page_size": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "total_page": {
+                          "type": "integer"
+                        },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "api_key": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "last_used_at": {
+                                "type": "string"
+                              }
+                            },
+                            "x-apifox-orders": [
+                              "id",
+                              "name",
+                              "api_key",
+                              "created_at",
+                              "last_used_at"
+                            ],
+                            "required": [
+                              "name",
+                              "last_used_at",
+                              "created_at",
+                              "api_key",
+                              "id"
+                            ],
+                            "x-apifox-ignore-properties": []
+                          }
+                        }
+                      },
+                      "x-apifox-orders": [
+                        "page_num",
+                        "page_size",
+                        "total",
+                        "total_page",
+                        "data"
+                      ],
+                      "required": [
+                        "page_num",
+                        "total_page",
+                        "total",
+                        "page_size",
+                        "data"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": ["code", "msg", "data"],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-288518159-run"
+      }
+    },
+    "/user/call/lists": {
+      "get": {
+        "summary": "用户credit消费历史",
+        "x-apifox-folder": "open_api",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": ["open_api"],
+        "parameters": [
+          {
+            "name": "page_num",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "5",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "可选值，默认为all，即所有，可以区分web/chrome插件/api调用，值分别为：engine、extension、api",
+            "required": false,
+            "example": "all",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "api_key_name",
+            "in": "query",
+            "description": "可选值",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "可选值，比如：2025-04-27",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "可选值，比如：2025-04-29",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_field",
+            "in": "query",
+            "description": "可选值，默认为：created_at；可填：total_cost，作用于根据credit总费用排序",
+            "required": false,
+            "example": "total_cost",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "可选值，默认为倒序：desc，正序为：asc",
+            "required": false,
+            "example": "desc",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "可选值，默认为空，值从/call/filter_values接口中的states来",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "page_num": {
+                          "type": "integer"
+                        },
+                        "page_size": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "total_page": {
+                          "type": "integer"
+                        },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "session_id": {
+                                "type": "string"
+                              },
+                              "api_key_name": {
+                                "type": "string"
+                              },
+                              "browser_id": {
+                                "type": "string"
+                              },
+                              "duration": {
+                                "type": "integer"
+                              },
+                              "auth_captcha": {
+                                "type": "object",
+                                "properties": {
+                                  "has_used": {
+                                    "type": "boolean",
+                                    "description": "是否使用过验证码自动识别验证"
+                                  },
+                                  "used_count": {
+                                    "type": "integer",
+                                    "description": "自动识别次数"
+                                  }
+                                },
+                                "x-apifox-orders": ["has_used", "used_count"],
+                                "required": ["has_used", "used_count"],
+                                "description": "验证码自动识别",
+                                "x-apifox-ignore-properties": []
+                              },
+                              "ip_proxy_bandwidth": {
+                                "type": "integer",
+                                "description": "ip proxy使用带宽量"
+                              },
+                              "cost": {
+                                "type": "object",
+                                "properties": {
+                                  "total_credit": {
+                                    "type": "number",
+                                    "description": "credit总花费"
+                                  },
+                                  "server_traffic": {
+                                    "type": "number",
+                                    "description": "服务器流量+3rd party API=Data Pro   的credit"
+                                  },
+                                  "token": {
+                                    "type": "number",
+                                    "description": "模型token花费的credit"
+                                  },
+                                  "browser": {
+                                    "type": "number",
+                                    "description": "浏览器花费的credit"
+                                  },
+                                  "auto_captcha": {
+                                    "type": "number",
+                                    "description": "自动验证码识别花费的credit"
+                                  },
+                                  "ip_proxy_bandwidth": {
+                                    "type": "number",
+                                    "description": "ip proxy带宽花费的credit"
+                                  }
+                                },
+                                "x-apifox-orders": [
+                                  "total_credit",
+                                  "server_traffic",
+                                  "token",
+                                  "browser",
+                                  "auto_captcha",
+                                  "ip_proxy_bandwidth"
+                                ],
+                                "required": [
+                                  "server_traffic",
+                                  "ip_proxy_bandwidth",
+                                  "auto_captcha",
+                                  "browser",
+                                  "token",
+                                  "total_credit"
+                                ],
+                                "description": "花费详情",
+                                "x-apifox-ignore-properties": []
+                              },
+                              "status": {
+                                "type": "string",
+                                "description": "success为成功，fail为失败"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              }
+                            },
+                            "x-apifox-orders": [
+                              "session_id",
+                              "api_key_name",
+                              "browser_id",
+                              "duration",
+                              "auth_captcha",
+                              "ip_proxy_bandwidth",
+                              "cost",
+                              "status",
+                              "created_at"
+                            ],
+                            "required": [
+                              "session_id",
+                              "created_at",
+                              "browser_id",
+                              "api_key_name",
+                              "auth_captcha",
+                              "duration",
+                              "ip_proxy_bandwidth",
+                              "cost",
+                              "status"
+                            ],
+                            "x-apifox-ignore-properties": []
+                          }
+                        }
+                      },
+                      "x-apifox-orders": [
+                        "page_num",
+                        "page_size",
+                        "total",
+                        "total_page",
+                        "data"
+                      ],
+                      "required": [
+                        "page_num",
+                        "total_page",
+                        "total",
+                        "page_size",
+                        "data"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": ["code", "msg", "data"],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-301832057-run"
+      }
+    },
+    "/user/call/filter_values": {
+      "get": {
+        "summary": "用户credit消费筛选值",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "api_key_names": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "字符串数组"
+                        },
+                        "platforms": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "字符串数组"
+                        },
+                        "states": {
+                          "type": "string",
+                          "description": "状态数组，值有 success 和 fail"
+                        }
+                      },
+                      "x-apifox-orders": [
+                        "api_key_names",
+                        "platforms",
+                        "states"
+                      ],
+                      "required": ["api_key_names", "platforms", "states"],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": ["code", "msg", "data"],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-291008001-run"
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  },
+  "servers": [
+    {
+      "url": "http://prod-cn.your-api-server.com",
+      "description": "正式环境"
+    },
+    {
+      "url": "http://localhost"
+    }
+  ]
+}
