@@ -2,8 +2,7 @@
   "pages": [
     "---API Documentation---",
     "index",
-    "---References---",
-    "...(api)",
-    "..."
+    "---API References---",
+    "...(api)"
   ]
 }

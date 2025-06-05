@@ -6,12 +6,12 @@ export const baseOptions: BaseLayoutProps = {
     title: <Logo />,
   },
   githubUrl: "https://github.com/WyseOS",
-  links: [
+  /* links: [
     {
       text: "Docs",
       url: "/docs",
       active: "nested-url",
       on: "menu",
     },
-  ],
+  ], */
 };

@@ -22,6 +22,9 @@
       "name": "session"
     },
     {
+      "name": "session/message"
+    },
+    {
       "name": "open_api"
     }
   ],
@@ -1987,6 +1990,83 @@
         "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-249513656-run"
       }
     },
+    "/session/message/lists": {
+      "get": {
+        "summary": "聊天消息列表",
+        "x-apifox-folder": "session/message",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "sort_order取值为ASC或者DESC，为空时默认为ASC",
+        "tags": ["session/message"],
+        "parameters": [
+          {
+            "name": "page_num",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "10",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "session_id",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "ASC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/5574599/apis/api-254910386-run"
+      }
+    },
     "/session/current": {
       "get": {
         "summary": "进行中的会话",
@@ -3021,9 +3101,6 @@
     {
       "url": "http://prod-cn.your-api-server.com",
       "description": "正式环境"
-    },
-    {
-      "url": "http://localhost"
     }
   ]
 }
