@@ -16,4 +16,4 @@ RUN ulimit -n 65535
 
 EXPOSE 3000
 
-CMD ["node", "run", "start"]
+CMD ["node", "start"]
