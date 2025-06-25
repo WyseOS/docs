@@ -244,7 +244,7 @@ export interface RequestHeaders {
 }
 ```
 
-## Agents
+## Agent
 
 ### Get agents list
 
@@ -517,90 +517,6 @@ export interface DataParameters {
 ```
 
 ## API Key
-
-### Api Key create
-
-#### POST `/user/apikey/new`
-
-```
-export interface RequestHeaders {
-    Authorization?: string;
-}
-
-export interface RequestBody {
-    name: string;
-}
-
-export interface Response {
-    code: number;
-    data: Data;
-    msg: string;
-}
-
-export interface Data {
-    api_key: string;
-}
-
-```
-
-### Api Key remove
-
-#### DELETE `/user/apikey/delete/{id}`
-
-```
-export interface Request {
-    id: number;
-}
-
-export interface RequestHeaders {
-    Authorization?: string;
-}
-
-export interface Response {
-    code: number;
-    data: { [key: string]: any };
-    msg: string;
-}
-
-```
-
-### Api Keys list
-
-#### GET `/user/apikey/lists`
-
-```
-export interface Request {
-    page_num?: number;
-    page_size?: number;
-}
-
-export interface RequestHeaders {
-    Authorization?: string;
-}
-
-export interface Response {
-    code: number;
-    data: Data;
-    msg: string;
-}
-
-export interface Data {
-    data: Datum[];
-    page_num: number;
-    page_size: number;
-    total: number;
-    total_page: number;
-}
-
-export interface Datum {
-    api_key: string;
-    created_at: string;
-    id: number;
-    last_used_at: string;
-    name: string;
-}
-
-```
 
 ### user credits calls
 
