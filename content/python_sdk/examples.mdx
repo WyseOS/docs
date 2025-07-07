@@ -1,7 +1,376 @@
 ---
-title: Python SDK Examples
+title: Examples
 ---
 
-# Python SDK Examples
+# Python SDK Code Examples
 
-This section provides practical code snippets for various scenarios using the Python SDK. 
+This section provides practical, ready-to-run code examples demonstrating how to leverage the Wyse Mate Python SDK's core functionalities. These examples illustrate common interactions with different API services, session management, and real-time WebSocket communication.
+
+## Prerequisites
+
+Before running any of these examples, ensure you have:
+
+1.  **Installed the SDK**: Follow the instructions in the [Getting Started](/sdk/python/getting-started) guide.
+2.  **Configured Your API Key**: Refer to the [Authentication](/sdk/python/authentication) guide for secure API key setup.
+
+## Client Initialization
+
+All subsequent examples assume you have initialized the `Client` object as shown below. It is highly recommended to configure your API key via a `mate.yaml` file for security and ease of management.
+
+```python
+from wyse_mate import Client, ClientOptions
+from wyse_mate.config import load_default_config
+
+# Initialize the Wyse Mate Client
+try:
+    # Attempt to load configuration from the default mate.yaml location
+    config = load_default_config()
+    if config:
+        client = Client(config)
+        print("Client initialized successfully from mate.yaml.")
+    else:
+        # Fallback to manual configuration if mate.yaml is not found.
+        # IMPORTANT: Replace "YOUR_API_KEY" with your actual API key for testing.
+        # For production, always prefer mate.yaml or environment variables.
+        client = Client(ClientOptions(api_key="YOUR_API_KEY"))
+        print("Client initialized with manual configuration (mate.yaml not found).")
+except Exception as e:
+    print(f"Error initializing client: {e}\nPlease ensure your API key is configured correctly.")
+    # In a real application, you might want to log this error and exit gracefully.
+    exit(1) # Exit if client cannot be initialized
+
+print("Wyse Mate Client is ready for use.")
+
+```
+
+## 1. User Service: Listing API Keys
+
+This example demonstrates how to retrieve a paginated list of API keys associated with your Wyse Mate user account.
+
+```python
+from wyse_mate.models import ListOptions
+
+def run_user_api_key_operations(client: Client):
+    print("\n--- User Service: API Key Operations ---")
+    try:
+        print("  Fetching API keys (Page 1, Size 10)...")
+        api_keys_page = client.user.list_api_keys(ListOptions(page_num=1, page_size=10))
+        print(f"  Total API Keys Found: {api_keys_page.total}")
+
+        if api_keys_page.data:
+            print("  Displaying first 3 API keys:")
+            for i, key in enumerate(api_keys_page.data[:3]):
+                print(f"    {i + 1}. Name: {key.name}, ID: {key.id}, Last Used: {key.last_used_at.strftime('%Y-%m-%d %H:%M:%S') if key.last_used_at else 'Never'}")
+        else:
+            print("  No API keys found for your account.")
+
+    except Exception as e:
+        print(f"  Error during user API key operations: {e}")
+
+# To run this example, uncomment the line below:
+# run_user_api_key_operations(client)
+```
+
+## 2. Team Service: Listing and Retrieving Team Details
+
+This example shows how to list the teams accessible to your account and then retrieve detailed information for a specific team by its ID.
+
+```python
+from wyse_mate.models import ListOptions
+
+def run_team_operations(client: Client):
+    print("\n--- Team Service: Team Operations ---")
+    try:
+        print("  Fetching all teams (Page 1, Size 10)...")
+        teams_page = client.team.get_list(team_type="all", options=ListOptions(page_num=1, page_size=10))
+        print(f"  Total Teams Found: {teams_page.total}")
+
+        if teams_page.data:
+            print("  Displaying first 3 teams:")
+            for i, team in enumerate(teams_page.data[:3]):
+                print(f"    {i + 1}. Name: {team.name}, ID: {team.team_id}, Type: {team.team_type}")
+
+            # Retrieve details for the first team found
+            first_team = teams_page.data[0]
+            print(f"\n  Retrieving detailed information for team: '{first_team.name}' (ID: {first_team.team_id})...")
+            team_details = client.team.get_info(first_team.team_id)
+            print(f"    Team Type: {team_details.team_type}")
+            print(f"    Description: {team_details.description or 'No description provided.'}")
+            print(f"    Associated Agents: {len(team_details.agents)}")
+            print(f"    Model Provider: {team_details.model.provider}, Type: {team_details.model.model_type}")
+        else:
+            print("  No teams found for your account.")
+
+    except Exception as e:
+        print(f"  Error during team operations: {e}")
+
+# To run this example, uncomment the line below:
+# run_team_operations(client)
+```
+
+## 3. Agent Service: Listing and Retrieving Agent Details
+
+This example demonstrates how to list available agents and fetch detailed information about a specific agent by its ID.
+
+```python
+from wyse_mate.models import ListOptions
+
+def run_agent_operations(client: Client):
+    print("\n--- Agent Service: Agent Operations ---")
+    try:
+        print("  Fetching all agents (Page 1, Size 10)...")
+        agents_page = client.agent.get_list(
+            agent_type="all", options=ListOptions(page_num=1, page_size=10)
+        )
+        print(f"  Total Agents Found: {agents_page.total}")
+
+        if agents_page.data:
+            print("  Displaying first 3 agents:")
+            for i, agent in enumerate(agents_page.data[:3]):
+                print(f"    {i + 1}. Name: {agent.name}, ID: {agent.agent_id}, Type: {agent.agent_type}")
+
+            # Retrieve details for the first agent found
+            first_agent = agents_page.data[0]
+            print(f"\n  Retrieving detailed information for agent: '{first_agent.name}' (ID: {first_agent.agent_id})...")
+            agent_details = client.agent.get_info(first_agent.agent_id)
+            print(f"    Agent Type: {agent_details.agent_type}")
+            print(f"    Description: {agent_details.description or 'No description provided.'}")
+            print(f"    System Message: {agent_details.system_message[:70]}...")
+            print(f"    Associated Model: {agent_details.model.provider}/{agent_details.model.model_type}")
+        else:
+            print("  No agents found for your account.")
+
+    except Exception as e:
+        print(f"  Error during agent operations: {e}")
+
+# To run this example, uncomment the line below:
+# run_agent_operations(client)
+```
+
+## 4. Session Service: Creating, Retrieving, and Managing Sessions
+
+This comprehensive example demonstrates how to create a new session, retrieve its details, fetch messages within it, and update its name.
+
+```python
+from wyse_mate.models import CreateSessionRequest, ListOptions, MessageFilter, UpdateSessionNameRequest, SessionInfo
+
+def run_session_operations(client: Client, team_id: str):
+    print("\n--- Session Service: Session Operations ---")
+    current_session_id = None
+    try:
+        # 1. Create a New Session
+        print("  Attempting to create a new session...")
+        # Replace 'your-team-id' with an actual team ID available in your account
+        # You can get team IDs using run_team_operations(client) above.
+        session_creation_request = CreateSessionRequest(
+            team_id=team_id,
+            task="Describe the current weather in London using a browser and provide a summary.",
+            title="Weather Inquiry Session"
+        )
+        create_session_response = client.session.create(session_creation_request)
+        current_session_id = create_session_response.session_id
+        print(f"  New Session Created with ID: {current_session_id}")
+
+        # 2. Get Session Details
+        print(f"\n  Retrieving details for session: {current_session_id}...")
+        session_details = client.session.get_info(current_session_id)
+        print(f"    Session Name: {session_details.name}")
+        print(f"    Session Status: {session_details.status}")
+        print(f"    Session Duration: {session_details.duration} seconds")
+
+        # 3. Retrieve Session Messages
+        print(f"\n  Fetching messages for session: {current_session_id} (Page 1, Size 20)...")
+        messages_response = client.session.get_messages(
+            session_id=current_session_id,
+            page_num=1,
+            page_size=20,
+            filter=MessageFilter() # No specific filter for now
+        )
+        print(f"  Total Messages in Session: {messages_response.total_count}")
+        if messages_response.messages:
+            print("  Displaying first 5 messages:")
+            for i, message in enumerate(messages_response.messages[:5]):
+                content_preview = message.content[:70].replace('\n', ' ') # Show first 70 chars, no newlines
+                print(f"    {i + 1}. [From: {message.source}, Type: {message.type}] {content_preview}...")
+        else:
+            print("  No messages found in this session yet.")
+
+        # 4. Update Session Name
+        new_title = "Updated Weather Analysis Session"
+        print(f"\n  Updating session '{current_session_id}' name to '{new_title}'...")
+        update_request = UpdateSessionNameRequest(session_id=current_session_id, title=new_title)
+        client.session.update_session_name(update_request)
+        print("  Session name updated successfully.")
+
+        # Verify updated name
+        updated_session_details = client.session.get_info(current_session_id)
+        print(f"  Verified New Session Name: {updated_session_details.name}")
+
+    except Exception as e:
+        print(f"  Error during session operations: {e}")
+        if current_session_id:
+            print(f"  Please check session ID: {current_session_id} and ensure it is valid and active.")
+
+# To run this example, replace "YOUR_TEAM_ID" with an actual team ID and uncomment the line below:
+# run_session_operations(client, team_id="YOUR_TEAM_ID")
+```
+
+## 5. Browser Service: Managing Browser Instances and Pages
+
+This example demonstrates how to list available browser instances, retrieve details for a specific browser, and list its open pages. Note that browser instances are typically managed automatically by sessions, but these methods allow for direct inspection.
+
+```python
+from wyse_mate.models import ListOptions
+
+def run_browser_operations(client: Client, session_id: str):
+    print("\n--- Browser Service: Browser Operations ---")
+    try:
+        if not session_id:
+            print("  Error: A session ID is required for browser operations. Please ensure a session is active.")
+            return
+
+        # 1. List Browsers for a Session
+        print(f"  Fetching browser instances for session: {session_id}...")
+        browsers_response = client.browser.list_browsers(session_id=session_id)
+        print(f"  Total Browsers for Session '{session_id}': {browsers_response.total}")
+
+        if browsers_response.browsers:
+            first_browser = browsers_response.browsers[0]
+            print(f"  Using first found browser ID: {first_browser.browser_id}")
+
+            # 2. Get Browser Details
+            print(f"\n  Retrieving detailed information for browser: {first_browser.browser_id}...")
+            browser_details = client.browser.get_info(first_browser.browser_id)
+            print(f"    Status: {browser_details.status}")
+            print(f"    Resolution: {browser_details.width}x{browser_details.height}")
+            print(f"    Associated Session: {browser_details.session_id}")
+            print(f"    WebSocket Endpoint: {browser_details.ws_endpoint}")
+
+            # 3. List Browser Pages
+            print(f"\n  Fetching open pages for browser: {first_browser.browser_id}...")
+            pages_response = client.browser.list_browser_pages(browser_id=first_browser.browser_id, options=ListOptions(page_size=5))
+            print(f"  Total Pages in Browser '{first_browser.browser_id}': {pages_response.total}")
+
+            if pages_response.pages:
+                print("  Displaying first 3 pages:")
+                for i, page in enumerate(pages_response.pages[:3]):
+                    print(f"    {i + 1}. Index: {page.index}, URL: {page.url}, Status: {page.status}")
+            else:
+                print("  No open pages found for this browser.")
+
+            # 4. Release the Browser (optional, for explicit resource management)
+            # Uncomment the following lines if you want to explicitly release the browser.
+            # print(f"\n  Attempting to release browser: {first_browser.browser_id}...")
+            # client.browser.release_browser(first_browser.browser_id)
+            # print("  Browser released successfully.")
+
+        else:
+            print("  No browser instances found for the specified session.")
+
+    except Exception as e:
+        print(f"  Error during browser operations: {e}")
+        print("  Ensure a session is active and has associated browser instances.")
+
+# To run this example, replace "YOUR_SESSION_ID" with an actual session ID and uncomment the line below:
+# You can obtain a session ID by running the Session Operations example first.
+# run_browser_operations(client, session_id="YOUR_SESSION_ID")
+```
+
+## 6. WebSocket Operations: Real-time Session Monitoring
+
+This example demonstrates how to establish a WebSocket connection to a session, listen for real-time messages, and send messages back. This is crucial for interactive and dynamic agent interactions.
+
+```python
+import asyncio
+import time
+import uuid
+from wyse_mate.websocket import WebSocketClient
+from wyse_mate.models import MessageResponse, CreateSessionRequest
+from wyse_mate import Client, ClientOptions
+from wyse_mate.config import load_default_config
+
+async def run_websocket_operations(client: Client, team_id: str):
+    print("\n--- WebSocket Service: Real-time Session Monitoring ---")
+    session_id = None
+    websocket_client = None
+    try:
+        # 1. Create a Session (if not already created)
+        print("  Creating a session for WebSocket demonstration...")
+        create_session_req = CreateSessionRequest(
+            team_id=team_id,
+            task="Summarize the content of the Wyse Mate documentation page.",
+            title="WebSocket Demo Session"
+        )
+        create_session_response = client.session.create(create_session_req)
+        session_id = create_session_response.session_id
+        print(f"  Session created for WebSocket: {session_id}")
+
+        # Retrieve session info to get the ws_endpoint
+        session_info = client.session.get_info(session_id)
+        ws_endpoint = session_info.ws_endpoint
+        if not ws_endpoint:
+            print("  Error: WebSocket endpoint not found for the session. Exiting.")
+            return
+
+        print(f"  Connecting to WebSocket endpoint: {ws_endpoint}")
+        websocket_client = WebSocketClient(ws_endpoint=ws_endpoint, api_key=client.options.api_key)
+
+        async def on_message(message: MessageResponse):
+            print(f"[WS Message] From: {message.source} ({message.source_type}), Type: {message.type}")
+            print(f"  Content: {message.content[:150]}...")
+            if message.type == "task_result":
+                print(f"  Task Result Received: {message.message}")
+
+        async def on_connect():
+            print("  WebSocket connection established.")
+
+        async def on_disconnect():
+            print("  WebSocket connection closed.")
+
+        await websocket_client.connect(on_message_callback=on_message, on_connect_callback=on_connect, on_disconnect_callback=on_disconnect)
+
+        # Give some time for initial messages/agent to start
+        print("  Waiting for initial messages... (10 seconds)")
+        await asyncio.sleep(10)
+
+        # Example: Send a message to the session via WebSocket
+        user_message = "Please elaborate on the key benefits of the Python SDK."
+        print(f"\n  Sending message to session via WebSocket: '{user_message}'")
+        await websocket_client.send_message(session_id=session_id, content=user_message, message_type="text")
+
+        print("  Waiting for responses... (20 seconds). Press Ctrl+C to stop.")
+        await asyncio.sleep(20) # Keep connection open to receive messages
+
+    except Exception as e:
+        print(f"  Error during WebSocket operations: {e}")
+    finally:
+        if websocket_client:
+            print("\n  Closing WebSocket connection...")
+            await websocket_client.disconnect()
+        if session_id:
+            print(f"  You can check the session status on the dashboard: https://mate.wyseos.com/sessions/{session_id}")
+
+# To run this example, replace "YOUR_TEAM_ID" with an actual team ID and uncomment the line below:
+# You need an actual team ID to create a session.
+# asyncio.run(run_websocket_operations(client, team_id="YOUR_TEAM_ID"))
+
+# Main execution block to run all examples (uncomment as needed)
+# if __name__ == "__main__":
+#     # You MUST set your TEAM_ID here for Session and WebSocket operations
+#     # Obtain it from the Wyse Mate dashboard or via run_team_operations(client)
+#     MY_TEAM_ID = "YOUR_TEAM_ID" # <---- REPLACE THIS WITH YOUR ACTUAL TEAM ID
+#
+#     print("\n===== Running Wyse Mate Python SDK Examples =====")
+#     run_user_api_key_operations(client)
+#     run_team_operations(client)
+#     run_agent_operations(client)
+#
+#     if MY_TEAM_ID and MY_TEAM_ID != "YOUR_TEAM_ID":
+#         session_info_created = run_session_operations(client, team_id=MY_TEAM_ID)
+#         if session_info_created:
+#             run_browser_operations(client, session_id=session_info_created.session_id)
+#             asyncio.run(run_websocket_operations(client, team_id=MY_TEAM_ID))
+#     else:
+#         print("\nSkipping Session and WebSocket examples: MY_TEAM_ID not set or is default. Please update MY_TEAM_ID to run these examples.")
+#
+#     print("\n===== All examples finished. =====") 

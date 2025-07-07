@@ -1,4 +1,39 @@
 ---
 title: The AgentOS for Web Automation
-description: WyseOS is an agentic operating system
+description: WyseOS is a groundbreaking multi-agent web automation system meticulously designed to orchestrate task planning, perception, memory, and action across a diverse range of expert agents. As an **Agentic Operating System (AgentOS)**, it empowers intelligent agents to understand user intent through natural language, collaboratively decompose complex tasks, and achieve goals autonomously within dynamic web environments.
 ---
+
+
+## Our Vision: Operationalizing Intelligent Agents
+
+WyseOS is built upon the ambition to operationalize intelligent agents capable of:
+
+*   **Autonomous Web Navigation**: Agents can seamlessly interact with web pages and digital interfaces, just like a human.
+*   **Complex Task Decomposition**: Breaking down intricate user requests into a series of manageable, goal-directed subtasks.
+*   **LLM-Powered Decision Making**: Utilizing state-of-the-art Large Language Models (LLMs) for sophisticated reasoning and decision-making during task execution.
+*   **Contextual Memory**: Maintaining a persistent memory of task context over time, enabling adaptive and coherent interactions across multiple steps.
+*   **Adaptability to Real-World Environments**: Dynamically adjusting to changes in the Document Object Model (DOM), handling network latency, recovering from partial failures, and navigating other real-world complexities.
+
+## Core Architectural Components
+
+WyseOS is built around a sophisticated multi-agent framework, primarily leveraging [AutoGen](https://microsoft.github.io/autogen/) for efficient agent collaboration. The system comprises:
+
+*   **Task Planning Agent**: The central coordinator responsible for interpreting high-level user goals, synthesizing dynamic plans, and orchestrating the execution flow by dispatching tasks to specialized expert agents.
+*   **Expert Agents**: Functional units that execute specific automation operations. These agents retrieve relevant information from the knowledge base and utilize encapsulated control toolsets for precise action execution.
+
+## Key Technological Differentiators
+
+At its core, WyseOS offers a suite of advanced features that set it apart:
+
+*   **Hybrid Page Element Detection**: WyseOS combines **Visual Detection** (using a fine-tuned YOLO-v12 model on raw webpage screenshots) and **DOM Semantic Detection** (traversing the Document Object Model for interactable elements). An intelligent **Information Fusion Strategy** ensures robust and generalized element detection, even in dynamic web environments.
+*   **Continuously Updated Knowledge Base**: An integrated, continuously evolving **Retrieval Augmented Generation (RAG)** knowledge base empowers agents with immediate access to information. This includes official help documentation and experiential learning from historical automation cases, enabling lifelong learning and improving task success rates over time.
+*   **Cloud Browser and Local Extension Synergy**: WyseOS utilizes an isolated **cloud-based sandbox browser** for concurrent task execution. For complex scenarios like identity authentication, a lightweight **local browser plugin** securely bridges the gap, addressing traditional cloud browser limitations.
+*   **Modular SDK for Expansion**: A comprehensive **Software Development Kit (SDK)** provides standardized interfaces and agent registration processes, enabling third-party developers to easily integrate custom business logic, proprietary models, or existing components as new Expert Agents.
+
+## Why WyseOS? Unlocking New Automation Paradigms
+
+WyseOS represents a significant leap towards building smarter, more adaptive, and remarkably user-friendly web automation systems. It empowers agents to solve novel tasks with minimal retraining or hardcoded rules, enabling automation across diverse domains. Users can simply declare their goals, and the agents will autonomously interpret and fulfill them.
+
+The integration of real-time web perception, robust contextual memory, and adaptive reasoning allows WyseOS to operate in continuous, closed-loop feedback cycles. This critical capability enables agents to operate persistently, seek clarification when needed, provide timely updates, and gracefully recover from errors, mirroring the efficiency and responsiveness of human assistants.
+
+For a more in-depth exploration of these concepts, please refer to the [Key Concepts](/introduction/key-concepts) documentation.

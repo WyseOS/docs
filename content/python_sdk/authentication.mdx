@@ -1,7 +1,105 @@
 ---
-title: Python SDK Authentication
+title: Authentication
 ---
 
-# Python SDK Authentication
+# Authentication: Securing Your Wyse Mate Python SDK Interactions
 
-This section details how to authenticate with AgentOS using the Python SDK. 
+To ensure secure and authorized communication with the Wyse Mate platform, all interactions via the Python SDK require an API key. This guide will walk you through the process of obtaining your API key and securely configuring it within your Python projects.
+
+## 1. Obtaining Your Wyse Mate API Key
+
+Follow these simple steps to acquire your unique API key from the Wyse Mate dashboard:
+
+1.  **Sign up or Log in**: Visit [mate.wyseos.com](https://mate.wyseos.com) and either create a new account or log in to your existing one.
+2.  **Access Dashboard**: Navigate to your personal or team dashboard.
+3.  **Generate API Key**: Locate the API key management section and create a new key. **Immediately save this key in a secure location**, as it will not be displayed again. This key is your credential for all SDK interactions.
+
+## 2. Configuring Your API Key
+
+Securely configuring your API key is crucial for the integrity of your application. The Python SDK offers several flexible methods:
+
+### Preferred Method: Centralized Configuration with `mate.yaml`
+
+Using a `mate.yaml` file is the recommended and most secure way to manage your API key, keeping sensitive information separate from your application's source code. Create this file in the root directory of your project:
+
+```yaml
+api_key: "your-api-key-here"
+base_url: "https://api.mate.wyseos.com"
+timeout: 30
+debug: false
+```
+
+**Configuration Fields Explained:**
+
+| Field      | Type      | Description                                                 | Default Value             |
+| :--------- | :-------- | :---------------------------------------------------------- | :------------------------ |
+| `api_key`  | `string`  | Your unique API key obtained from the Wyse Mate dashboard. **Required.** | *(None)*                  |
+| `base_url` | `string`  | The base URL for the Wyse Mate API.                         | `https://api.mate.wyseos.com` |
+| `timeout`  | `integer` | The maximum duration (in seconds) for API requests to respond. | `30`                      |
+| `debug`    | `boolean` | Enables verbose logging for debugging purposes.             | `false`                   |
+
+**Loading the `mate.yaml` Configuration:**
+
+Integrate the configuration into your Python application using `load_default_config()`:
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+
+# Attempt to load configuration from the default mate.yaml location
+config = load_default_config()
+
+if config:
+    client = Client(config)
+    print("Client initialized successfully from mate.yaml.")
+else:
+    print("Warning: mate.yaml not found. Falling back to in-code configuration. "
+          "Consider using mate.yaml for better security in production.")
+    # Fallback for demonstration/development (replace 'YOUR_API_KEY' with your actual key)
+    from wyse_mate import ClientOptions
+    client = Client(ClientOptions(api_key="YOUR_API_KEY"))
+```
+
+### Alternative Method: In-Code Configuration
+
+For quick testing or scenarios where a configuration file is not feasible, you can pass your API key directly during `Client` initialization. **This method is generally not recommended for production environments due to the risk of exposing credentials in source code.**
+
+```python
+from wyse_mate import Client, ClientOptions
+
+client = Client(ClientOptions(
+    api_key="YOUR_API_KEY", # Replace with your actual API key
+    base_url="https://api.mate.wyseos.com",
+    timeout=30,
+    debug=False
+))
+```
+
+### Loading from a Custom Configuration Path
+
+If your `mate.yaml` file is stored in a non-standard location, you can explicitly specify its path:
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_config
+
+# Specify the absolute or relative path to your custom mate.yaml file
+custom_config_path = "/path/to/my/custom-mate.yaml"
+
+try:
+    config = load_config(custom_config_path)
+    client = Client(config)
+    print(f"Client initialized successfully from custom config: {custom_config_path}")
+except Exception as e:
+    print(f"Error loading custom configuration: {e}")
+```
+
+## Security Best Practices for API Keys
+
+Adhering to these practices will help maintain the security of your applications:
+
+-   **Never Hardcode API Keys**: Avoid embedding your API keys directly into your source code. Use environment variables or dedicated configuration files (`mate.yaml`) instead.
+-   **Implement Least Privilege**: Grant your API keys only the minimum necessary permissions required for your application's functionality.
+-   **Regular Key Rotation**: Periodically generate new API keys and invalidate old ones to minimize the impact of a compromised key.
+-   **Protect Your Keys**: Treat your API keys like sensitive passwords. Do not share them publicly or commit them to version control systems.
+-   **Monitor Usage**: Regularly review your API key usage patterns for any unusual or unauthorized activity. 

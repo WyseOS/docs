@@ -31,12 +31,14 @@
   "paths": {
     "/browser/info/{browser_id}": {
       "get": {
-        "summary": "browser信息",
+        "summary": "Browser Information",
         "x-apifox-folder": "browser",
         "x-apifox-status": "developing",
         "deprecated": false,
-        "description": "通过BrowserID查看浏览器详情",
-        "tags": ["browser"],
+        "description": "View browser details by BrowserID",
+        "tags": [
+          "browser"
+        ],
         "parameters": [
           {
             "name": "browser_id",
@@ -154,8 +156,16 @@
                       "x-apifox-ignore-properties": []
                     }
                   },
-                  "required": ["code", "msg", "data"],
-                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
                   "x-apifox-ignore-properties": []
                 },
                 "examples": {
@@ -190,12 +200,14 @@
     },
     "/team/lists": {
       "get": {
-        "summary": "Team清单",
+        "summary": "Team List",
         "x-apifox-folder": "team",
         "x-apifox-status": "developing",
         "deprecated": false,
         "description": "",
-        "tags": ["team"],
+        "tags": [
+          "team"
+        ],
         "parameters": [
           {
             "name": "page_num",
@@ -509,8 +521,16 @@
                       "x-apifox-ignore-properties": []
                     }
                   },
-                  "required": ["code", "msg", "data"],
-                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
                   "x-apifox-refs": {},
                   "x-apifox-ignore-properties": []
                 },
@@ -529,8 +549,8 @@
                           {
                             "team_id": "fdc7f460-ebb1-4f01-82be-9d4ccfc3d4e2",
                             "user_id": "d55f0098-9e8f-4eba-a5f4-c2e8000946b5",
-                            "name": "律乙萍",
-                            "description": "步全团林机往标则况。验情可思天力将矿类。参展市不。会传科切表九有。部现形本六每法各切委。",
+                            "name": "name1",
+                            "description": "description",
                             "component_type": "wyse_team",
                             "team_type": "wyse_web_groupchat",
                             "agents": [
@@ -664,12 +684,14 @@
     },
     "/team/info/{team_id}": {
       "get": {
-        "summary": "Team详情",
+        "summary": "Team Details",
         "x-apifox-folder": "team",
         "x-apifox-status": "developing",
         "deprecated": false,
-        "description": "暂时不鉴权",
-        "tags": ["team"],
+        "description": "No authentication for now",
+        "tags": [
+          "team"
+        ],
         "parameters": [
           {
             "name": "team_id",
@@ -915,8 +937,16 @@
                       "x-apifox-ignore-properties": []
                     }
                   },
-                  "required": ["code", "msg", "data"],
-                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
                   "x-apifox-refs": {},
                   "x-apifox-ignore-properties": []
                 },
@@ -984,12 +1014,14 @@
     },
     "/session/info/{session_id}": {
       "get": {
-        "summary": "会话详情",
+        "summary": "Session Details",
         "x-apifox-folder": "session",
         "x-apifox-status": "developing",
         "deprecated": false,
-        "description": "注意：\n- 返回的message列表只包含最近5条消息\n- visibility表示会话可见性，默认是private，公开可见是access_by_url\n- name是会话名称",
-        "tags": ["session"],
+        "description": "Note:\n- The returned message list only contains the last 5 messages\n- visibility indicates session visibility, default is private, public is access_by_url\n- name is the session name",
+        "tags": [
+          "session"
+        ],
         "parameters": [
           {
             "name": "session_id",
@@ -1056,7 +1088,10 @@
                                 "type": "string"
                               }
                             },
-                            "x-apifox-orders": ["role", "content"],
+                            "x-apifox-orders": [
+                              "role",
+                              "content"
+                            ],
                             "x-apifox-ignore-properties": []
                           }
                         },
@@ -1073,8 +1108,16 @@
                               "type": "string"
                             }
                           },
-                          "required": ["type", "source", "content"],
-                          "x-apifox-orders": ["type", "source", "content"],
+                          "required": [
+                            "type",
+                            "source",
+                            "content"
+                          ],
+                          "x-apifox-orders": [
+                            "type",
+                            "source",
+                            "content"
+                          ],
                           "x-apifox-ignore-properties": []
                         },
                         "messages": {
@@ -1141,8 +1184,12 @@
                               "x-apifox-ignore-properties": []
                             }
                           },
-                          "required": ["models"],
-                          "x-apifox-orders": ["models"],
+                          "required": [
+                            "models"
+                          ],
+                          "x-apifox-orders": [
+                            "models"
+                          ],
                           "x-apifox-ignore-properties": []
                         },
                         "platform": {
@@ -1195,8 +1242,16 @@
                       "x-apifox-ignore-properties": []
                     }
                   },
-                  "required": ["code", "msg", "data"],
-                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
                   "x-apifox-ignore-properties": []
                 },
                 "examples": {
@@ -1336,12 +1391,14 @@
     },
     "/agent/lists": {
       "get": {
-        "summary": "Agent清单",
+        "summary": "Agent List",
         "x-apifox-folder": "agent",
         "x-apifox-status": "developing",
         "deprecated": false,
         "description": "",
-        "tags": ["agent"],
+        "tags": [
+          "agent"
+        ],
         "parameters": [
           {
             "name": "page_num",
@@ -1482,7 +1539,10 @@
                                     "type": "string"
                                   },
                                   "temperature": {
-                                    "type": ["number", "integer"]
+                                    "type": [
+                                      "number",
+                                      "integer"
+                                    ]
                                   }
                                 },
                                 "required": [
@@ -1553,8 +1613,16 @@
                       "x-apifox-ignore-properties": []
                     }
                   },
-                  "required": ["code", "msg", "data"],
-                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
                   "x-apifox-refs": {},
                   "x-apifox-ignore-properties": []
                 },
@@ -1784,12 +1852,14 @@
     },
     "/agent/info/{agent_id}": {
       "get": {
-        "summary": "Agent详情",
+        "summary": "Agent Details",
         "x-apifox-folder": "agent",
         "x-apifox-status": "developing",
         "deprecated": false,
-        "description": "暂时不加鉴权",
-        "tags": ["agent"],
+        "description": "No authentication added for now",
+        "tags": [
+          "agent"
+        ],
         "parameters": [
           {
             "name": "agent_id",
@@ -1945,8 +2015,16 @@
                       "x-apifox-ignore-properties": []
                     }
                   },
-                  "required": ["code", "msg", "data"],
-                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
                   "x-apifox-ignore-properties": []
                 },
                 "examples": {
@@ -1992,12 +2070,14 @@
     },
     "/session/message/lists": {
       "get": {
-        "summary": "聊天消息列表",
+        "summary": "Chat Message List",
         "x-apifox-folder": "session/message",
         "x-apifox-status": "developing",
         "deprecated": false,
-        "description": "sort_order取值为ASC或者DESC，为空时默认为ASC",
-        "tags": ["session/message"],
+        "description": "The value of sort_order is ASC or DESC, and the default is ASC when it is empty.",
+        "tags": [
+          "session/message"
+        ],
         "parameters": [
           {
             "name": "page_num",
@@ -2069,12 +2149,14 @@
     },
     "/session/current": {
       "get": {
-        "summary": "进行中的会话",
+        "summary": "Ongoing Sessions",
         "x-apifox-folder": "session",
         "x-apifox-status": "developing",
         "deprecated": false,
-        "description": "取用户当前进行中的会话。platform取值，web / api / extension。不填默认是web。\n",
-        "tags": ["session"],
+        "description": "Get the user's current ongoing session. Platform values are web / api / extension. Default is web if not filled.\n",
+        "tags": [
+          "session"
+        ],
         "parameters": [
           {
             "name": "platform",
@@ -2140,7 +2222,10 @@
                                   "type": "string"
                                 }
                               },
-                              "x-apifox-orders": ["role", "content"],
+                              "x-apifox-orders": [
+                                "role",
+                                "content"
+                              ],
                               "x-apifox-ignore-properties": []
                             }
                           },
@@ -2157,8 +2242,16 @@
                                 "type": "string"
                               }
                             },
-                            "required": ["type", "source", "content"],
-                            "x-apifox-orders": ["type", "source", "content"],
+                            "required": [
+                              "type",
+                              "source",
+                              "content"
+                            ],
+                            "x-apifox-orders": [
+                              "type",
+                              "source",
+                              "content"
+                            ],
                             "x-apifox-ignore-properties": []
                           },
                           "messages": {
@@ -2234,8 +2327,12 @@
                                 "x-apifox-ignore-properties": []
                               }
                             },
-                            "required": ["models"],
-                            "x-apifox-orders": ["models"],
+                            "required": [
+                              "models"
+                            ],
+                            "x-apifox-orders": [
+                              "models"
+                            ],
                             "x-apifox-ignore-properties": []
                           },
                           "created_at": {
@@ -2263,8 +2360,16 @@
                       }
                     }
                   },
-                  "required": ["code", "msg", "data"],
-                  "x-apifox-orders": ["code", "msg", "data"],
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
                   "x-apifox-ignore-properties": []
                 },
                 "examples": {
@@ -2325,12 +2430,14 @@
     },
     "/session/complete": {
       "post": {
-        "summary": "开始会话",
+        "summary": "Start Session",
         "x-apifox-folder": "session",
         "x-apifox-status": "developing",
         "deprecated": false,
-        "description": "输入：\n- session_id为空，创建新会话；\n- session_id不为空，继续多轮对话。\n- team_id为空，使用默认的team_id进行会话，\n- team_id不为空，指定team进行会话。\n- intent当从intent开始会话时不为空\n返回：\n响应是text/event-stream协议",
-        "tags": ["session"],
+        "description": "Input:\n- If session_id is empty, a new session will be created;\n- If session_id is not empty, continue multi-turn dialogue.\n- If team_id is empty, the default team_id will be used for the session,\n- If team_id is not empty, the specified team will be used for the session.\n- intent is not empty when starting a session from an intent\nReturn:\nResponse is text/event-stream protocol",
+        "tags": [
+          "session"
+        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -2368,7 +2475,10 @@
                           "x-apifox-mock": "user"
                         }
                       },
-                      "x-apifox-orders": ["content", "role"],
+                      "x-apifox-orders": [
+                        "content",
+                        "role"
+                      ],
                       "x-apifox-ignore-properties": []
                     }
                   },
@@ -2377,11 +2487,11 @@
                     "properties": {
                       "intent_id": {
                         "type": "string",
-                        "description": "那个intent的intent_id"
+                        "description": "The intent_id of that intent"
                       },
                       "category": {
                         "type": "string",
-                        "description": "分组"
+                        "description": "Group"
                       },
                       "title": {
                         "type": "string"
@@ -2407,11 +2517,16 @@
                       "category",
                       "tag"
                     ],
-                    "description": "可为空，当从intent开始session时不能为空",
+                    "description": "Can be empty, cannot be empty when starting a session from an intent",
                     "x-apifox-ignore-properties": []
                   }
                 },
-                "required": ["team_id", "session_id", "messages", "intent"],
+                "required": [
+                  "team_id",
+                  "session_id",
+                  "messages",
+                  "intent"
+                ],
                 "x-apifox-orders": [
                   "team_id",
                   "session_id",
@@ -2461,12 +2576,14 @@
     },
     "/user/apikey/new": {
       "post": {
-        "summary": "Api Key创建",
+        "summary": "API Key Creation",
         "x-apifox-folder": "user",
         "x-apifox-status": "developing",
         "deprecated": false,
         "description": "",
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -2487,11 +2604,15 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "description": "名称"
+                    "description": "Name"
                   }
                 },
-                "x-apifox-orders": ["name"],
-                "required": ["name"],
+                "x-apifox-orders": [
+                  "name"
+                ],
+                "required": [
+                  "name"
+                ],
                 "x-apifox-ignore-properties": []
               },
               "example": {
@@ -2521,13 +2642,25 @@
                           "type": "string"
                         }
                       },
-                      "x-apifox-orders": ["api_key"],
-                      "required": ["api_key"],
+                      "x-apifox-orders": [
+                        "api_key"
+                      ],
+                      "required": [
+                        "api_key"
+                      ],
                       "x-apifox-ignore-properties": []
                     }
                   },
-                  "x-apifox-orders": ["code", "msg", "data"],
-                  "required": ["code", "data", "msg"],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "required": [
+                    "code",
+                    "data",
+                    "msg"
+                  ],
                   "x-apifox-ignore-properties": []
                 }
               }
@@ -2539,12 +2672,14 @@
     },
     "/user/apikey/delete/{id}": {
       "delete": {
-        "summary": "Api Key删除",
+        "summary": "API Key Deletion",
         "x-apifox-folder": "user",
         "x-apifox-status": "developing",
         "deprecated": false,
         "description": "",
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -2588,8 +2723,16 @@
                       "x-apifox-ignore-properties": []
                     }
                   },
-                  "x-apifox-orders": ["code", "msg", "data"],
-                  "required": ["code", "data", "msg"],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "required": [
+                    "code",
+                    "data",
+                    "msg"
+                  ],
                   "x-apifox-ignore-properties": []
                 }
               }
@@ -2601,12 +2744,14 @@
     },
     "/user/apikey/lists": {
       "get": {
-        "summary": "Api Key列表",
+        "summary": "API Key List",
         "x-apifox-folder": "user",
         "x-apifox-status": "developing",
         "deprecated": false,
         "description": "",
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "parameters": [
           {
             "name": "page_num",
@@ -2724,8 +2869,16 @@
                       "x-apifox-ignore-properties": []
                     }
                   },
-                  "x-apifox-orders": ["code", "msg", "data"],
-                  "required": ["code", "msg", "data"],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
                   "x-apifox-ignore-properties": []
                 }
               }
@@ -2737,12 +2890,14 @@
     },
     "/user/call/lists": {
       "get": {
-        "summary": "用户credit消费历史",
+        "summary": "User Credit Consumption History",
         "x-apifox-folder": "open_api",
         "x-apifox-status": "developing",
         "deprecated": false,
         "description": "",
-        "tags": ["open_api"],
+        "tags": [
+          "open_api"
+        ],
         "parameters": [
           {
             "name": "page_num",
@@ -2767,7 +2922,7 @@
           {
             "name": "platform",
             "in": "query",
-            "description": "可选值，默认为all，即所有，可以区分web/chrome插件/api调用，值分别为：engine、extension、api",
+            "description": "Optional, default is all, which means all, can distinguish web/chrome extension/api calls, values are: engine, extension, api",
             "required": false,
             "example": "all",
             "schema": {
@@ -2777,7 +2932,7 @@
           {
             "name": "api_key_name",
             "in": "query",
-            "description": "可选值",
+            "description": "Optional",
             "required": false,
             "schema": {
               "type": "string"
@@ -2786,7 +2941,7 @@
           {
             "name": "start_date",
             "in": "query",
-            "description": "可选值，比如：2025-04-27",
+            "description": "Optional, e.g.: 2025-04-27",
             "required": false,
             "schema": {
               "type": "string"
@@ -2795,7 +2950,7 @@
           {
             "name": "end_date",
             "in": "query",
-            "description": "可选值，比如：2025-04-29",
+            "description": "Optional, e.g.: 2025-04-29",
             "required": false,
             "schema": {
               "type": "string"
@@ -2804,7 +2959,7 @@
           {
             "name": "order_field",
             "in": "query",
-            "description": "可选值，默认为：created_at；可填：total_cost，作用于根据credit总费用排序",
+            "description": "Optional, default is: created_at; can be: total_cost, used for sorting by total credit cost",
             "required": false,
             "example": "total_cost",
             "schema": {
@@ -2814,7 +2969,7 @@
           {
             "name": "order",
             "in": "query",
-            "description": "可选值，默认为倒序：desc，正序为：asc",
+            "description": "Optional, default is descending: desc, ascending is: asc",
             "required": false,
             "example": "desc",
             "schema": {
@@ -2824,7 +2979,7 @@
           {
             "name": "status",
             "in": "query",
-            "description": "可选值，默认为空，值从/call/filter_values接口中的states来",
+            "description": "Optional, default is empty, value comes from states in /call/filter_values interface",
             "required": false,
             "schema": {
               "type": "string"
@@ -2892,48 +3047,54 @@
                                 "properties": {
                                   "has_used": {
                                     "type": "boolean",
-                                    "description": "是否使用过验证码自动识别验证"
+                                    "description": "Whether captcha auto-recognition has been used"
                                   },
                                   "used_count": {
                                     "type": "integer",
-                                    "description": "自动识别次数"
+                                    "description": "Number of auto-recognitions"
                                   }
                                 },
-                                "x-apifox-orders": ["has_used", "used_count"],
-                                "required": ["has_used", "used_count"],
-                                "description": "验证码自动识别",
+                                "x-apifox-orders": [
+                                  "has_used",
+                                  "used_count"
+                                ],
+                                "required": [
+                                  "has_used",
+                                  "used_count"
+                                ],
+                                "description": "Captcha Auto-recognition",
                                 "x-apifox-ignore-properties": []
                               },
                               "ip_proxy_bandwidth": {
                                 "type": "integer",
-                                "description": "ip proxy使用带宽量"
+                                "description": "IP proxy bandwidth usage"
                               },
                               "cost": {
                                 "type": "object",
                                 "properties": {
                                   "total_credit": {
                                     "type": "number",
-                                    "description": "credit总花费"
+                                    "description": "Total credit cost"
                                   },
                                   "server_traffic": {
                                     "type": "number",
-                                    "description": "服务器流量+3rd party API=Data Pro   的credit"
+                                    "description": "Server traffic + 3rd party API = Data Pro credit"
                                   },
                                   "token": {
                                     "type": "number",
-                                    "description": "模型token花费的credit"
+                                    "description": "Model token cost credit"
                                   },
                                   "browser": {
                                     "type": "number",
-                                    "description": "浏览器花费的credit"
+                                    "description": "Browser cost credit"
                                   },
                                   "auto_captcha": {
                                     "type": "number",
-                                    "description": "自动验证码识别花费的credit"
+                                    "description": "Auto captcha recognition cost credit"
                                   },
                                   "ip_proxy_bandwidth": {
                                     "type": "number",
-                                    "description": "ip proxy带宽花费的credit"
+                                    "description": "IP proxy bandwidth cost credit"
                                   }
                                 },
                                 "x-apifox-orders": [
@@ -2952,12 +3113,12 @@
                                   "token",
                                   "total_credit"
                                 ],
-                                "description": "花费详情",
+                                "description": "Cost Details",
                                 "x-apifox-ignore-properties": []
                               },
                               "status": {
                                 "type": "string",
-                                "description": "success为成功，fail为失败"
+                                "description": "success for success, fail for failure"
                               },
                               "created_at": {
                                 "type": "string"
@@ -3006,8 +3167,16 @@
                       "x-apifox-ignore-properties": []
                     }
                   },
-                  "x-apifox-orders": ["code", "msg", "data"],
-                  "required": ["code", "msg", "data"],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
                   "x-apifox-ignore-properties": []
                 }
               }
@@ -3019,12 +3188,14 @@
     },
     "/user/call/filter_values": {
       "get": {
-        "summary": "用户credit消费筛选值",
+        "summary": "User Credit Consumption Filter Values",
         "x-apifox-folder": "user",
         "x-apifox-status": "developing",
         "deprecated": false,
         "description": "",
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -3059,18 +3230,18 @@
                           "items": {
                             "type": "string"
                           },
-                          "description": "字符串数组"
+                          "description": "String array"
                         },
                         "platforms": {
                           "type": "array",
                           "items": {
                             "type": "string"
                           },
-                          "description": "字符串数组"
+                          "description": "String array"
                         },
                         "states": {
                           "type": "string",
-                          "description": "状态数组，值有 success 和 fail"
+                          "description": "Status array, values are success and fail"
                         }
                       },
                       "x-apifox-orders": [
@@ -3078,12 +3249,24 @@
                         "platforms",
                         "states"
                       ],
-                      "required": ["api_key_names", "platforms", "states"],
+                      "required": [
+                        "api_key_names",
+                        "platforms",
+                        "states"
+                      ],
                       "x-apifox-ignore-properties": []
                     }
                   },
-                  "x-apifox-orders": ["code", "msg", "data"],
-                  "required": ["code", "msg", "data"],
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
                   "x-apifox-ignore-properties": []
                 }
               }
@@ -3100,7 +3283,7 @@
   "servers": [
     {
       "url": "http://prod-cn.your-api-server.com",
-      "description": "正式环境"
+      "description": "Production Environment"
     }
   ]
 }

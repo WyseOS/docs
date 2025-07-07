@@ -5,8 +5,8 @@
     "introduction/goal",
     "introduction/key-concepts",
     "---Mate SDK---",
-    "go_sdk",
     "python_sdk",
+    "go_sdk",
     "---API References---",
     "api"
   ]

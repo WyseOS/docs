@@ -1,0 +1,11 @@
+{
+    "title": "Python SDK",
+    "pages": [
+      "introduction",
+      "getting-started",
+      "authentication",
+      "api-reference",
+      "examples",
+      "troubleshooting"
+    ]
+}

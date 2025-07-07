@@ -1,7 +1,1194 @@
 ---
-title: Python SDK API Reference
+title: API Reference
 ---
 
 # Python SDK API Reference
 
-This section provides a detailed reference for the Python SDK's classes, methods, and functions. 
+This section provides comprehensive, detailed documentation for the Wyse Mate Python SDK. It covers the core `Client` class, its initialization process, and the various API services designed for seamless interaction with the Wyse Mate platform, along with all associated data models.
+
+## The `Client` Class: Your Gateway to the API
+
+The `Client` class serves as the primary entry point for all API interactions. It intelligently manages authentication, dispatches HTTP requests, and parses responses, streamlining your integration efforts.
+
+```python
+from wyse_mate import Client, ClientOptions
+
+class Client:
+    def __init__(self, options: Optional[ClientOptions] = None):
+        # ... initialization logic ...
+```
+
+### Client Initialization
+
+To begin using the SDK, initialize the `Client` with an optional `ClientOptions` object. If no options are explicitly provided, the client will fall back to sensible default values.
+
+| Parameter | Type                     | Description                                          | Default Value         |
+| :-------- | :----------------------- | :--------------------------------------------------- | :-------------------- |
+| `options` | `Optional[ClientOptions]`| An instance of `ClientOptions` to configure the client's behavior. For details, see the `ClientOptions` section below. | `None` (uses SDK defaults) |
+
+**Example: Initializing the Client**
+
+```python
+from wyse_mate import Client, ClientOptions
+from wyse_mate.config import load_default_config
+
+# Option 1: Load configuration from mate.yaml (Recommended for production)
+config = load_default_config()
+if config:
+    client = Client(config)
+    print("Client successfully initialized from mate.yaml.")
+else:
+    print("Warning: mate.yaml not found. Falling back to manual configuration.")
+    # Option 2: Manual configuration (Replace "YOUR_API_KEY" with your actual key)
+    client = Client(ClientOptions(
+        api_key="YOUR_API_KEY",
+        base_url="https://api.mate.wyseos.com",
+        timeout=30,
+        debug=False
+    ))
+
+print("Client instance ready.")
+```
+
+### Accessible API Services
+
+The `Client` object provides direct access to various API services as dedicated attributes. Each service encapsulates methods for interacting with a specific domain of the Wyse Mate API, promoting a clear and organized code structure.
+
+-   `client.user`: Manages user-specific operations, such as API key management.
+-   `client.team`: Facilitates team management, including listing, creating, and updating teams.
+-   `client.agent`: Handles operations related to agents, such as retrieving agent lists and details.
+-   `client.session`: Manages sessions, covering creation, retrieval of session information and messages.
+-   `client.browser`: Provides functionalities for interacting with browser instances and their pages.
+
+For in-depth information and usage examples for each service, refer to their dedicated sections:
+
+-   [User Service API Reference](#user-service-api-reference)
+-   [Team Service API Reference](#team-service-api-reference)
+-   [Agent Service API Reference](#agent-service-api-reference)
+-   [Session Service API Reference](#session-service-api-reference)
+-   [Browser Service API Reference](#browser-service-api-reference)
+
+### Internal HTTP Request Methods
+
+The `Client` class incorporates internal methods for handling the underlying HTTP communication. While you'll primarily interact with the higher-level service methods, understanding these internal functions can be beneficial for advanced use cases or debugging.
+
+-   `_do_request(method: str, endpoint: str, body: Optional[Dict] = None) -> requests.Response`:
+    This core internal method executes the actual HTTP request to the Wyse Mate API. It constructs the full request URL, sets necessary headers (including your API key), and manages potential network and API-specific errors.
+
+-   `get(endpoint: str, result_model: Type[T], params: Optional[Dict[str, str]] = None) -> T`:
+    Performs an HTTP GET request. The JSON response from the API is automatically deserialized into the specified Pydantic `result_model`.
+
+-   `get_paginated(endpoint: str, result_model: Type[T], params: Optional[Dict[str, str]] = None) -> T`:
+    A specialized GET request method designed for API endpoints that return paginated responses. It correctly extracts and deserializes the data from nested response structures.
+
+-   `post(endpoint: str, body: Optional[Dict] = None, result_model: Optional[Type[T]] = None) -> Optional[T]`:
+    Executes an HTTP POST request. You can provide an optional request `body`, and the method will deserialize the API's JSON response into the `result_model` if provided.
+
+-   `put(endpoint: str, body: Optional[Dict] = None, result_model: Optional[Type[T]] = None) -> Optional[T]`:
+    Performs an HTTP PUT request, similar to `post`, allowing for an optional request `body` and response deserialization into a `result_model`.
+
+-   `delete(endpoint: str) -> None`:
+    Executes an HTTP DELETE request. This method does not expect a response body.
+
+## `ClientOptions` Class: Customizing Client Behavior
+
+The `ClientOptions` class allows you to fine-tune the behavior of your `Client` instance. This includes setting your API key, custom base URLs, timeouts, and more.
+
+```python
+from wyse_mate.config import ClientOptions
+from pydantic import BaseModel, Field
+from typing import Optional, Any
+
+class ClientOptions(BaseModel):
+    api_key: str = Field(..., description="Your Wyse Mate API key.")
+    base_url: Optional[str] = Field(None, description="The base URL for the Wyse Mate API.")
+    timeout: Optional[int] = Field(None, description="Timeout for API requests in seconds.")
+    user_agent: Optional[str] = Field(None, description="Custom User-Agent header for requests.")
+    http_client: Any = Field(None, description="An optional custom HTTP client (e.g., requests.Session). For advanced use cases only.")
+```
+
+| Attribute    | Type               | Description                                          | Default Value          |
+| :----------- | :----------------- | :--------------------------------------------------- | :--------------------- |
+| `api_key`    | `str`              | Your Wyse Mate API key. **This attribute is required.** | *(None)*                |
+| `base_url`   | `Optional[str]`    | The base URL for the Wyse Mate API. Customize this for self-hosted instances or alternative environments. | `https://api.mate.wyseos.com` |
+| `timeout`    | `Optional[int]`    | The maximum duration (in seconds) for API requests before timing out. | `30`                   |
+| `user_agent` | `Optional[str]`    | A custom User-Agent string to include in HTTP request headers. | `wyse-mate-sdk-python/<version>` |
+| `http_client`| `Any`              | An optional custom HTTP client instance (e.g., a `requests.Session` object). This is for advanced use cases where fine-grained control over the HTTP client is needed. | `requests.Session()`    |
+
+## Service-Specific API References
+
+For detailed information on the methods and data models within each service, please refer to the following sections:
+
+### User Service API Reference
+
+The `UserService` provides methods for managing user-specific resources, primarily focusing on API keys. You can access it via `client.user`.
+
+```python
+from wyse_mate.services.user import UserService
+
+class UserService:
+    def __init__(self, client: "Client"):
+        # ... initialization logic ...
+```
+
+#### Methods
+
+##### `list_api_keys`
+
+`list_api_keys(options: Optional[ListOptions] = None) -> PaginatedResponse[APIKey]`
+
+Retrieves a paginated list of API keys associated with the current user.
+
+| Parameter | Type                     | Description                                          | Default Value          |
+| :-------- | :----------------------- | :--------------------------------------------------- | :--------------------- |
+| `options` | `Optional[ListOptions]`  | Optional pagination options to control the number of results and current page. | `None` (uses default `page_num=1`, `page_size=10`) |
+
+**Returns:**
+
+`PaginatedResponse[APIKey]`: A paginated response object containing a list of `APIKey` objects.
+
+**Example:**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+from wyse_mate.models import ListOptions
+
+client = Client(load_default_config()) # or initialize manually
+
+# List all API keys (default pagination)
+api_keys_response = client.user.list_api_keys()
+print(f"Total API Keys: {api_keys_response.total}")
+for key in api_keys_response.data:
+    print(f"- {key.name} (ID: {key.id}, Last Used: {key.last_used_at})")
+
+# List API keys with custom pagination
+paginated_keys_response = client.user.list_api_keys(ListOptions(page_num=2, page_size=5))
+print(f"API Keys on page 2 (size 5): {paginated_keys_response.total}")
+for key in paginated_keys_response.data:
+    print(f"- {key.name}")
+```
+
+### Data Models
+
+The following Pydantic models are used within the SDK to represent data structures for requests and responses.
+
+#### `APIKey`
+
+Represents information about an API key, including its unique identifier, name, creation timestamp, and last usage time.
+
+```python
+from pydantic import BaseModel, Field
+from datetime import datetime
+
+class APIKey(BaseModel):
+    id: int = Field(alias="id", description="The unique ID of the API key.")
+    name: str = Field(description="The name given to the API key.")
+    api_key: str = Field(alias="api_key", description="The actual API key string.")
+    created_at: datetime = Field(alias="created_at", description="Timestamp when the API key was created.")
+    last_used_at: datetime = Field(alias="last_used_at", description="Timestamp when the API key was last used.")
+```
+
+| Attribute    | Type       | Description                        |
+| :----------- | :--------- | :--------------------------------- |
+| `id`         | `int`      | The unique ID of the API key.      |
+| `name`       | `str`      | The name given to the API key.     |
+| `api_key`    | `str`      | The actual API key string.         |
+| `created_at` | `datetime` | Timestamp when the API key was created. |
+| `last_used_at` | `datetime` | Timestamp when the API key was last used. |
+
+#### `ListOptions`
+
+This model defines parameters for controlling pagination in list operations, allowing you to specify the desired page number and size.
+
+```python
+from pydantic import BaseModel, Field
+
+class ListOptions(BaseModel):
+    page_num: int = Field(default=1, ge=1, description="The page number to retrieve (1-indexed). Minimum value is 1.")
+    page_size: int = Field(default=20, ge=1, le=100, description="The number of items per page. Minimum value is 1, maximum is 100.")
+```
+
+| Attribute    | Type | Description                                 | Default Value |
+| :----------- | :--- | :------------------------------------------ | :------------ |
+| `page_num`   | `int`| The page number to retrieve (1-indexed).   | `1`           |
+| `page_size`  | `int`| The number of items per page (1-100).      | `20`          |
+
+#### `PaginatedResponse`
+
+A generic Pydantic model designed to encapsulate paginated API responses. It provides metadata about the pagination (page numbers, total counts) and the actual list of data items.
+
+```python
+from pydantic import BaseModel, Field
+from typing import List, Generic, TypeVar
+
+T = TypeVar("T")
+
+class PaginatedResponse(BaseModel, Generic[T]):
+    page_num: int = Field(description="The current page number returned.")
+    page_size: int = Field(description="The number of items per page.")
+    total: int = Field(description="The total number of items available across all pages.")
+    total_page: int = Field(description="The total number of pages available.")
+    data: List[T] = Field(description="A list of items for the current page. The type `T` varies based on the specific API endpoint (e.g., `APIKey`, `TeamInfo`).")
+```
+
+| Attribute    | Type      | Description                                 |
+| :----------- | :-------- | :------------------------------------------ |
+| `page_num`   | `int`     | The current page number.                    |
+| `page_size`  | `int`     | The number of items per page.               |
+| `total`      | `int`     | The total number of items available across all pages. |
+| `total_page` | `int`     | The total number of pages.                  |
+| `data`       | `List[T]` | A list of items for the current page, where `T` is the type of the items (e.g., `APIKey`). |
+
+## Team Service API Reference
+
+The `TeamService` provides methods for managing teams within the Wyse Mate platform. Access this service via `client.team`.
+
+```python
+from wyse_mate.services.team import TeamService
+
+class TeamService:
+    def __init__(self, client: "Client"):
+        # ... initialization logic ...
+```
+
+### Methods
+
+#### `get_list`
+
+`get_list(team_type: str = "", options: Optional[ListOptions] = None) -> PaginatedResponse[TeamInfo]`
+
+Retrieves a paginated list of teams. You can optionally filter teams by their type.
+
+| Parameter   | Type                     | Description                                          | Default Value          |
+| :---------- | :----------------------- | :--------------------------------------------------- | :--------------------- |
+| `team_type` | `str`                    | An optional string to filter teams by their type (e.g., `"personal"`, `"shared"`). Leave empty to retrieve all team types. | `"all"`                |
+| `options`   | `Optional[ListOptions]`  | Optional pagination settings (`page_num`, `page_size`). | `None` (uses default `page_num=1`, `page_size=10`) |
+
+**Returns:**
+
+`PaginatedResponse[TeamInfo]`: A paginated response object containing a list of `TeamInfo` objects.
+
+**Example: Listing Teams**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+from wyse_mate.models import ListOptions
+
+client = Client(load_default_config()) # or initialize manually
+
+# Retrieve all teams with default pagination
+teams_response = client.team.get_list()
+print(f"Total Teams: {teams_response.total}")
+for team in teams_response.data:
+    print(f"- {team.name} (ID: {team.team_id}, Type: {team.team_type})")
+
+# Retrieve personal teams, with a custom page size of 5
+personal_teams = client.team.get_list(team_type="personal", options=ListOptions(page_size=5))
+print(f"Personal Teams (first 5): {len(personal_teams.data)}")
+for team in personal_teams.data:
+    print(f"- {team.name}")
+```
+
+#### `get_info`
+
+`get_info(team_id: str) -> TeamInfo`
+
+Retrieves detailed information for a specific team, identified by its unique ID.
+
+| Parameter | Type   | Description            |
+| :-------- | :----- | :--------------------- |
+| `team_id` | `str`  | The unique identifier of the team whose details are to be retrieved. |
+
+**Returns:**
+
+`TeamInfo`: An object containing comprehensive details about the specified team.
+
+**Example: Getting Team Information**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+
+client = Client(load_default_config()) # or initialize manually
+
+team_id_to_fetch = "your-team-id-here" # Replace with an actual team ID
+try:
+    team_details = client.team.get_info(team_id_to_fetch)
+    print(f"Team Name: {team_details.name}")
+    print(f"Team Description: {team_details.description}")
+    print(f"Team Type: {team_details.team_type}")
+    print(f"Number of Agents in Team: {len(team_details.agents)}")
+except Exception as e:
+    print(f"Error fetching team info: {e}")
+```
+
+### `TeamInfo` Data Model
+
+Represents comprehensive information about a team within the Wyse Mate platform.
+
+```python
+from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import List, Optional
+
+class TeamInfo(BaseModel):
+    team_id: str = Field(alias="team_id", description="Unique identifier of the team.")
+    user_id: str = Field(alias="user_id", description="The ID of the user who owns or created the team.")
+    avatar: str = Field(description="URL to the team's avatar image.")
+    name: str = Field(description="The name of the team.")
+    description: str = Field(description="A brief description of the team.")
+    component_type: str = Field(alias="component_type", description="The type of component, typically 'team'.")
+    team_type: str = Field(alias="team_type", description="The type of the team (e.g., 'personal', 'shared').")
+    agents: List[AgentInfo] = Field(default_factory=list, description="A list of `AgentInfo` objects representing agents belonging to this team.") # Assuming AgentInfo is defined elsewhere
+    termination: str = Field(description="The termination condition or type for the team.")
+    model: ModelInfo = Field(description="Information about the AI model associated with the team.") # Assuming ModelInfo is defined elsewhere
+    parameters: TeamParameters = Field(description="Configuration parameters specific to the team.") # Assuming TeamParameters is defined elsewhere
+    created_at: datetime = Field(alias="created_at", description="Timestamp when the team was created.")
+    updated_at: datetime = Field(alias="updated_at", description="Timestamp when the team was last updated.")
+    deleted_at: int = Field(alias="deleted_at", description="Unix timestamp indicating when the team was deleted (0 if not deleted).")
+```
+
+| Attribute        | Type               | Description                                          |
+| :--------------- | :----------------- | :--------------------------------------------------- |
+| `team_id`        | `str`              | Unique ID of the team.                               |
+| `user_id`        | `str`              | ID of the user who owns or created the team.         |
+| `avatar`         | `str`              | URL to the team's avatar image.                      |
+| `name`           | `str`              | Name of the team.                                    |
+| `description`    | `str`              | Description of the team.                             |
+| `component_type` | `str`              | Type of component (e.g., "team").                    |
+| `team_type`      | `str`              | Type of the team (e.g., "personal", "shared").     |
+| `agents`         | `List[AgentInfo]`  | A list of agents belonging to this team.             |
+| `termination`    | `str`              | Termination condition or type for the team.          |
+| `model`          | `ModelInfo`        | Information about the AI model associated with the team. |
+| `parameters`     | `TeamParameters`   | Configuration parameters specific to the team.       |
+| `created_at`     | `datetime`         | Timestamp when the team was created.                 |
+| `updated_at`     | `datetime`         | Timestamp when the team was last updated.            |
+| `deleted_at`     | `int`              | Unix timestamp when the team was deleted (0 if not deleted). |
+
+## Agent Service API Reference
+
+The `AgentService` provides methods for managing agents within the Wyse Mate platform. Access this service via `client.agent`.
+
+```python
+from wyse_mate.services.agent import AgentService
+
+class AgentService:
+    def __init__(self, client: "Client"):
+        # ... initialization logic ...
+```
+
+### Methods
+
+#### `get_list`
+
+`get_list(agent_type: str = "", options: Optional[ListOptions] = None) -> PaginatedResponse[AgentInfo]`
+
+Retrieves a paginated list of agents. You can optionally filter agents by their type.
+
+| Parameter   | Type                     | Description                                          | Default Value          |
+| :---------- | :----------------------- | :--------------------------------------------------- | :--------------------- |
+| `agent_type`| `str`                    | An optional string to filter agents by their type (e.g., `"coder"`, `"designer"`). Leave empty to retrieve all agent types. | `"all"`                |
+| `options`   | `Optional[ListOptions]`  | Optional pagination settings (`page_num`, `page_size`). | `None` (uses default `page_num=1`, `page_size=10`) |
+
+**Returns:**
+
+`PaginatedResponse[AgentInfo]`: A paginated response object containing a list of `AgentInfo` objects.
+
+**Example: Listing Agents**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+from wyse_mate.models import ListOptions
+
+client = Client(load_default_config()) # or initialize manually
+
+# Retrieve all agents with default pagination
+agents_response = client.agent.get_list()
+print(f"Total Agents: {agents_response.total}")
+for agent in agents_response.data:
+    print(f"- {agent.name} (ID: {agent.agent_id}, Type: {agent.agent_type})")
+
+# Retrieve 'coder' agents, with a custom page size of 5
+coder_agents = client.agent.get_list(agent_type="coder", options=ListOptions(page_size=5))
+print(f"Coder Agents (first 5): {len(coder_agents.data)}")
+for agent in coder_agents.data:
+    print(f"- {agent.name}")
+```
+
+#### `get_info`
+
+`get_info(agent_id: str) -> AgentInfo`
+
+Retrieves detailed information for a specific agent, identified by its unique ID.
+
+| Parameter | Type   | Description            |
+| :-------- | :----- | :--------------------- |
+| `agent_id`| `str`  | The unique identifier of the agent whose information is to be retrieved. |
+
+**Returns:**
+
+`AgentInfo`: An object containing comprehensive details about the specified agent.
+
+**Example: Getting Agent Information**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+
+client = Client(load_default_config()) # or initialize manually
+
+agent_id_to_fetch = "your-agent-id-here" # Replace with an actual agent ID
+try:
+    agent_details = client.agent.get_info(agent_id_to_fetch)
+    print(f"Agent Name: {agent_details.name}")
+    print(f"Agent Description: {agent_details.description}")
+    print(f"Agent Type: {agent_details.agent_type}")
+    print(f"Associated Model: {agent_details.model.provider}/{agent_details.model.model_type}")
+except Exception as e:
+    print(f"Error fetching agent info: {e}")
+```
+
+### `AgentInfo` Data Model
+
+Represents comprehensive information about an agent within the Wyse Mate platform.
+
+```python
+from pydantic import BaseModel, Field
+from datetime import datetime
+
+class AgentInfo(BaseModel):
+    agent_id: str = Field(alias="agent_id", description="Unique identifier of the agent.")
+    user_id: str = Field(alias="user_id", description="The ID of the user who owns or created the agent.")
+    avatar: str = Field(description="URL to the agent's avatar image.")
+    name: str = Field(description="The name of the agent.")
+    description: str = Field(description="A brief description of the agent.")
+    system_message: str = Field(alias="system_message", description="The system prompt message for the agent.")
+    component_type: str = Field(alias="component_type", description="The type of component, typically 'agent'.")
+    model: ModelInfo = Field(description="Information about the AI model associated with the agent.")
+    agent_type: str = Field(alias="agent_type", description="The type of the agent (e.g., 'coder', 'designer').")
+    parameters: AgentParameters = Field(description="Configuration parameters specific to the agent.")
+    created_at: datetime = Field(alias="created_at", description="Timestamp when the agent was created.")
+    updated_at: datetime = Field(alias="updated_at", description="Timestamp when the agent was last updated.")
+```
+
+| Attribute        | Type               | Description                                          |
+| :--------------- | :----------------- | :--------------------------------------------------- |
+| `agent_id`       | `str`              | Unique ID of the agent.                              |
+| `user_id`        | `str`              | ID of the user who owns or created the agent.        |
+| `avatar`         | `str`              | URL to the agent's avatar image.                     |
+| `name`           | `str`              | Name of the agent.                                   |
+| `description`    | `str`              | Description of the agent.                            |
+| `system_message` | `str`              | The system prompt message for the agent.             |
+| `component_type` | `str`              | Type of component (e.g., "agent").                   |
+| `model`          | `ModelInfo`        | Information about the AI model associated with the agent. |
+| `agent_type`     | `str`              | Type of the agent (e.g., "coder", "designer").     |
+| `parameters`     | `AgentParameters`  | Configuration parameters specific to the agent.      |
+| `created_at`     | `datetime`         | Timestamp when the agent was created.                |
+| `updated_at`     | `datetime`         | Timestamp when the agent was last updated.           |
+
+#### `ModelInfo` Data Model
+
+Provides essential information about an AI model used by agents or teams, including its provider, type, and timestamps.
+
+```python
+from pydantic import BaseModel, Field
+
+class ModelInfo(BaseModel):
+    system_model_id: str = Field(alias="system_model_id", description="The system-wide unique ID for the model.")
+    provider: str = Field(description="The provider of the AI model (e.g., 'openai', 'google').")
+    model_type: str = Field(alias="model_type", description="The type or name of the model (e.g., 'gpt-4', 'gemini-pro').")
+    icon_url: str = Field(alias="icon_url", description="URL to the model's icon image.")
+    created_at: str = Field(alias="created_at", description="Timestamp when the model information was created.")
+    updated_at: str = Field(alias="updated_at", description="Timestamp when the model information was last updated.")
+```
+
+| Attribute         | Type   | Description                                          |
+| :---------------- | :----- | :--------------------------------------------------- |
+| `system_model_id` | `str`  | The system-wide unique ID for the model.             |
+| `provider`        | `str`  | The provider of the AI model (e.g., "openai", "google"). |
+| `model_type`      | `str`  | The type or name of the model (e.g., "gpt-4", "gemini-pro"). |
+| `icon_url`        | `str`  | URL to the model's icon.                             |
+| `created_at`      | `str`  | Timestamp when the model information was created.    |
+| `updated_at`      | `str`  | Timestamp when the model information was last updated. |
+
+#### `AgentParameters` Data Model
+
+Defines the configurable parameters that influence an agent's behavior and output.
+
+```python
+from pydantic import BaseModel, Field
+
+class AgentParameters(BaseModel):
+    system_prompt_role: str = Field(alias="system_prompt_role", description="The role aspect of the system prompt, guiding the agent's persona.")
+    system_prompt_task_skill: str = Field(alias="system_prompt_task_skill", description="The task skill aspect of the system prompt, defining the agent's area of expertise.")
+    temperature: float = Field(alias="temperature", description="Controls the randomness and creativity of the agent's output. Higher values result in more diverse and unpredictable responses.")
+```
+
+| Attribute              | Type    | Description                                          |
+| :--------------------- | :------ | :--------------------------------------------------- |
+| `system_prompt_role`   | `str`   | The role aspect of the system prompt.                |
+| `system_prompt_task_skill` | `str`   | The task skill aspect of the system prompt.          |
+| `temperature`          | `float` | Controls the randomness of the agent's output. Higher values mean more random output. |
+
+## Session Service API Reference
+
+The `SessionService` manages interactions related to sessions, including their creation, retrieval of detailed information, and management of messages within them. Access this service via `client.session`.
+
+```python
+from wyse_mate.services.session import SessionService
+
+class SessionService:
+    def __init__(self, client: "Client"):
+        # ... initialization logic ...
+```
+
+### Methods
+
+#### `create`
+
+`create(request: CreateSessionRequest) -> CreateSessionResponse`
+
+Initiates and creates a new session on the Wyse Mate platform.
+
+| Parameter | Type                       | Description            |
+| :-------- | :------------------------- | :--------------------- |
+| `request` | `CreateSessionRequest`     | The request body containing details for creating the session. |
+
+**Returns:**
+
+`CreateSessionResponse`: An object encapsulating the unique ID of the newly created session.
+
+**Example: Creating a New Session**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+from wyse_mate.models import CreateSessionRequest
+
+client = Client(load_default_config()) # or initialize manually
+
+try:
+    # Replace 'your-team-id' with an actual team ID from your Wyse Mate account
+    create_session_req = CreateSessionRequest(
+        team_id="your-team-id",
+        task="Describe the current weather in London."
+    )
+    session_response = client.session.create(create_session_req)
+    print(f"New Session Created with ID: {session_response.session_id}")
+except Exception as e:
+    print(f"Error creating session: {e}")
+```
+
+#### `get_info`
+
+`get_info(session_id: str) -> SessionInfo`
+
+Retrieves comprehensive details about a specific session using its unique ID.
+
+| Parameter    | Type   | Description            |
+| :----------- | :----- | :--------------------- |
+| `session_id` | `str`  | The unique identifier of the session to retrieve information for. |
+
+**Returns:**
+
+`SessionInfo`: An object containing detailed information about the specified session.
+
+**Example: Getting Session Information**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+
+client = Client(load_default_config()) # or initialize manually
+
+session_id_to_fetch = "your-session-id-here" # Replace with an actual session ID
+try:
+    session_details = client.session.get_info(session_id_to_fetch)
+    print(f"Session Name: {session_details.name}")
+    print(f"Session Status: {session_details.status}")
+    print(f"Session Duration: {session_details.duration} seconds")
+except Exception as e:
+    print(f"Error fetching session info: {e}")
+```
+
+#### `get_messages`
+
+`get_messages(session_id: str, page_num: int = 1, page_size: int = 20, filter: Optional[MessageFilter] = None) -> GetMessagesResponse`
+
+Retrieves a paginated list of messages from a specific session. You can apply optional filters to narrow down the results.
+
+| Parameter    | Type                      | Description                                          | Default Value          |
+| :----------- | :------------------------ | :--------------------------------------------------- | :--------------------- |
+| `session_id` | `str`                     | The unique ID of the session from which to retrieve messages. |
+| `page_num`   | `int`                     | The page number to retrieve (1-indexed).           | `1`                    |
+| `page_size`  | `int`                     | The number of messages to return per page.                   | `20`                   |
+| `filter`     | `Optional[MessageFilter]` | An optional `MessageFilter` object to apply specific criteria (e.g., by role, content, or timestamp range). | `None`                 |
+
+**Returns:**
+
+`GetMessagesResponse`: An object containing a paginated list of `MessageResponse` objects, along with pagination metadata.
+
+**Example: Retrieving Session Messages**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+from wyse_mate.models import MessageFilter
+
+client = Client(load_default_config()) # or initialize manually
+
+session_id_to_fetch = "your-session-id-here" # Replace with an actual session ID
+try:
+    # Retrieve all messages for a session (using default pagination)
+    messages_response = client.session.get_messages(session_id_to_fetch)
+    print(f"Total Messages in session: {messages_response.total_count}")
+    for message in messages_response.messages:
+        print(f"[{message.source}] {message.content[:100]}...")
+
+    # Retrieve messages from a specific role (e.g., 'assistant')
+    filtered_messages = client.session.get_messages(
+        session_id_to_fetch,
+        filter=MessageFilter(role="assistant")
+    )
+    print(f"Assistant Messages in session: {filtered_messages.total_count}")
+
+except Exception as e:
+    print(f"Error fetching messages: {e}")
+```
+
+#### `get_between_messages`
+
+`get_between_messages(session_id: str, from_message_id: str, to_message_id: str) -> GetMessagesResponse`
+
+Retrieves a sequence of messages from a session that fall between two specified message IDs (inclusive).
+
+| Parameter         | Type   | Description                                          |
+| :---------------- | :----- | :--------------------------------------------------- |
+| `session_id`      | `str`  | The unique ID of the session containing the messages. |
+| `from_message_id` | `str`  | The ID of the starting message in the desired range (inclusive). |
+| `to_message_id`   | `str`  | The ID of the ending message in the desired range (inclusive). |
+
+**Returns:**
+
+`GetMessagesResponse`: An object containing the messages within the specified range. Note that pagination metadata (`page_num`, `page_size`, `total_page`) might not be relevant or populated for this specific endpoint, only `total_count`, `has_next`, `has_prev` and `data` will be relevant.
+
+**Example: Retrieving Messages Between Two IDs**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+
+client = Client(load_default_config()) # or initialize manually
+
+session_id_to_fetch = "your-session-id-here" # Replace with an actual session ID
+from_msg_id = "message-id-1" # Replace with an actual message ID from the session
+to_msg_id = "message-id-2"   # Replace with another actual message ID from the session
+
+try:
+    messages_between = client.session.get_between_messages(
+        session_id_to_fetch, from_msg_id, to_msg_id
+    )
+    print(f"Messages between {from_msg_id} and {to_msg_id}: {messages_between.total_count} found.")
+    for message in messages_between.messages:
+        print(f"[{message.source}] {message.content[:100]}...")
+
+except Exception as e:
+    print(f"Error fetching messages between IDs: {e}")
+```
+
+#### `update_session_name`
+
+`update_session_name(request: UpdateSessionNameRequest) -> None`
+
+Modifies the title (name) of an existing session.
+
+| Parameter | Type                         | Description            |
+| :-------- | :--------------------------- | :--------------------- |
+| `request` | `UpdateSessionNameRequest`   | The request body containing the session ID and the new title. |
+
+**Example: Updating a Session's Name**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+from wyse_mate.models import UpdateSessionNameRequest
+
+client = Client(load_default_config()) # or initialize manually
+
+session_id_to_update = "your-session-id-here" # Replace with an actual session ID
+new_session_name = "My Updated Session Title"
+
+try:
+    update_req = UpdateSessionNameRequest(
+        session_id=session_id_to_update,
+        title=new_session_name
+    )
+    client.session.update_session_name(update_req)
+    print(f"Session {session_id_to_update} name successfully updated to \"{new_session_name}\".")
+except Exception as e:
+    print(f"Error updating session name: {e}")
+```
+
+### Session Service Data Models
+
+#### `CreateSessionRequest` Data Model
+
+Defines the structure for requests to create a new session.
+
+```python
+from pydantic import BaseModel, Field
+from typing import Optional
+
+class CreateSessionRequest(BaseModel):
+    team_id: str = Field(alias="team_id", description="The unique identifier of the team associated with the new session.")
+    task: Optional[str] = Field(default="", description="The initial task or objective for the session. This will guide the agents' actions.")
+    title: Optional[str] = Field(None, description="An optional, human-readable title for the new session.")
+```
+
+| Attribute | Type               | Description                                          | Default Value |
+| :-------- | :----------------- | :--------------------------------------------------- | :------------ |
+| `team_id` | `str`              | The ID of the team associated with the session.      |
+| `task`    | `Optional[str]`    | The initial task or objective for the session.       | `""`          |
+| `title`   | `Optional[str]`    | An optional title for the new session.               | `None`        |
+
+#### `CreateSessionResponse` Data Model
+
+Represents the response received after successfully creating a new session.
+
+```python
+from pydantic import BaseModel, Field
+
+class CreateSessionResponse(BaseModel):
+    session_id: str = Field(alias="session_id", description="The unique identifier of the newly created session.")
+```
+
+| Attribute    | Type   | Description                                          |
+| :----------- | :----- | :--------------------------------------------------- |
+| `session_id` | `str`  | The unique ID of the newly created session.          |
+
+#### `SessionInfo` Data Model
+
+Provides comprehensive information and current status about a specific session.
+
+```python
+from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import Any, List, Optional, Dict
+
+class SessionInfo(BaseModel):
+    session_id: str = Field(alias="session_id", description="Unique identifier of the session.")
+    status: str = Field(description="The current operational status of the session (e.g., 'active', 'completed', 'error').")
+    browser_id: str = Field(alias="browser_id", description="The ID of the browser instance associated with this session.")
+    team_id: str = Field(alias="team_id", description="The ID of the team that owns this session.")
+    intent_id: str = Field(alias="intent_id", description="An identifier related to the original intent or goal of the session.")
+    name: str = Field(description="The human-readable title or name of the session.")
+    task: List[UserTaskMessage] = Field(alias="task", description="A list of `UserTaskMessage` objects representing the tasks defined for this session.")
+    task_result: Dict[str, Any] = Field(alias="task_result", description="A dictionary containing the outcome or result of the session's task.")
+    messages: List[MessageResponse] = Field(default_factory=list, description="A list of `MessageResponse` objects representing all messages exchanged within this session.")
+    duration: int = Field(description="The total duration of the session in seconds.")
+    error_message: str = Field(alias="error_message", description="Any error message or details if the session terminated abnormally.")
+    attachments: List[Any] = Field(default_factory=list, description="A list of attachments (e.g., files, images) associated with the session.")
+    platform: str = Field(description="The platform on which the session is running.")
+    visibility: str = Field(description="The visibility setting for the session (e.g., 'private', 'public').")
+    created_at: str = Field(alias="created_at", description="Timestamp when the session was created.")
+    updated_at: str = Field(alias="updated_at", description="Timestamp when the session was last updated.")
+```
+
+| Attribute     | Type                     | Description                                          |
+| :------------ | :----------------------- | :--------------------------------------------------- |
+| `session_id`  | `str`                    | Unique ID of the session.                            |
+| `status`      | `str`                    | Current status of the session (e.g., "active", "completed"). |
+| `browser_id`  | `str`                    | ID of the browser instance associated with the session. |
+| `team_id`     | `str`                    | ID of the team associated with the session.          |
+| `intent_id`   | `str`                    | ID related to the original intent or goal.           |
+| `name`        | `str`                    | The title or name of the session.                    |
+| `task`        | `List[UserTaskMessage]`  | A list of user task messages for the session.        |
+| `task_result` | `Dict[str, Any]`         | Dictionary containing the result of the session's task. |
+| `messages`    | `List[MessageResponse]`  | A list of messages within the session.               |
+| `duration`    | `int`                    | Duration of the session in seconds.                  |
+| `error_message`| `str`                    | Any error message associated with the session.       |
+| `attachments` | `List[Attachments]`      | List of attachments related to the session.          |
+| `platform`    | `str`                    | The platform where the session is running.           |
+| `visibility`  | `str`                    | Visibility setting for the session (e.g., "private", "public"). |
+| `created_at`  | `str`                    | Timestamp when the session was created.              |
+| `updated_at`  | `str`                    | Timestamp when the session was last updated.         |
+
+#### `GetMessagesResponse` Data Model
+
+Represents a paginated response containing a list of messages retrieved from a session.
+
+```python
+from pydantic import BaseModel, Field
+from typing import List
+
+class GetMessagesResponse(BaseModel):
+    messages: List[MessageResponse] = Field(description="A list of `MessageResponse` objects for the current page.")
+    total_count: int = Field(description="The total number of messages available in the session, across all pages.")
+    has_next: bool = Field(default=False, description="Indicates whether there are more messages available on subsequent pages.")
+    has_prev: bool = Field(default=False, description="Indicates whether there are messages available on previous pages.")
+```
+
+| Attribute     | Type                    | Description                                          |
+| :------------ | :---------------------- | :--------------------------------------------------- |
+| `messages`    | `List[MessageResponse]` | A list of `MessageResponse` objects for the current page. |
+| `total_count` | `int`                   | The total number of messages in the session.         |
+| `has_next`    | `bool`                  | Indicates if there are more messages on subsequent pages. |
+| `has_prev`    | `bool`                  | Indicates if there are messages on previous pages.   |
+
+#### `MessageFilter` Data Model
+
+Used to define criteria for filtering messages when retrieving them from a session, allowing for precise queries based on role, content, or time range.
+
+```python
+from pydantic import BaseModel, Field
+from typing import Optional
+from datetime import datetime
+
+class MessageFilter(BaseModel):
+    role: Optional[str] = Field(None, description="Filters messages by the sender's role (e.g., 'user', 'assistant', 'system').")
+    content: Optional[str] = Field(None, description="Filters messages containing this specific content string (case-insensitive). ")
+    from_timestamp: Optional[datetime] = Field(None, description="Filters messages created after this timestamp (inclusive).")
+    to_timestamp: Optional[datetime] = Field(None, description="Filters messages created before this timestamp (inclusive).")
+```
+
+| Attribute      | Type               | Description                                          |
+| :------------- | :----------------- | :--------------------------------------------------- |
+| `role`         | `Optional[str]`    | Filters messages by the sender's role (e.g., "user", "assistant", "system"). |
+| `content`      | `Optional[str]`    | Filters messages containing this content string.     |
+| `from_timestamp`| `Optional[datetime]`| Filters messages created after this timestamp (inclusive). |
+| `to_timestamp` | `Optional[datetime]`| Filters messages created before this timestamp (inclusive). |
+
+#### `MessageResponse` Data Model
+
+Represents a single message exchanged within a session, containing details such as sender, content, type, and associated attachments.
+
+```python
+from pydantic import BaseModel, Field
+from typing import Any, List
+
+class MessageResponse(BaseModel):
+    message_id: str = Field(alias="message_id", description="Unique identifier of the message.")
+    source: str = Field(description="The source entity of the message (e.g., 'user', 'agent').")
+    source_type: str = Field(alias="source_type", description="The type of the source (e.g., 'human', 'llm').")
+    source_component: str = Field(alias="source_component", description="The specific component or ID that generated the message (e.g., an agent's ID or user's ID).")
+    content: str = Field(description="The main textual content of the message.")
+    message: Any = Field(alias="message", description="The raw, unparsed message data. Its structure can vary significantly based on the message type.")
+    type: str = Field(alias="type", description="The category or nature of the message (e.g., 'text', 'plan', 'tool_code').")
+    created_at: str = Field(alias="created_at", description="Timestamp when the message was created.")
+    attachments: List[Any] = Field(default_factory=list, description="A list of attachments (e.g., files, images) associated with the message.")
+    session_round: int = Field(alias="session_round", description="The round number within the session to which this message belongs.")
+```
+
+| Attribute        | Type            | Description                                          |
+| :--------------- | :-------------- | :--------------------------------------------------- |
+| `message_id`     | `str`           | Unique ID of the message.                            |
+| `source`         | `str`           | The source of the message (e.g., "user", "agent"). |
+| `source_type`    | `str`           | The type of the source (e.g., "human", "llm").     |
+| `source_component`| `str`           | The specific component that generated the message (e.g., agent ID, user ID). |
+| `content`        | `str`           | The main content of the message.                     |
+| `message`        | `Any`           | The raw, unparsed message data. This can vary based on message type. |
+| `type`           | `str`           | The type of message (e.g., "text", "plan", "tool_code"). |
+| `created_at`     | `str`           | Timestamp when the message was created.              |
+| `attachments`    | `List[Attachments]`| A list of attachments associated with the message.   |
+| `session_round`  | `int`           | The round number within the session the message belongs to. |
+
+#### `UserTaskMessage` Data Model
+
+Represents a user-defined task or input message provided within a session.
+
+```python
+from pydantic import BaseModel, Field
+from typing import Any, Optional, Dict
+
+class UserTaskMessage(BaseModel):
+    role: str = Field(description="The role of the sender, typically 'user'.")
+    content: str = Field(description="The textual content of the user's task message.")
+    metadata: Optional[Dict[str, Any]] = Field(None, description="An optional dictionary for additional, custom metadata related to the message.")
+```
+
+| Attribute | Type                   | Description                                          |
+| :-------- | :--------------------- | :--------------------------------------------------- |
+| `role`    | `str`                  | The role of the sender (e.g., "user").               |
+| `content` | `str`                  | The content of the user task message.                |
+| `metadata`| `Optional[Dict[str, Any]]`| Optional dictionary for additional metadata.         |
+
+#### `UpdateSessionNameRequest` Data Model
+
+Defines the request structure for updating the name (title) of an existing session.
+
+```python
+from pydantic import BaseModel, Field
+
+class UpdateSessionNameRequest(BaseModel):
+    session_id: str = Field(description="The unique identifier of the session to be updated.")
+    title: str = Field(description="The new title or name for the session.")
+```
+
+| Attribute    | Type   | Description                                          |
+| :----------- | :----- | :--------------------------------------------------- |
+| `session_id` | `str`  | The ID of the session to update.                     |
+| `title`      | `str`  | The new title or name for the session.               |
+
+## Browser Service API Reference
+
+The `BrowserService` offers methods for managing browser instances and their associated web pages within the Wyse Mate platform. Access this service via `client.browser`.
+
+```python
+from wyse_mate.services.browser import BrowserService
+
+class BrowserService:
+    def __init__(self, client: "Client"):
+        # ... initialization logic ...
+```
+
+### Methods
+
+#### `get_info`
+
+`get_info(browser_id: str) -> BrowserInfo`
+
+Retrieves comprehensive details about a specific browser instance, identified by its unique ID.
+
+| Parameter    | Type   | Description            |
+| :----------- | :----- | :--------------------- |
+| `browser_id` | `str`  | The unique identifier of the browser whose information is to be retrieved. |
+
+**Returns:**
+
+`BrowserInfo`: An object containing detailed information about the specified browser.
+
+**Example: Getting Browser Information**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+
+client = Client(load_default_config()) # or initialize manually
+
+browser_id_to_fetch = "your-browser-id-here" # Replace with an actual browser ID
+try:
+    browser_details = client.browser.get_info(browser_id_to_fetch)
+    print(f"Browser Status: {browser_details.status}")
+    print(f"Browser Resolution: {browser_details.width}x{browser_details.height}")
+    print(f"Associated Session ID: {browser_details.session_id}")
+except Exception as e:
+    print(f"Error fetching browser info: {e}")
+```
+
+#### `list_browsers`
+
+`list_browsers(session_id: str, options: Optional[ListOptions] = None) -> ListBrowsersResponse`
+
+Retrieves a list of all browser instances, with an option to filter them by a specific session ID. Pagination is supported.
+
+| Parameter    | Type                     | Description                                          | Default Value          |
+| :----------- | :----------------------- | :--------------------------------------------------- | :--------------------- |
+| `session_id` | `str`                    | The unique ID of the session to filter browser instances by. |
+| `options`    | `Optional[ListOptions]`  | Optional pagination settings (`page_num`, `page_size`). | `None` (uses default `page_num=1`, `page_size=20`) |
+
+**Returns:**
+
+`ListBrowsersResponse`: An object containing a list of `BrowserInfo` objects and the total count.
+
+**Example: Listing Browsers**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+from wyse_mate.models import ListOptions
+
+client = Client(load_default_config()) # or initialize manually
+
+session_id_to_filter = "your-session-id-here" # Replace with an actual session ID
+try:
+    browsers_response = client.browser.list_browsers(session_id=session_id_to_filter)
+    print(f"Total Browsers for session {session_id_to_filter}: {browsers_response.total}")
+    for browser in browsers_response.browsers:
+        print(f"- Browser ID: {browser.browser_id}, Status: {browser.status}")
+
+    # List browsers with a custom page size of 2
+    paginated_browsers = client.browser.list_browsers(
+        session_id=session_id_to_filter, options=ListOptions(page_size=2)
+    )
+    print(f"Browsers for session {session_id_to_filter} (first 2): {len(paginated_browsers.browsers)} found.")
+
+except Exception as e:
+    print(f"Error listing browsers: {e}")
+```
+
+#### `release_browser`
+
+`release_browser(browser_id: str) -> None`
+
+Releases a specific browser instance, making it available for reuse or ensuring its proper closure if no longer required.
+
+| Parameter    | Type   | Description            |
+| :----------- | :----- | :--------------------- |
+| `browser_id` | `str`  | The unique identifier of the browser instance to release. |
+
+**Example: Releasing a Browser**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+
+client = Client(load_default_config()) # or initialize manually
+
+browser_id_to_release = "your-browser-id-here" # Replace with an actual browser ID
+try:
+    client.browser.release_browser(browser_id_to_release)
+    print(f"Browser {browser_id_to_release} released successfully.")
+except Exception as e:
+    print(f"Error releasing browser: {e}")
+```
+
+#### `list_browser_pages`
+
+`list_browser_pages(browser_id: str, options: Optional[ListOptions] = None) -> ListBrowserPagesResponse`
+
+Retrieves a list of all currently open pages within a specified browser instance. Pagination is supported.
+
+| Parameter    | Type                     | Description                                          | Default Value          |
+| :----------- | :----------------------- | :--------------------------------------------------- | :--------------------- |
+| `browser_id` | `str`                    | The unique ID of the browser whose pages are to be listed. |
+| `options`    | `Optional[ListOptions]`  | Optional pagination settings (`page_num`, `page_size`). | `None` (uses default `page_num=1`, `page_size=20`) |
+
+**Returns:**
+
+`ListBrowserPagesResponse`: An object containing a list of `BrowserPageInfo` objects and the total count of pages.
+
+**Example: Listing Browser Pages**
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+from wyse_mate.models import ListOptions
+
+client = Client(load_default_config()) # or initialize manually
+
+browser_id_for_pages = "your-browser-id-here" # Replace with an actual browser ID
+try:
+    pages_response = client.browser.list_browser_pages(browser_id_for_pages)
+    print(f"Total Pages for browser {browser_id_for_pages}: {pages_response.total}")
+    for page in pages_response.pages:
+        print(f"- Page Index: {page.index}, URL: {page.url}, Status: {page.status}")
+
+    # List pages with a custom page size of 1
+    paginated_pages = client.browser.list_browser_pages(
+        browser_id_for_pages, options=ListOptions(page_size=1)
+    )
+    print(f"Pages for browser {browser_id_for_pages} (first page, 1 item): {len(paginated_pages.pages)} found.")
+
+except Exception as e:
+    print(f"Error listing browser pages: {e}")
+```
+
+### Browser Service Data Models
+
+#### `BrowserInfo` Data Model
+
+Represents comprehensive information about a browser instance within the Wyse Mate platform.
+
+```python
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
+class BrowserInfo(BaseModel):
+    browser_id: str = Field(alias="browser_id", description="Unique identifier of the browser instance.")
+    user_id: str = Field(alias="user_id", description="The ID of the user who owns this browser instance.")
+    session_id: str = Field(alias="session_id", description="The ID of the session this browser is associated with.")
+    status: str = Field(description="The current operational status of the browser (e.g., 'open', 'closed', 'error').")
+    width: int = Field(description="The width of the browser window in pixels.")
+    height: int = Field(description="The height of the browser window in pixels.")
+    ws_endpoint: str = Field(alias="ws_endpoint", description="The WebSocket endpoint for direct interaction with this browser instance.")
+    solve_captcha: bool = Field(alias="solve_captcha", description="Indicates whether automated CAPTCHA solving is enabled for this browser.")
+    timezone: str = Field(description="The timezone configured for the browser instance.")
+    user_agent: str = Field(alias="user_agent", description="The User-Agent string that the browser presents.")
+    duration_seconds: int = Field(alias="duration_seconds", description="The total duration (in seconds) that the browser has been active.")
+    created_at: str = Field(alias="created_at", description="Timestamp when the browser instance was created.") # Or datetime
+    pages: List[BrowserPageInfo] = Field(default_factory=list, description="A list of `BrowserPageInfo` objects representing all open pages within this browser instance.")
+```
+
+| Attribute        | Type                 | Description                                          |
+| :--------------- | :------------------- | :--------------------------------------------------- |
+| `browser_id`     | `str`                | Unique ID of the browser instance.                   |
+| `user_id`        | `str`                | ID of the user who owns the browser.                 |
+| `session_id`     | `str`                | ID of the session the browser is associated with.    |
+| `status`         | `str`                | Current status of the browser (e.g., "open", "closed"). |
+| `width`          | `int`                | Width of the browser window in pixels.               |
+| `height`         | `int`                | Height of the browser window in pixels.              |
+| `ws_endpoint`    | `str`                | WebSocket endpoint for direct browser interaction.   |
+| `solve_captcha`  | `bool`               | Indicates if captcha solving is enabled for this browser. |
+| `timezone`       | `str`                | The timezone configured for the browser.             |
+| `user_agent`     | `str`                | The User-Agent string used by the browser.           |
+| `duration_seconds`| `int`                | How long the browser has been active in seconds.     |
+| `created_at`     | `str`                | Timestamp when the browser instance was created.     |
+| `pages`          | `List[BrowserPageInfo]`| A list of open pages within this browser instance.   |
+
+#### `BrowserPageInfo` Data Model
+
+Provides information about a single web page open within a browser instance.
+
+```python
+from pydantic import BaseModel, Field
+
+class BrowserPageInfo(BaseModel):
+    index: int = Field(description="The numerical index of the page within its browser instance.")
+    url: str = Field(description="The current URL of the web page.")
+    status: str = Field(description="The loading status of the page (e.g., 'loading', 'completed').")
+    video_url: str = Field(alias="video_url", description="URL to a video recording of the page's activity, if available.")
+    ws_debugger_url: str = Field(alias="ws_debugger_url", description="The WebSocket debugger URL for this specific page, allowing for low-level interaction.")
+    front_debugger_url: str = Field(alias="front_debugger_url", description="The frontend debugger URL for direct browser tool access.")
+    page_id: str = Field(alias="page_id", description="Unique identifier of the browser page.")
+    debugger_host: str = Field(alias="debugger_host", description="The host address for the debugger service.")
+```
+
+| Attribute           | Type   | Description                                          |
+| :------------------ | :----- | :--------------------------------------------------- |
+| `index`             | `int`  | The index of the page within the browser.            |
+| `url`               | `str`  | The current URL of the page.                         |
+| `status`            | `str`  | The loading status of the page (e.g., "loading", "completed"). |
+| `video_url`         | `str`  | URL to a video recording of the page (if available). |
+| `ws_debugger_url`   | `str`  | WebSocket debugger URL for the page.                 |
+| `front_debugger_url`| `str`  | Frontend debugger URL for the page.                  |
+| `page_id`           | `str`  | Unique ID of the page.                               |
+| `debugger_host`     | `str`  | The host for the debugger.                           |
+
+#### `ListBrowsersResponse` Data Model
+
+Encapsulates a response containing a list of browser instances and their total count.
+
+```python
+from pydantic import BaseModel, Field
+from typing import List
+
+class ListBrowsersResponse(BaseModel):
+    browsers: List[BrowserInfo] = Field(description="A list of `BrowserInfo` objects, each representing an available browser instance.")
+    total: int = Field(description="The total number of browser instances available.")
+```
+
+| Attribute  | Type               | Description                                          |
+| :--------- | :----------------- | :--------------------------------------------------- |
+| `browsers` | `List[BrowserInfo]`| A list of `BrowserInfo` objects.                     |
+| `total`    | `int`              | The total number of browser instances available.     |
+
+#### `ListBrowserPagesResponse` Data Model
+
+Represents a response containing a list of pages for a specific browser instance, along with the total count.
+
+```python
+from pydantic import BaseModel, Field
+from typing import List
+
+class ListBrowserPagesResponse(BaseModel):
+    pages: List[BrowserPageInfo] = Field(description="A list of `BrowserPageInfo` objects, each representing an open page within the browser.")
+    total: int = Field(description="The total number of pages found for the specified browser.")
+```
+
+| Attribute | Type                   | Description                                          |
+| :-------- | :--------------------- | :--------------------------------------------------- |
+| `pages`   | `List[BrowserPageInfo]`| A list of `BrowserPageInfo` objects.                 |
+| `total`   | `int`                  | The total number of pages for the browser.           |

@@ -1,7 +1,185 @@
 ---
-title: Python SDK Getting Started
+title: Getting Started
 ---
 
-# Python SDK Getting Started
+# Installing and Configuring the Python SDK
 
-This section guides you through setting up and making your first API call with the Python SDK. 
+This guide provides a comprehensive walkthrough for installing the Wyse Mate Python SDK and setting up your development environment. By following these steps, you'll be ready to integrate with AgentOS quickly.
+
+## System Requirements
+
+Before you begin, ensure your system meets the following prerequisites:
+
+-   **Python**: Version 3.9 or higher
+-   **Operating System**: Compatible with Windows, macOS, or Linux
+-   **Dependencies**: All necessary dependencies are automatically handled during the SDK installation process.
+
+## Installation
+
+Choose your preferred method to install the Wyse Mate Python SDK:
+
+### 1. Install via PyPI (Recommended)
+
+The simplest way to install the SDK is using `pip`, Python's package installer. Open your terminal or command prompt and execute:
+
+```bash
+pip install wyse-mate-sdk
+```
+
+### 2. Install from Source
+
+If you need the latest development version or plan to contribute to the SDK, you can install it directly from the source code:
+
+```bash
+# First, clone the repository:
+git clone https://github.com/wyse/matego.git
+cd matego/sdk/python
+
+# Then, install in editable (development) mode:
+pip install -e .
+```
+
+### 3. Install with Poetry
+
+For projects using [Poetry](https://python-poetry.org/) for dependency management:
+
+```bash
+poetry add wyse-mate-sdk
+```
+
+### 4. Install with Conda
+
+If you prefer [Conda](https://docs.conda.io/en/latest/), you can install the SDK as follows:
+
+```bash
+conda install -c conda-forge wyse-mate-sdk
+```
+
+## Verify Your Installation
+
+After installation, it's good practice to verify that the SDK is correctly installed and accessible. Run the following Python snippet:
+
+```python
+import wyse_mate
+
+print(f"Wyse Mate SDK Python version: {wyse_mate.__version__}")
+
+# Test basic imports to ensure core components are available
+from wyse_mate import Client, ClientOptions
+from wyse_mate.models import TeamInfo
+from wyse_mate.errors import APIError
+
+print("✅ Wyse Mate Python SDK installed successfully!")
+```
+
+## Managing Dependencies with Virtual Environments (Recommended)
+
+To prevent dependency conflicts and maintain a clean project environment, we strongly recommend using a Python virtual environment.
+
+### Using `venv`
+
+`venv` is Python's built-in module for creating lightweight virtual environments.
+
+```bash
+# Create a new virtual environment (e.g., named 'mate-sdk-env')
+python -m venv mate-sdk-env
+
+# Activate the virtual environment:
+# On Linux/macOS:
+source mate-sdk-env/bin/activate
+
+# On Windows (Command Prompt):
+mate-sdk-env\Scripts\activate.bat
+
+# On Windows (PowerShell):
+mate-sdk-env\Scripts\Activate.ps1
+
+# Once activated, install the SDK:
+pip install wyse-mate-sdk
+```
+
+### Using `conda` Environments
+
+If you use Conda, you can create and activate a dedicated environment:
+
+```bash
+# Create a new conda environment (e.g., named 'mate-sdk') with Python 3.9
+conda create -n mate-sdk python=3.9
+
+# Activate the environment:
+conda activate mate-sdk
+
+# Install the SDK within the activated environment:
+pip install wyse-mate-sdk
+```
+
+## Initial Configuration
+
+After installing the SDK, the next crucial step is to configure your API credentials to enable communication with the Wyse Mate platform. For detailed instructions on obtaining and managing your API key, please refer to the [Authentication](/sdk/python/authentication) guide.
+
+### Preferred Method: `mate.yaml` Configuration File
+
+Storing your API key in a configuration file is the most secure and recommended approach, keeping sensitive information out of your codebase. Create a file named `mate.yaml` in your project's root directory with the following structure:
+
+```yaml
+api_key: "your-api-key-here"
+base_url: "https://api.mate.wyseos.com"
+timeout: 30
+debug: false
+```
+
+| Field      | Type    | Description                                                 | Default Value             |
+| :--------- | :------ | :---------------------------------------------------------- | :------------------------ |
+| `api_key`  | `string`| Your unique API key obtained from the Wyse Mate dashboard. **Required.** | *(None)*                  |
+| `base_url` | `string`| The base URL for the Wyse Mate API.                         | `https://api.mate.wyseos.com` |
+| `timeout`  | `integer`| The maximum time in seconds for API requests to respond.     | `30`                      |
+| `debug`    | `boolean`| Enables or disables debug mode for extended logging.        | `false`                   |
+
+To load this configuration in your Python application:
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_default_config
+
+config = load_default_config()
+if config:
+    client = Client(config)
+else:
+    print("Warning: mate.yaml not found. Consider creating one for production.")
+    # Fallback to manual configuration (replace with your actual API key)
+    from wyse_mate import ClientOptions
+    client = Client(ClientOptions(api_key="YOUR_API_KEY"))
+```
+
+### Alternative: In-Code Configuration
+
+While less ideal for production due to embedding credentials in code, you can also configure the client directly within your Python script using `ClientOptions`.
+
+```python
+from wyse_mate import Client, ClientOptions
+
+client = Client(ClientOptions(
+    api_key="YOUR_API_KEY", # Replace with your actual API key
+    base_url="https://api.mate.wyseos.com",
+    timeout=30,
+    debug=False
+))
+```
+
+### Loading from a Custom Configuration Path
+
+If your `mate.yaml` file is located at a non-standard path, specify its location directly:
+
+```python
+from wyse_mate import Client
+from wyse_mate.config import load_config
+
+# Replace with the actual path to your custom config file
+custom_config_path = "path/to/your/custom-mate.yaml"
+config = load_config(custom_config_path)
+client = Client(config)
+```
+
+## Next Steps
+
+With the SDK installed and configured, you're ready to start building! Head over to the [Examples](/sdk/python/examples) section for practical code snippets, or dive deeper into the API functionalities in the [API Reference](/sdk/python/api-reference). 

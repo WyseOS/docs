@@ -1,7 +1,159 @@
 ---
-title: Python SDK Troubleshooting
+title: Troubleshooting
 ---
 
-# Python SDK Troubleshooting
+# Troubleshooting the Wyse Mate Python SDK
 
-This section addresses common issues and provides solutions when using the Python SDK. 
+This section provides practical solutions to common issues you might encounter while installing, configuring, or using the Wyse Mate Python SDK. Each problem is accompanied by clear steps to help you quickly resolve the issue and resume your development.
+
+## Common Installation and Usage Issues
+
+### 1. `ImportError: No module named 'wyse_mate'`
+
+**Cause**: This error indicates that the Python interpreter cannot locate the `wyse_mate` package, usually because it's not installed or your virtual environment is not active.
+
+**Solution**:
+
+*   **Verify Installation**: Ensure the SDK is properly installed. Re-run the installation command:
+
+    ```bash
+pip install wyse-mate-sdk
+    ```
+
+*   **Activate Virtual Environment**: If you are using a virtual environment (highly recommended), ensure it is activated before running your Python script.
+
+    ```bash
+# For Linux/macOS users:
+source mate-sdk-env/bin/activate
+
+# For Windows users (Command Prompt):
+mate-sdk-env\Scripts\activate.bat
+
+# For Windows users (PowerShell):
+mate-sdk-env\Scripts\Activate.ps1
+    ```
+
+### 2. `ConfigError: Configuration file not found: mate.yaml`
+
+**Cause**: The SDK client was initialized without successfully loading a `mate.yaml` configuration file.
+
+**Solution**:
+
+*   **Create `mate.yaml`**: Create a `mate.yaml` file in your project's root directory, ensuring it contains your API key and other necessary configurations. Refer to the [Authentication](/sdk/python/authentication) guide for the correct format.
+*   **In-Code Configuration**: As an alternative (less recommended for production), you can directly pass `ClientOptions` when initializing the `Client` in your Python code.
+
+### 3. `SSLCertificateError: [SSL: CERTIFICATE_VERIFY_FAILED]`
+
+**Cause**: This error typically arises from issues with SSL certificate verification, often due to an outdated or missing certificate bundle on your operating system.
+
+**Solution**:
+
+*   **Update System SSL Certificates**: The method for updating SSL certificates varies by operating system.
+    *   **macOS**: For Python installations managed by `python.org` (not Homebrew), you might need to run the `Install Certificates.command` script located in your Python application directory (e.g., `/Applications/Python 3.x/Install Certificates.command`).
+*   **Disable SSL Verification (Use with Extreme Caution)**: For development or testing environments, you can disable SSL verification. **This is not recommended for production due to significant security risks.**
+
+    ```python
+    from wyse_mate import Client, ClientOptions
+    import requests
+
+    # Create a requests session that bypasses SSL certificate verification
+    # WARNING: This practice exposes your application to security vulnerabilities.
+    session = requests.Session()
+    session.verify = False
+
+    client = Client(ClientOptions(
+        api_key="YOUR_API_KEY", # Replace with your actual API key
+        http_client=session
+    ))
+    print("Client initialized with SSL verification disabled.")
+    ```
+
+### 4. `PermissionError: [Errno 13] Permission denied` during `pip install`
+
+**Cause**: You lack the necessary permissions to install packages globally on your system.
+
+**Solution**:
+
+*   **Use a Virtual Environment (Recommended)**: This is the safest and most effective way to manage Python dependencies, as it installs packages into an isolated environment that doesn't require system-wide permissions.
+*   **Install with `--user` Flag**: This installs the package only for your current user, typically in `~/.local/lib/pythonX.Y/site-packages/`.
+
+    ```bash
+pip install --user wyse-mate-sdk
+    ```
+
+### 5. `ConfigError: Invalid YAML in configuration file`
+
+**Cause**: Your `mate.yaml` configuration file contains syntax errors.
+
+**Solution**: Carefully review your `mate.yaml` for correct YAML syntax. Pay close attention to:
+
+*   **Indentation**: YAML relies heavily on consistent indentation using spaces (not tabs).
+*   **Colons**: Ensure proper use of colons (`:`) to separate keys and values.
+*   **Quoting**: String values, especially those containing special characters, should be enclosed in double quotes (`"`).
+
+    Consider using an online YAML validator to quickly identify and fix syntax errors.
+
+## Configuration Validation Errors
+
+The SDK rigorously validates your `ClientOptions` to ensure that all required configurations are present and correctly formatted. Here are common `ValidationError` messages you might encounter:
+
+### Missing API Key (`api_key`)
+
+**Error Message Example**: `Validation Error: API key must not be empty`
+
+**Cause**: The `api_key` field in your `ClientOptions` (or `mate.yaml`) is missing or empty.
+
+**Solution**: Provide a valid API key obtained from your Wyse Mate dashboard.
+
+```python
+from wyse_mate import Client, ClientOptions
+from wyse_mate.errors import ValidationError
+
+try:
+    client = Client(ClientOptions(api_key="")) # Incorrect: Empty API key
+except ValidationError as e:
+    print(f"Correctly caught: {e}") # Expected output: Validation Error: API key must not be empty
+```
+
+### Invalid Base URL (`base_url`)
+
+**Error Message Example**: `Validation Error: base_url must be a valid URL`
+
+**Cause**: The `base_url` provided in `ClientOptions` (or `mate.yaml`) is not a properly formatted URL.
+
+**Solution**: Ensure the `base_url` is a complete and valid URL, including the scheme (e.g., `https://`).
+
+```python
+from wyse_mate import Client, ClientOptions
+from wyse_mate.errors import ValidationError
+
+try:
+    client = Client(ClientOptions(api_key="YOUR_API_KEY", base_url="invalid-url")) # Incorrect: Malformed URL
+except ValidationError as e:
+    print(f"Correctly caught: {e}") # Expected output: Validation Error: base_url must be a valid URL
+```
+
+### Invalid Timeout Value (`timeout`)
+
+**Error Message Example**: `Validation Error: timeout must be a positive integer`
+
+**Cause**: The `timeout` value in `ClientOptions` (or `mate.yaml`) is zero, negative, or not an integer.
+
+**Solution**: Provide a positive integer for the `timeout` parameter, representing seconds.
+
+```python
+from wyse_mate import Client, ClientOptions
+from wyse_mate.errors import ValidationError
+
+try:
+    client = Client(ClientOptions(api_key="YOUR_API_KEY", timeout=0)) # Incorrect: Timeout cannot be zero
+except ValidationError as e:
+    print(f"Correctly caught: {e}") # Expected output: Validation Error: timeout must be a positive integer
+```
+
+## Need Further Assistance?
+
+If your issue is not covered here or you require more in-depth support, please utilize the following resources:
+
+*   **GitHub Issues**: For bug reports, feature requests, or contributions, please open an issue on our [GitHub repository](https://github.com/wyse/matego/issues). Provide as much detail as possible, including steps to reproduce, error messages, and your environment setup.
+*   **Support Email**: For direct assistance with account-specific issues or confidential inquiries, reach out to our support team at [info@wyseos.com](mailto:info@wyseos.com). 
