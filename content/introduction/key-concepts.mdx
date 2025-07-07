@@ -1,0 +1,76 @@
+---
+title: Key Concepts
+---
+
+WyseOS has several interconnected components that work together to enable intelligent behaviour. The system architecture is centered around a multi-agent collaborative system composed of a core Task Planning Agent and multiple specialized Expert Agents. The Task Planning Agent is responsible for interpreting natural language commands and performing macro-level task regulation and orchestration, while various Expert Agents focus on executing specific sub-tasks.
+
+#### Multi-Agent Framework
+
+WyseOS adopts AutoGen as its unified agent orchestration framework. AutoGen is an open-source platform designed for building AI agents and promoting their efficient collaboration to solve complex tasks. Its core features include asynchronous message passing mechanisms, high modularity, and excellent scalability, providing strong support for building complex distributed agent networks. Leveraging AutoGen's powerful capabilities, WyseOS is able to achieve seamless connections across multiple heterogeneous platforms and application scenarios, ensuring real-time, efficient collaboration between the Planning Agent and various Expert Agents to effectively handle diverse, complex automation tasks.
+
+##### Intent Recognition and Task Orchestration
+
+As the core coordinator of WyseOS, the Task Planning Agent primarily undertakes the following responsibilities: First, it employs advanced natural language processing techniques to deeply parse user goals and instructions input in natural language, accurately grasping user intent. Subsequently, based on task requirements, it dynamically decomposes complex tasks into a series of executable sub-tasks and intelligently selects and initializes corresponding Expert Agents.
+
+A summary of its responsibilities includes:
+
+- Interpreting high-level goals/ user input or prompts
+- Querying LLM for plan synthesis
+- Issuing task dispatches to expert agents
+- Coordinating with memory and perception
+- Performing state transitions based on the success/failure of actions
+
+##### Multi-Expert Agent Execution
+
+The Expert Agents in WyseOS are functional units that execute specific automation operations.. When executing a task, an Expert Agent first retrieves relevant information and historical experience needed to complete the current sub-task from the system's knowledge base. Then, it utilizes its encapsulated control toolset specific to the task scenario (such as web page element manipulation tools, API call interfaces, etc.) to precisely execute specific automation actions.
+
+#### Page Visual and Semantic Hybrid Detection
+
+Effective perception and precise localization of web page elements are fundamental prerequisites for a web automation system to correctly understand page structure and content, and to safely execute subsequent operations. Given the diversity, dynamism, and inherent uncertainty of web pages in real-world environments, WyseOS has specially designed and implemented an efficient hybrid detection module to ensure the success rate and cross-site generalizability of element detection.
+
+- Visual Detection Module: This module incorporates a fine-tuned YOLO-v12 detection model. The model directly processes raw webpage screenshots and can identify various UI control types (such as buttons, input fields, etc.) and their precise bounding box locations on the page.
+- DOM Semantic Detection Module: It is responsible for traversing the Document Object Model (DOM), enumerating all interactable control elements and their bounding box information on the page, extracting text content related to controls, and assigning a unique system-internal ID to each identified control, providing a semantic basis for subsequent element localization and operation.
+- Information Fusion Strategy: WyseOS fuses information by comparing the overlap of control bounding boxes obtained from visual and DOM semantic detection. Specifically, if both methods identify an element as a TEXT control type and their predicted bounding box area overlap exceeds 10%, the system will prioritize the detection result based on DOM analysis and discard the corresponding visual detection result to leverage the more precise structural information provided by the DOM. In other cases, such as inconsistent control types or insufficient overlap, WyseOS will retain the control classification result from the visual detection module, using its visual features to help enhance the overall richness and robustness of detection semantics.
+
+#### Continuously Updated Knowledge Base
+
+One of WyseOS's core advantages lies in its integrated, continuously evolving Retrieval Augmented Generation (RAG) knowledge base. This knowledge base is pre-loaded with a large amount of official help documentation from websites and summaries of experience distilled from historically successful automation cases, providing immediate information retrieval support for various agents during decision-making and execution processes.
+
+WyseOS preprocesses unstructured help documentation from websites and converts it into structured task-solution pairs to improve agent adaptability in new environments. It also learns from past automation tasks by logging detailed execution data, which is periodically refined and added to its knowledge base. This unified approach, combining static domain knowledge with dynamic experiential learning, enables WyseOS to continuously improve through lifelong learning and deliver higher task success rates over time.
+
+#### Cloud Browser and Local Extension
+
+A key design aspect of WyseOS at the execution layer is its unique synergistic mechanism of a cloud-based sandbox browser and a local browser plugin. Firstly, the system provides an isolated cloud-based sandbox browser environment, enabling automation tasks to be executed independently and concurrently in the cloud. Secondly, for scenarios where many web applications and services require user identity credentials for login authentication, WyseOS cleverly completes the identity authentication process securely through a lightweight plugin installed in the user's local browser. This design effectively addresses the limitations and security concerns faced by traditional cloud browsers when handling complex identity authentications, ensuring the smoothness and compliance of automation processes.
+
+#### SDK and Modular Expansion
+
+To ensure that the WyseOS system possesses high flexibility and sustainability, it provides a comprehensive Software Development Kit (SDK) and a clear modular expansion mechanism. The SDK meticulously encapsulates a series of standardized interfaces and convenient agent registration processes. This enables third-party developers or user teams to easily encapsulate custom business logic, proprietary algorithmic models, or existing third-party components into new Expert Agents that comply with WyseOS specifications. This greatly enhances the entire system's functional coverage and scenario adaptability, meeting evolving automation demands.
+
+#### Comparison: WyseOS vs Traditional MAS
+
+| Feature | Traditional MAS | WyseOS |
+| :--------------------- | :------------------------------- | :-------------------------------------- |
+| Planning Granularity | Predefined FSM or rule-based | LLM-generated dynamic plans |
+| Coordination | Message passing | Shared memory + TPA orchestration |
+| Visual Grounding | Absent or rule-driven | Learned VLM models (WPM) |
+| Action Abstraction | Fixed action templates | Semantic-to-UI resolved actions |
+| Task Memory | Stateless or limited caching | Long-horizon task memory with recall |
+| Failure Recovery | Pre-coded fallback | Replanning based on perceptual feedback |
+| Environment Adaptation | Weak (brittle to layout changes) | Vision-aware, OCR + layout robustness |
+
+WyseOS overcomes MAS limitations via learned perception, language-guided planning, and reactive control loops, crucial for real-world web environments.
+
+### Future Directions for WyseOS
+
+- Self-Improving Agents: Online fine-tuning of WPM or LLM with reinforcement signals.
+- Collaborative Multi-Agent Plans: Multi-agent division of web tasks (e.g., one agent per coin).
+- Privacy and Safety Layer: Secure API sandboxing during execution.
+- Offline Replay Learning: Train WPM/TPA from replayed successful/failed sessions.
+- Human-in-the-Loop: Design effective HITL systems to enable collaboration, supervision, and intervention between Agent-Human
+
+### Conclusion
+
+WyseOS redefines what agentic systems can achieve by tightly coupling perception, memory, and planning. Inspired by innovations from WebAgent and built for robustness in dynamic environments, WyseOS represents a leap forward in this niche.
+It merges the intelligence of post-trained models, the adaptability of dynamic task planning, and the precision of real-world interaction into one unified operating system. It's not limited by static programming or brittle execution pipelines.
+
+Its ability to execute real-world web tasks showcases its potential as a general-purpose agentic operating system. 

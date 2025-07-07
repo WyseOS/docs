@@ -1,0 +1,113 @@
+---
+title: Authentication
+---
+
+This section details how to authenticate your Go application with the Mate API using the Mate SDK for Go. Authentication is primarily handled via API keys.
+
+## Obtaining Your API Key
+
+Before you can make any API calls, you need to obtain an API key from your Mate account. Refer to the Mate platform documentation or dashboard for instructions on generating and managing your API keys.
+
+## Authenticating with the SDK
+
+The Mate SDK for Go provides two primary ways to authenticate your client:
+
+1.  **Programmatic Configuration**: Directly providing the API key and other client options in your code.
+2.  **Configuration File**: Loading the API key and other settings from a `mate.yaml` configuration file.
+
+### 1. Programmatic Configuration
+
+You can create a new Mate client by providing your API key directly to the `mate.NewClient` function using `ClientOptions`.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	// Replace "your-api-key" with your actual Mate API key
+	// Replace "https://api.mate.wyseos.com" with your Mate API base URL if different
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey:  "your-api-key",
+		BaseURL: "https://api.mate.wyseos.com",
+		Timeout: 30, // Optional: Set timeout in seconds
+	})
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	fmt.Println("Mate client created successfully via programmatic configuration!")
+
+	// Example: List teams using the authenticated client
+	ctx := context.Background()
+	teams, err := client.Team.GetList(ctx)
+	if err != nil {
+		log.Fatalf("Failed to get teams: %v", err)
+	}
+
+	fmt.Printf("Found %d teams.\n", len(teams))
+}
+```
+
+### 2. Configuration File
+
+For more flexible deployment and to keep sensitive information out of your code, you can load client configurations from a `mate.yaml` file. This is particularly useful for different environments (development, staging, production).
+
+#### `mate.yaml` File Structure
+
+Create a file named `mate.yaml` (or any other name, you'll specify the path) at the root of your project or in a standard configuration path. The file should contain your API key and other optional settings:
+
+```yaml
+api_key: "your-api-key"
+base_url: "https://api.mate.wyseos.com" # Optional, defaults to Mate API if not set
+timeout: 30s # Optional, default 30 seconds
+retry:
+  max_attempts: 3 # Optional, default 3
+  initial_delay: 1s # Optional, default 1 second
+logging:
+  enabled: true # Optional, default false
+  level: "info" # Options: "debug", "info", "warn", "error". Optional, default "info"
+```
+
+#### Loading from Configuration File
+
+Use the `mate.NewClientFromConfig` function, providing the path to your `mate.yaml` file:
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	// Load client from a configuration file (e.g., mate.yaml in the current directory)
+	client, err := mate.NewClientFromConfig("mate.yaml")
+	if err != nil {
+		log.Fatalf("Failed to load client from config file: %v", err)
+	}
+
+	fmt.Println("Mate client loaded successfully from config file!")
+
+	// Example: List teams using the authenticated client
+	ctx := context.Background()
+	teams, err := client.Team.GetList(ctx)
+	if err != nil {
+		log.Fatalf("Failed to get teams: %v", err)
+	}
+
+	fmt.Printf("Found %d teams.\n", len(teams))
+}
+```
+
+**Security Note**: Always protect your API keys. Avoid hardcoding them directly into your public repositories. Use environment variables, secure configuration files, or secret management services in production environments. 

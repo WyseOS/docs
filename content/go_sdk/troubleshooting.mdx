@@ -1,0 +1,79 @@
+---
+title: Troubleshooting
+---
+
+This section provides solutions to common issues you might encounter while using the Mate SDK for Go. If you don't find a solution here, please refer to the Mate API documentation or seek support.
+
+## 1. Authentication and API Key Issues
+
+### Issue: `APIError: Status Code=401, Code=... Message=Unauthorized`
+
+**Cause**: Your API key is invalid, expired, or has insufficient permissions for the requested operation.
+
+**Solution**:
+*   **Verify API Key**: Double-check that the API key you are using is correct and active. Ensure there are no typos or extra spaces.
+*   **Check Permissions**: Confirm that your API key has the necessary permissions for the API endpoint you are trying to access. Some operations might require specific roles.
+*   **Base URL**: Ensure `BaseURL` in `ClientOptions` or `mate.yaml` is correctly set (e.g., `https://api.mate.wyseos.com`).
+*   **Environment Variables/Config File**: If loading from a configuration file or environment variable, ensure it's correctly loaded and accessible by your application.
+
+### Issue: `Failed to load client from config file: ... no such file or directory` or `yaml: unmarshal errors`
+
+**Cause**: The `mate.yaml` configuration file is either not found at the specified path or contains syntax errors.
+
+**Solution**:
+*   **Check File Path**: Verify that the path passed to `mate.NewClientFromConfig("path/to/mate.yaml")` is correct relative to where your application is run or an absolute path.
+*   **YAML Syntax**: Ensure your `mate.yaml` file has correct YAML syntax. Pay attention to indentation and key-value formatting.
+*   **Permissions**: Confirm your application has read permissions for the configuration file.
+
+## 2. Network and Connection Issues
+
+### Issue: `Network Error: failed to connect to WebSocket, Underlying Error: dial tcp ... connect: connection refused`
+
+**Cause**: The WebSocket server is unreachable, or there's a firewall/network issue preventing the connection.
+
+**Solution**:
+*   **Base URL**: Confirm that the `BaseURL` used for the client (which is converted to a WebSocket URL) is correct and the server is running and accessible at that address.
+*   **Firewall/Proxy**: Check your local firewall, corporate proxy, or network security settings that might be blocking WebSocket connections to the Mate API endpoint.
+*   **Internet Connectivity**: Ensure your system has an active internet connection.
+*   **Mate Service Status**: Check the status page for Mate services to see if there are any ongoing outages.
+
+### Issue: `Network Error: request failed, Underlying Error: context deadline exceeded` or `timeout`
+
+**Cause**: The API request or WebSocket operation took too long to complete and exceeded the configured timeout.
+
+**Solution**:
+*   **Increase Timeout**: Increase the `Timeout` value in your `ClientOptions` or `mate.yaml`. For long-running operations, especially with WebSockets or large data transfers, a higher timeout might be necessary. Note that very long timeouts might indicate an underlying issue.
+*   **Check Network Latency**: High network latency can contribute to timeouts. Test your connection speed and stability.
+*   **Server Performance**: If the issue persists with reasonable timeouts, there might be a performance bottleneck on the API server side.
+*   **Retry Logic**: The SDK has built-in retry logic. For transient network issues, this should help. Ensure `RetryOptions` are configured if you want to customize retry behavior.
+
+## 3. Data and Serialization Issues
+
+### Issue: `ValidationError: Field="session_id", Message="session ID cannot be empty"`
+
+**Cause**: A required input parameter for an SDK method was provided with an empty or invalid value.
+
+**Solution**:
+*   **Check Input**: Carefully review the values you are passing to SDK methods. Ensure all required parameters (like IDs, names, tasks) are non-empty and correctly formatted strings.
+*   **Refer to API Reference**: Consult the API Reference (`api-reference.mdx`) for the specific method to understand its required inputs and expected formats.
+
+### Issue: `failed to parse message type: ...` or `json: cannot unmarshal ...` (especially with WebSocket messages)
+
+**Cause**: The received JSON message from the server does not match the expected Go struct for unmarshaling, or there's a corruption in the message.
+
+**Solution**:
+*   **SDK Version**: Ensure you are using the latest version of the Mate SDK for Go. API changes on the server side might require an updated SDK to correctly parse new message formats.
+*   **Message Structure**: Compare the incoming JSON message format (if you can log it) with the expected `WSServerMessage` and `SessionMessage` structs in `types.go`.
+*   **Content Types**: Ensure `Content-Type` headers are correctly set for REST API calls (SDK handles this by default, but custom HTTP clients might interfere).
+
+## 4. Concurrency Issues
+
+### Issue: Unexpected behavior or panics when using `SessionWebSocket` concurrently
+
+**Cause**: Improper concurrent access to the `SessionWebSocket` methods or shared resources without proper synchronization.
+
+**Solution**:
+*   **Single Goroutine for Sends**: It is generally recommended to have a single goroutine responsible for sending messages via `ws.SendInput`, `ws.Start`, `ws.Stop`, etc., to avoid race conditions on the underlying WebSocket connection's write operations.
+*   **Read in Separate Goroutine**: Always read messages from `ws.Messages()` in a dedicated goroutine.
+*   **Context for Cancellation**: Use `context.Context` to manage the lifecycle of your goroutines and ensure graceful shutdown when the application exits or the WebSocket connection is no longer needed.
+*   **Review Go Concurrency Patterns**: If you are performing complex concurrent operations, review Go's concurrency patterns, especially related to channels and mutexes, to ensure thread-safe access to shared data. 

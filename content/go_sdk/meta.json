@@ -1,0 +1,12 @@
+{
+    "title": "Go SDK",
+    "pages": [
+        "introduction",
+        "preparation",
+        "authentication",
+        "getting-started",
+        "api-reference",
+        "examples",
+        "troubleshooting"
+    ]
+}

@@ -1,0 +1,111 @@
+---
+title: Getting Started
+---
+
+This guide provides a quick start to using the Mate SDK for Go. You'll learn how to set up your project, initialize the client, and make your first API call.
+
+## 1. Project Setup
+
+First, create a new Go module for your project (if you haven't already):
+
+```bash
+mkdir my-mate-app
+cd my-mate-app
+go mod init my-mate-app
+```
+
+Then, install the Mate SDK for Go:
+
+```bash
+go get github.com/matego/mate-sdk-go
+```
+
+This command will download the SDK and add it as a dependency in your `go.mod` file.
+
+## 2. Basic Client Initialization and First API Call
+
+The simplest way to get started is by initializing the client directly in your code with your API key. For more secure and flexible authentication methods, refer to the [Authentication Guide](authentication.mdx).
+
+Create a `main.go` file in your project directory and add the following code. Remember to replace `"your-api-key"` and `"your-team-id"` with your actual Mate API key and a valid team ID.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	// 1. Initialize the Mate Client
+	// Replace "your-api-key" with your actual API key.
+	// Optionally, replace "https://api.mate.wyseos.com" with your Mate API base URL.
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey:  "your-api-key",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatalf("Failed to create Mate client: %v", err)
+	}
+
+	fmt.Println("Mate client initialized successfully!")
+
+	// 2. Make Your First API Call: List Teams
+	// We'll use the Team service to fetch a list of teams associated with your account.
+	ctx := context.Background()
+	teams, err := client.Team.GetList(ctx)
+	if err != nil {
+		// Handle potential API errors (e.g., invalid API key, network issues)
+		log.Fatalf("Failed to retrieve teams: %v", err)
+	}
+
+	fmt.Printf("Successfully retrieved %d teams:\n", len(teams))
+
+	for _, team := range teams {
+		fmt.Printf("- Team ID: %s, Name: %s\n", team.TeamID, team.Name)
+	}
+
+	// 3. Example: Create a Session (requires a Team ID and Agent ID)
+	// This demonstrates interacting with another service. Replace with actual IDs.
+	// Ensure you have a valid Team ID and Agent ID from your Mate account.
+	teamID := "your-team-id" // IMPORTANT: Replace with a real team ID
+	agentID := "your-agent-id" // IMPORTANT: Replace with a real agent ID
+
+	createSessionReq := &mate.CreateSessionRequest{
+		TeamID:  teamID,
+		AgentID: agentID,
+		Task:    "Summarize the last 5 news articles on AI.", // Initial task for the session
+	}
+
+	session, err := client.Session.Create(ctx, createSessionReq)
+	if err != nil {
+		log.Printf("Failed to create session: %v\n", err)
+	} else {
+		fmt.Printf("Successfully created session: %s\n", session.SessionID)
+	}
+}
+```
+
+## 3. Run Your Application
+
+Save the file as `main.go` and run it from your terminal:
+
+```bash
+go run main.go
+```
+
+This will execute your Go application, initialize the Mate client, list your teams, and attempt to create a new session. You should see output similar to:
+
+```
+Mate client initialized successfully!
+Successfully retrieved X teams:
+- Team ID: <team-id-1>, Name: <team-name-1>
+- Team ID: <team-id-2>, Name: <team-name-2>
+...
+Successfully created session: <session-id>
+```
+
+Congratulations! You have successfully set up your Go project with the Mate SDK and made your first API calls. Explore the other sections of this documentation for more advanced functionalities and detailed API references. 

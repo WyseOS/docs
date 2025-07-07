@@ -1,8 +1,13 @@
 {
   "pages": [
-    "---API Documentation---",
-    "index",
+    "---Introduction---",
+    "introduction/welcome-to-wyseos",
+    "introduction/goal",
+    "introduction/key-concepts",
+    "---Mate SDK---",
+    "go_sdk",
+    "python_sdk",
     "---API References---",
-    "...(api)"
+    "api"
   ]
 }

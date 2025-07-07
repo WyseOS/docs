@@ -1,0 +1,113 @@
+---
+title: Preparation
+---
+
+This section guides you through the necessary steps to prepare your development environment for using the Mate SDK for Go, including system requirements and Go installation instructions for various operating systems.
+
+## System Requirements
+
+To use the Mate SDK for Go, you need:
+
+*   **Go Language**: Version 1.18 or higher is recommended.
+*   **Operating System**: Windows, Linux, or macOS.
+*   **Network Access**: Ability to reach `https://api.mate.wyseos.com` (or your configured Mate API base URL) and WebSocket endpoints.
+
+## Go Installation
+
+Before you can use the Mate SDK, you need to have Go installed on your system. Follow the instructions below based on your operating system.
+
+### Installation on Windows
+
+1.  **Download the Installer**: Visit the [official Go website](https://golang.org/dl/) and download the MSI installer for Windows.
+2.  **Run the Installer**: Execute the downloaded MSI file and follow the prompts. The installer will typically install Go to `C:\Program Files\Go` and add the `go\bin` directory to your system's `PATH` environment variable.
+3.  **Verify Installation**: Open a new Command Prompt or PowerShell window and run:
+
+    ```bash
+    go version
+    ```
+
+    You should see the installed Go version.
+
+### Installation on Linux
+
+There are several ways to install Go on Linux. Using your distribution's package manager is often the easiest.
+
+#### Option 1: Using Package Manager (Recommended for most users)
+
+*   **Debian/Ubuntu**:
+
+    ```bash
+    sudo apt update
+    sudo apt install golang-go
+    ```
+
+*   **CentOS/Fedora**:
+
+    ```bash
+    sudo dnf install golang # For Fedora
+    sudo yum install golang # For CentOS/RHEL 7
+    sudo dnf install golang # For CentOS/RHEL 8
+    ```
+
+#### Option 2: Installing from Tarball (For latest version or specific control)
+
+1.  **Download the Tarball**: Visit the [official Go website](https://golang.org/dl/) and download the latest `go<version>.<os>-<arch>.tar.gz` file.
+2.  **Extract to `/usr/local`**: Extract the archive to `/usr/local`:
+
+    ```bash
+    sudo rm -rf /usr/local/go
+    sudo tar -C /usr/local -xzf go<version>.<os>-<arch>.tar.gz
+    ```
+3.  **Set Environment Variables**: Add Go to your `PATH`. Edit your shell's profile file (e.g., `~/.bashrc`, `~/.profile`, or `~/.zshrc`) and add the following line:
+
+    ```bash
+    export PATH=$PATH:/usr/local/go/bin
+    ```
+
+    Then, apply the changes:
+
+    ```bash
+    source ~/.bashrc # or ~/.profile, ~/.zshrc
+    ```
+4.  **Verify Installation**: Open a new terminal and run:
+
+    ```bash
+    go version
+    ```
+
+### Installation on macOS
+
+#### Option 1: Using Homebrew (Recommended)
+
+If you have Homebrew installed, you can install Go with a single command:
+
+```bash
+brew install go
+```
+
+#### Option 2: Using the Official Installer
+
+1.  **Download the Installer**: Visit the [official Go website](https://golang.org/dl/) and download the package installer for macOS.
+2.  **Run the Installer**: Double-click the downloaded `.pkg` file and follow the installation wizard. This will install Go to `/usr/local/go` and set up the `PATH` automatically.
+
+#### Verify Installation (for both options)
+
+Open a new terminal and run:
+
+```bash
+go version
+```
+
+## Environment Variable Setup (General)
+
+While the installers often set up the `PATH` environment variable automatically, it's good to know how to verify or manually set it. Ensure that the `go/bin` directory (e.g., `/usr/local/go/bin` on Linux/macOS or `C:\Program Files\Go\bin` on Windows) is included in your system's `PATH`.
+
+*   **Linux/macOS**: Check your `~/.bashrc`, `~/.profile`, or `~/.zshrc` file for an `export PATH` line. If not present, add:
+
+    ```bash
+    export PATH=$PATH:/usr/local/go/bin
+    ```
+
+    Then `source` the file.
+
+*   **Windows**: You can manage environment variables through the System Properties. Search for "Environment Variables" in the Start menu. 

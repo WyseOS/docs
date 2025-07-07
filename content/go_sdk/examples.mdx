@@ -1,0 +1,554 @@
+---
+title: Examples
+---
+
+This section provides practical code examples to help you understand and use the Mate SDK for Go in various scenarios. The examples cover common use cases for both REST API interactions and real-time WebSocket communication.
+
+All examples assume you have a basic Go development environment set up and have installed the Mate SDK:
+
+```bash
+go get github.com/matego/mate-sdk-go
+```
+
+Remember to replace placeholder values like `"YOUR_API_KEY"`, `"your-team-id"`, `"your-agent-id"`, and `"your-session-id"` with your actual Mate API key and resource IDs.
+
+## 1. REST API Examples
+
+### 1.1. Listing Teams
+
+This example demonstrates how to initialize the client and fetch a list of teams associated with your account.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	ctx := context.Background()
+
+	// Retrieve the first page of teams, with a page size of 5
+	listOpts := &mate.ListOptions{
+		Page:     1,
+		PageSize: 5,
+	}
+
+	teamsResponse, err := client.Team.GetList(ctx, listOpts)
+	if err != nil {
+		log.Fatalf("Failed to list teams: %v", err)
+	}
+
+	fmt.Printf("Found %d teams (Total: %d):\n", len(teamsResponse.Teams), teamsResponse.TotalCount)
+	for _, team := range teamsResponse.Teams {
+		fmt.Printf("- ID: %s, Name: %s, Type: %s\n", team.TeamID, team.Name, team.TeamType)
+	}
+}
+```
+
+### 1.2. Creating a Session
+
+Learn how to create a new session by specifying the `TeamID` and `AgentID`.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	ctx := context.Background()
+
+	teamID := "your-team-id"   // Replace with an actual team ID
+	agentID := "your-agent-id" // Replace with an actual agent ID
+
+	createSessionReq := &mate.CreateSessionRequest{
+		TeamID:  teamID,
+		AgentID: agentID,
+		Task:    "Please analyze the daily stock market movements for tech companies.", // Initial task
+	}
+
+	session, err := client.Session.Create(ctx, createSessionReq)
+	if err != nil {
+		log.Fatalf("Failed to create session: %v", err)
+	}
+
+	fmt.Printf("Session created successfully: ID=%s, Status=%s\n", session.SessionID, session.Status)
+}
+```
+
+### 1.3. Getting Session Messages
+
+This example shows how to retrieve a paginated list of messages from a specific session, optionally applying filters.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	ctx := context.Background()
+	sessionID := "your-session-id" // Replace with an actual session ID
+
+	listOpts := &mate.ListOptions{
+		Page:     1,
+		PageSize: 10,
+	}
+
+	// Filter for 'text' messages received in the last 24 hours
+	endTime := time.Now()
+	startTime := endTime.Add(-24 * time.Hour)
+	msgFilter := &mate.MessageFilter{
+		Type:      mate.MessageTypeText,
+		StartTime: &startTime,
+		EndTime:   &endTime,
+	}
+
+	messagesResponse, err := client.Session.GetMessages(ctx, sessionID, listOpts, msgFilter)
+	if err != nil {
+		log.Fatalf("Failed to get messages for session %s: %v", sessionID, err)
+	}
+
+	fmt.Printf("Found %d text messages in session %s (Total: %d):\n", len(messagesResponse.Messages), sessionID, messagesResponse.TotalCount)
+	for _, msg := range messagesResponse.Messages {
+		fmt.Printf("- [Type: %s] [Source: %s] %s\n", msg.Type, msg.Source, msg.Content)
+	}
+}
+```
+
+### 1.4. Updating Team Information
+
+Demonstrates how to update the name and description of an existing team.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	ctx := context.Background()
+	teamID := "your-team-id" // Replace with an actual team ID
+
+	updateReq := &mate.UpdateTeamRequest{
+		Name:        "My Updated Team Name",
+		Description: "This is the new description for my updated team.",
+	}
+
+	updatedTeam, err := client.Team.UpdateTeam(ctx, teamID, updateReq)
+	if err != nil {
+		log.Fatalf("Failed to update team %s: %v", teamID, err)
+	}
+
+	fmt.Printf("Team %s updated successfully. New Name: %s, New Description: %s\n",
+		updatedTeam.TeamID, updatedTeam.Name, updatedTeam.Description)
+}
+```
+
+## 2. WebSocket Communication Examples
+
+### 2.1. Connecting and Starting a Session
+
+This example shows how to establish a WebSocket connection to a session, send an initial message to start it, and listen for incoming messages.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second) // Longer timeout for session interaction
+	defer cancel()
+
+	sessionID := "your-session-id" // Replace with an actual session ID
+
+	ws, err := client.Session.ConnectWebSocket(ctx, sessionID)
+	if err != nil {
+		log.Fatalf("Failed to connect WebSocket: %v", err)
+	}
+	defer ws.Close()
+
+	fmt.Printf("Connected to WebSocket for session: %s\n", sessionID)
+
+	// Goroutine to continuously read messages from the WebSocket
+	go func() {
+		for msg := range ws.Messages() {
+			fmt.Printf("Received message [Type: %s, Source: %s]: %s\n", msg.Type, msg.Source, msg.Content)
+			// You can add more complex message handling logic here based on msg.Type and msg.Source
+			// For example, if msg.Type == "plan", you might prompt the user for input.
+		}
+	}()
+
+	// Send a start message with an initial task
+	initialTask := "Help me find a good recipe for vegetarian lasagna."
+	err = ws.StartWithMessage(ctx, initialTask)
+	if err != nil {
+		log.Fatalf("Failed to send start message: %v", err)
+	}
+
+	fmt.Printf("Session started with task: \"%s\". Waiting for responses...\n", initialTask)
+
+	// Keep the main goroutine alive until the context is done
+	<-ctx.Done()
+	fmt.Println("Session interaction complete (context cancelled or timed out).")
+}
+```
+
+### 2.2. Sending User Input During a Session
+
+This example demonstrates how to send text input to an active WebSocket session.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
+	defer cancel()
+
+	sessionID := "your-session-id" // Replace with an actual session ID
+
+	ws, err := client.Session.ConnectWebSocket(ctx, sessionID)
+	if err != nil {
+		log.Fatalf("Failed to connect WebSocket: %v", err)
+	}
+	defer ws.Close()
+
+	fmt.Printf("Connected to WebSocket for session: %s\n", sessionID)
+
+	// Goroutine to read messages
+	go func() {
+		for msg := range ws.Messages() {
+			fmt.Printf("Received: [Type: %s] %s\n", msg.Type, msg.Content)
+		}
+	}()
+
+	// Start the session (assuming it needs to be started)
+	err = ws.StartWithMessage(ctx, "Hello, Mate. I need some information.")
+	if err != nil {
+		log.Fatalf("Failed to start session: %v", err)
+	}
+
+	time.Sleep(5 * time.Second) // Wait for initial response from AI
+
+	// Send a follow-up question/input
+	userInput := "What are the main benefits of cloud computing?"
+	err = ws.SendInput(ctx, userInput)
+	if err != nil {
+		log.Fatalf("Failed to send input: %v", err)
+	}
+
+	fmt.Printf("Sent input: \"%s\". Waiting for response...\n", userInput)
+
+	<-ctx.Done()
+	fmt.Println("Session input demonstration complete.")
+}
+```
+
+### 2.3. Handling AI-Generated Plans (Accept/Reject)
+
+This example illustrates how to receive a `plan` message from the AI and then accept or reject it.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 150*time.Second) // Longer timeout
+	defer cancel()
+
+	sessionID := "your-session-id" // Replace with an actual session ID
+
+	ws, err := client.Session.ConnectWebSocket(ctx, sessionID)
+	if err != nil {
+		log.Fatalf("Failed to connect WebSocket: %v", err)
+	}
+	defer ws.Close()
+
+	fmt.Printf("Connected to WebSocket for session: %s\n", sessionID)
+
+	// Goroutine to listen for and handle incoming messages
+	go func() {
+		for msg := range ws.Messages() {
+			fmt.Printf("Received message [Type: %s, Source: %s]: %s\n", msg.Type, msg.Source, msg.Content)
+
+			if msg.Type == string(mate.MessageTypePlan) { // Check if it's an AI-generated plan
+				fmt.Println("\nAI proposed a plan. Example: Accepting it without changes.")
+				// In a real application, you would parse msg.Message to get the plan details
+				// and decide whether to accept, edit, or reject.
+
+				// Example: Accepting the plan as is
+				err := ws.AcceptPlan(ctx, []mate.WSPlanTask{}) // Empty slice means accept the original plan
+				if err != nil {
+					log.Printf("Error accepting plan: %v", err)
+				} else {
+					fmt.Println("Plan accepted successfully.")
+				}
+
+				// Example: To reject the plan with feedback:
+				/*
+					err := ws.RejectPlan(ctx, "This plan is too general. Please provide more detailed steps.")
+					if err != nil {
+						log.Printf("Error rejecting plan: %v", err)
+					} else {
+						fmt.Println("Plan rejected with feedback.")
+					}
+				*/
+
+			} else if msg.Type == string(mate.MessageTypeError) {
+				log.Printf("Received error from WebSocket: %s", msg.Error)
+			}
+		}
+	}()
+
+	// Start the session with a task that is likely to generate a plan
+	initialTask := "Help me plan a marketing campaign for a new mobile app. Outline the key phases."
+	err = ws.StartWithMessage(ctx, initialTask)
+	if err != nil {
+		log.Fatalf("Failed to start session with plan request: %v", err)
+	}
+
+	fmt.Printf("Session started with task: \"%s\". Waiting for AI to propose a plan...\n", initialTask)
+
+	<-ctx.Done()
+	fmt.Println("Plan handling demonstration complete.")
+}
+```
+
+### 2.4. Pausing and Resuming a Session
+
+Demonstrates how to pause an active session and then resume its execution.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
+	defer cancel()
+
+	sessionID := "your-session-id" // Replace with an actual session ID
+
+	ws, err := client.Session.ConnectWebSocket(ctx, sessionID)
+	if err != nil {
+		log.Fatalf("Failed to connect WebSocket: %v", err)
+	}
+	defer ws.Close()
+
+	fmt.Printf("Connected to WebSocket for session: %s\n", sessionID)
+
+	// Start the session with a task
+	err = ws.StartWithMessage(ctx, "Tell me a long story about a space adventure.")
+	if err != nil {
+		log.Fatalf("Failed to start session: %v", err)
+	}
+
+	fmt.Println("Session started. Waiting 10 seconds before pausing...")
+	time.Sleep(10 * time.Second)
+
+	// Pause the session
+	err = ws.Pause(ctx)
+	if err != nil {
+		log.Fatalf("Failed to pause session: %v", err)
+	}
+
+	fmt.Println("Session paused. Waiting 5 seconds before resuming...")
+	time.Sleep(5 * time.Second)
+
+	// Resume the session
+	err = ws.Resume(ctx)
+	if err != nil {
+		log.Fatalf("Failed to resume session: %v", err)
+	}
+
+	fmt.Println("Session resumed. Allowing 10 more seconds for interaction.")
+	time.Sleep(10 * time.Second)
+
+	fmt.Println("Pausing/Resuming demonstration complete.")
+	<-ctx.Done()
+}
+```
+
+### 2.5. Handling WebSocket Connection Errors
+
+This example shows how to monitor the `Errors()` channel for network or WebSocket-specific issues and attempt to reconnect.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
+	defer cancel()
+
+	sessionID := "your-session-id" // Replace with an actual session ID
+
+	ws, err := client.Session.ConnectWebSocket(ctx, sessionID)
+	if err != nil {
+		log.Fatalf("Failed to connect WebSocket: %v", err)
+	}
+	defer ws.Close()
+
+	fmt.Printf("Connected to WebSocket for session: %s\n", sessionID)
+
+	// Goroutine to listen for WebSocket errors
+	go func() {
+		for wsErr := range ws.Errors() {
+			log.Printf("Detected WebSocket Error: %v. Attempting to reconnect...", wsErr)
+			// In a real application, you might implement retry logic with backoff.
+			// For simplicity, we'll just try to reconnect immediately here.
+			reconnectCtx, reconnectCancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer reconnectCancel()
+			err := ws.Reconnect(reconnectCtx)
+			if err != nil {
+				log.Printf("Failed to reconnect: %v. Giving up on this connection.", err)
+				return // Exit error handling goroutine if reconnect fails persistently
+			} else {
+				fmt.Println("Successfully reconnected to WebSocket.")
+			}
+		}
+	}()
+
+	// Simulate some activity and potential disconnection (e.g., by network disruption)
+	fmt.Println("Simulating active session. You can manually disconnect your network to test error handling.")
+	time.Sleep(30 * time.Second) // Keep active for a while
+
+	fmt.Println("Simulating a forced closure to trigger error handling...")
+	ws.Close() // This will cause a close error in the readLoop, triggering ws.Errors()
+
+	time.Sleep(5 * time.Second) // Give time for error handling to process
+	fmt.Println("WebSocket error handling demonstration complete.")
+	<-ctx.Done()
+} 

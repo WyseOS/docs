@@ -1,0 +1,57 @@
+---
+title: Introduction
+---
+
+The Mate SDK for Go is a client library designed to facilitate seamless interaction with the Mate API. It provides comprehensive access to various Mate services, including user management, team operations, agent interactions, session management, and real-time WebSocket communication.
+
+## Purpose and Benefits
+
+The primary purpose of the Mate SDK Go is to simplify the development of applications that integrate with the Mate platform. By encapsulating the complexities of API requests and WebSocket protocols, the SDK allows developers to focus on building their core application logic.
+
+Key benefits include:
+
+*   **Ease of Use**: Simplified API interactions and WebSocket communication through intuitive Go structs and functions.
+*   **Comprehensive Coverage**: Access to all major Mate API endpoints and real-time session control.
+*   **Robust Error Handling**: Built-in error types and handling mechanisms for reliable application development.
+*   **Flexible Configuration**: Support for both programmatic configuration and YAML-based file configuration.
+*   **Concurrency**: Designed to leverage Go's concurrency features for efficient performance in high-throughput applications.
+*   **Developer Friendly**: Clear and consistent API design, extensive examples, and detailed documentation.
+
+## High-Level Architecture
+
+The Mate SDK for Go is structured into several key components, each responsible for a specific aspect of interaction with the Mate API:
+
+*   **Client**: The central entry point for all API interactions. It manages authentication, base URL, and HTTP client settings, and orchestrates requests to various services.
+*   **Services (User, Team, Agent, Session, Browser)**: These modules encapsulate the logic for interacting with specific Mate API resources. Each service provides methods corresponding to the available API operations (e.g., `Client.Team.GetList`, `Client.Session.Create`).
+*   **WebSocket**: This component handles real-time communication with Mate sessions. It manages WebSocket connections, sends various types of messages (e.g., `start`, `input`, `stop`), and provides a channel for receiving incoming messages from the session.
+*   **Data Models (Types)**: A collection of Go structs that define the request and response payloads for all API endpoints and WebSocket messages. These models ensure type safety and clarity in data exchange.
+*   **Error Handling**: A custom error handling mechanism that provides specific error types for API errors, network issues, and input validation failures, allowing for precise error management.
+*   **Configuration**: Handles loading client configurations from various sources, including programmatic options and YAML files, ensuring flexible deployment.
+
+## Component Module Diagram (Conceptual)
+
+While a visual diagram will be provided in the final documentation, conceptually, the SDK's modules interact as follows:
+
+```mermaid
+graph TD
+    A[Your Go Application] --> B(Client)
+    B --> C[REST API Endpoints<br>(User, Team, Agent, Session, Browser)]
+    B -- WebSocket --> D[WebSocket Connection<br>(Real-time Session Communication)]
+    B --> E[Data Models<br>(Request/Response Structs)]
+    B --> F[Error Handling<br>(API, Network, Validation Errors)]
+    B --> G[Configuration<br>(ClientOptions, mate.yaml)]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style C fill:#ccf,stroke:#333,stroke-width:2px
+    style D fill:#cfc,stroke:#333,stroke-width:2px
+    style E fill:#fcf,stroke:#333,stroke-width:2px
+    style F fill:#fbb,stroke:#333,stroke-width:2px
+    style G fill:#ffd,stroke:#333,stroke-width:2px
+```
+
+*   Your Go Application interacts with the `Client`.
+*   The `Client` dispatches requests to `REST API Endpoints` (via various Service modules) and manages `WebSocket Connections`.
+*   All interactions utilize `Data Models` for structured data.
+*   `Error Handling` is integrated throughout the `Client` and `Services`.
+*   `Configuration` influences the `Client`'s behavior. 

@@ -1,0 +1,1198 @@
+---
+title: API Reference
+---
+
+This section provides a detailed reference for all the services, methods, and data structures available in the Mate SDK for Go. It covers the REST API endpoints and their corresponding Go client methods, as well as the WebSocket communication functionalities.
+
+## Client Overview
+
+The `mate.Client` is the primary entry point for interacting with the Mate API. It encapsulates the API key, base URL, HTTP client, and provides access to various specialized services.
+
+```go
+type Client struct {
+	BaseURL    string
+	APIKey     string
+	HTTPClient HTTPClient // Interface for custom HTTP client
+	UserAgent  string
+
+	User    *UserService
+	Team    *TeamService
+	Agent   *AgentService
+	Session *SessionService
+	Browser *BrowserService
+}
+
+// NewClient creates a new Mate API client with specified options.
+func NewClient(options *ClientOptions) (*Client, error)
+
+// NewClientFromConfig creates a new client from a configuration file (e.g., mate.yaml).
+func NewClientFromConfig(configPath string) (*Client, error)
+```
+
+### `ClientOptions`
+
+Used to configure the `mate.Client` when creating it programmatically.
+
+```go
+type ClientOptions struct {
+	APIKey     string     `yaml:"api_key"`
+	BaseURL    string     `yaml:"base_url"`
+	Timeout    int        `yaml:"timeout"` // In seconds
+	Retry      *RetryOptions
+	Logging    *LoggingOptions
+	HTTPClient HTTPClient // Custom HTTP client implementation
+	UserAgent  string
+}
+
+// Validate ensures that required client options are present.
+func (o *ClientOptions) Validate() error
+```
+
+### `RetryOptions`
+
+Configures the retry mechanism for API calls.
+
+```go
+type RetryOptions struct {
+	MaxAttempts  int           `yaml:"max_attempts"`	// Maximum number of retry attempts
+	InitialDelay time.Duration `yaml:"initial_delay"` // Initial delay for exponential backoff
+}
+```
+
+### `LoggingOptions`
+
+Configures logging for API requests and responses.
+
+```go
+type LoggingOptions struct {
+	Enabled bool   `yaml:"enabled"` // Enable/disable logging
+	Level   string `yaml:"level"`   // Logging level (debug, info, warn, error)
+}
+```
+
+## User Service (`Client.User`)
+
+The `UserService` provides methods for managing API keys and retrieving call records associated with a user.
+
+### `CreateAPIKey(ctx context.Context, name string) (*APIKey, error)`
+
+Creates a new API key with the given name.
+
+*   `ctx`: The context for the request.
+*   `name`: The name for the new API key.
+
+Returns: A pointer to `APIKey` struct on success, or an error.
+
+```go
+type APIKey struct {
+	ID         int64     `json:"id"`
+	Name       string    `json:"name"`
+	Key        string    `json:"api_key"`
+	CreatedAt  time.Time `json:"created_at"`
+	LastUsedAt time.Time `json:"last_used_at"`
+}
+```
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+	newAPIKey, err := client.User.CreateAPIKey(ctx, "MyNewKey")
+	if err != nil {
+		log.Fatalf("Failed to create API key: %v", err)
+	}
+
+	fmt.Printf("New API Key created: ID=%d, Name=%s, Key=%s\n", newAPIKey.ID, newAPIKey.Name, newAPIKey.Key)
+}
+```
+
+### `DeleteAPIKey(ctx context.Context, keyID int64) error`
+
+Deletes an API key by its ID.
+
+*   `ctx`: The context for the request.
+*   `keyID`: The ID of the API key to delete.
+
+Returns: `nil` on success, or an error.
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+	keyToDeleteID := int64(123) // Replace with an actual API key ID
+
+	err = client.User.DeleteAPIKey(ctx, keyToDeleteID)
+	if err != nil {
+		log.Fatalf("Failed to delete API key %d: %v", keyToDeleteID, err)
+	}
+
+	fmt.Printf("API Key %d deleted successfully.\n", keyToDeleteID)
+}
+```
+
+### `ListAPIKeys(ctx context.Context, opts *ListOptions) (*ListAPIKeysResponse, error)`
+
+Retrieves a paginated list of API keys for the user.
+
+*   `ctx`: The context for the request.
+*   `opts`: Optional `ListOptions` for pagination (e.g., `Page`, `PageSize`). Can be `nil`.
+
+Returns: A pointer to `ListAPIKeysResponse` struct on success, or an error.
+
+```go
+type ListAPIKeysResponse struct {
+	APIKeys    []APIKey `json:"api_keys"`
+	TotalCount int      `json:"total_count"`
+}
+
+// ListOptions for pagination
+type ListOptions struct {
+	Page     int `url:"page,omitempty"`
+	PageSize int `url:"page_size,omitempty"`
+}
+```
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+
+	// Get the first page of API keys, 10 per page
+	listOpts := &mate.ListOptions{
+		Page:     1,
+		PageSize: 10,
+	}
+
+	apiKeysResponse, err := client.User.ListAPIKeys(ctx, listOpts)
+	if err != nil {
+		log.Fatalf("Failed to list API keys: %v", err)
+	}
+
+	fmt.Printf("Found %d API keys (Total: %d):\n", len(apiKeysResponse.APIKeys), apiKeysResponse.TotalCount)
+	for _, key := range apiKeysResponse.APIKeys {
+		fmt.Printf("- ID: %d, Name: %s, CreatedAt: %s\n", key.ID, key.Name, key.CreatedAt.Format("2006-01-02 15:04:05"))
+	}
+}
+```
+
+### `GetFilterValues(ctx context.Context) (map[string][]string, error)`
+
+Retrieves available filter values for call records. This is useful for populating dropdowns or filters in a UI.
+
+*   `ctx`: The context for the request.
+
+Returns: A map where keys are filter categories (e.g., "source", "type") and values are lists of available string values, or an error.
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+
+	filterValues, err := client.User.GetFilterValues(ctx)
+	if err != nil {
+		log.Fatalf("Failed to get filter values: %v", err)
+	}
+
+	fmt.Println("Available Filter Values:")
+	for category, values := range filterValues {
+		fmt.Printf("- %s: %v\n", category, values)
+	}
+}
+```
+
+### `GetCallList(ctx context.Context, opts *ListOptions, filter *MessageFilter) (*GetMessagesResponse, error)`
+
+Retrieves a paginated list of call records (messages).
+
+*   `ctx`: The context for the request.
+*   `opts`: Optional `ListOptions` for pagination. Can be `nil`.
+*   `filter`: Optional `MessageFilter` to narrow down results by message type, start time, or end time. Can be `nil`.
+
+Returns: A pointer to `GetMessagesResponse` struct on success, or an error.
+
+```go
+type GetMessagesResponse struct {
+	Messages   []MessageResponse `json:"messages"`
+	TotalCount int               `json:"total_count"`
+}
+
+// MessageResponse represents a session message response
+type MessageResponse struct {
+	MessageID       string        `json:"message_id"`
+	Source          string        `json:"source"`
+	SourceType      string        `json:"source_type"`
+	SourceComponent string        `json:"source_component"`
+	Content         string        `json:"content"`
+	Message         interface{}   `json:"message"`
+	Type            string        `json:"type"` // MessageType
+	CreatedAt       string        `json:"created_at"`
+	Attachments     []Attachments `json:"attachments"`
+	SessionRound    int32         `json:"session_round"`
+}
+
+// Attachments represents file attachments in messages
+type Attachments struct {
+	AttachmentID string `json:"attachment_id"`
+	MessageID    string `json:"message_id"`
+	FileName     string `json:"file_name"`
+	FileType     string `json:"file_type"`
+	Extension    string `json:"extension"`
+	FileSize     int64  `json:"file_size"`
+	FileURL      string `json:"file_url"`
+	CreatedAt    string `json:"created_at"`
+	UpdatedAt    string `json:"updated_at"`
+}
+
+// MessageFilter to filter messages by type and time range
+type MessageFilter struct {
+	Type      MessageType `url:"type,omitempty"`
+	StartTime *time.Time  `url:"start_time,omitempty"`
+	EndTime   *time.Time  `url:"end_time,omitempty"`
+}
+
+// MessageType defines the type of message
+type MessageType string
+
+const (
+	MessageTypeText   MessageType = "text"
+	MessageTypeImage  MessageType = "image"
+	MessageTypeError  MessageType = "error"
+	MessageTypeInput  MessageType = "input"
+	MessageTypeSystem MessageType = "system"
+	MessageTypePlan   MessageType = "plan"
+	// Add other message types as defined by the API
+)
+```
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+
+	// Filter for text messages from the last 7 days
+	endTime := time.Now()
+	startTime := endTime.AddDate(0, 0, -7) // 7 days ago
+
+	msgFilter := &mate.MessageFilter{
+		Type:      mate.MessageTypeText,
+		StartTime: &startTime,
+		EndTime:   &endTime,
+	}
+
+	listOpts := &mate.ListOptions{
+		Page:     1,
+		PageSize: 20,
+	}
+
+	callListResponse, err := client.User.GetCallList(ctx, listOpts, msgFilter)
+	if err != nil {
+		log.Fatalf("Failed to get call list: %v", err)
+	}
+
+	fmt.Printf("Found %d text messages from the last 7 days (Total: %d):\n", len(callListResponse.Messages), callListResponse.TotalCount)
+	for _, msg := range callListResponse.Messages {
+		fmt.Printf("- Message ID: %s, Source: %s, Content: %s\n", msg.MessageID, msg.Source, msg.Content)
+	}
+}
+```
+
+## Team Service (`Client.Team`)
+
+The `TeamService` provides methods for managing teams associated with your Mate account.
+
+### `GetList(ctx context.Context, opts *ListOptions) (*ListTeamsResponse, error)`
+
+Retrieves a paginated list of teams.
+
+*   `ctx`: The context for the request.
+*   `opts`: Optional `ListOptions` for pagination. Can be `nil`.
+
+Returns: A pointer to `ListTeamsResponse` struct on success, or an error.
+
+```go
+type ListTeamsResponse struct {
+	Teams      []TeamInfo `json:"teams"`
+	TotalCount int        `json:"total_count"`
+}
+
+type TeamInfo struct {
+	TeamID      string         `json:"team_id"`
+	UserID      string         `json:"user_id"`
+	Avatar      string         `json:"avatar"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	TeamType    TeamType       `json:"team_type"`
+	Agents      []AgentInfo    `json:"agents"`
+	Model       ModelInfo      `json:"model"`
+	Parameters  TeamParameters `json:"parameters"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
+}
+
+// TeamType defines the type of team
+type TeamType string
+
+const (
+	TeamTypeDefault  TeamType = "default"
+	TeamTypeCustom   TeamType = "custom"
+	TeamTypePersonal TeamType = "personal"
+	// Add other team types as defined by the API
+)
+
+type AgentInfo struct {
+	AgentID       string          `json:"agent_id"`
+	UserID        string          `json:"user_id"`
+	Avatar        string          `json:"avatar"`
+	Name          string          `json:"name"`
+	Description   string          `json:"description"`
+	SystemMessage string          `json:"system_message"`
+	Model         ModelInfo       `json:"model"`
+	AgentType     AgentType       `json:"agent_type"`
+	Parameters    AgentParameters `json:"parameters"`
+	CreatedAt     time.Time       `json:"created_at"`
+	UpdatedAt     time.Time       `json:"updated_at"`
+}
+
+type ModelInfo struct {
+	Provider  string `json:"provider"`
+	ModelType string `json:"model_type"`
+}
+
+type TeamParameters struct {
+	MaxTurns    int     `json:"max_turns"`
+	Temperature float64 `json:"temperature"`
+}
+
+type AgentParameters struct {
+	Temperature float64 `json:"temperature"`
+}
+```
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+
+	listOpts := &mate.ListOptions{
+		Page:     1,
+		PageSize: 10,
+	}
+
+	teamsResponse, err := client.Team.GetList(ctx, listOpts)
+	if err != nil {
+		log.Fatalf("Failed to list teams: %v", err)
+	}
+
+	fmt.Printf("Found %d teams (Total: %d):\n", len(teamsResponse.Teams), teamsResponse.TotalCount)
+	for _, team := range teamsResponse.Teams {
+		fmt.Printf("- Team ID: %s, Name: %s, Type: %s\n", team.TeamID, team.Name, team.TeamType)
+	}
+}
+```
+
+### `GetInfo(ctx context.Context, teamID string) (*TeamInfo, error)`
+
+Retrieves detailed information about a specific team.
+
+*   `ctx`: The context for the request.
+*   `teamID`: The ID of the team to retrieve.
+
+Returns: A pointer to `TeamInfo` struct on success, or an error.
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+	teamToGetID := "your-team-id" // Replace with an actual team ID
+
+	teamInfo, err := client.Team.GetInfo(ctx, teamToGetID)
+	if err != nil {
+		log.Fatalf("Failed to get info for team %s: %v", teamToGetID, err)
+	}
+
+	fmt.Printf("Team Info: ID=%s, Name=%s, Description=%s\n", teamInfo.TeamID, teamInfo.Name, teamInfo.Description)
+}
+```
+
+### `CreateTeam(ctx context.Context, req *CreateTeamRequest) (*CreateTeamResponse, error)`
+
+Creates a new team.
+
+*   `ctx`: The context for the request.
+*   `req`: A pointer to `CreateTeamRequest` containing the details for the new team.
+
+Returns: A pointer to `CreateTeamResponse` struct on success, or an error.
+
+```go
+type CreateTeamRequest struct {
+	Name          string         `json:"name"`
+	Description   string         `json:"description"`
+	TeamType      TeamType       `json:"team_type"`
+	ModelProvider string         `json:"model_provider"`
+	ModelType     string         `json:"model_type"`
+	AgentIDs      []string       `json:"agent_ids"`
+	Parameters    TeamParameters `json:"parameters"`
+}
+
+type CreateTeamResponse struct {
+	TeamID string `json:"team_id"`
+}
+```
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+
+	createTeamReq := &mate.CreateTeamRequest{
+		Name:          "My New Team",
+		Description:   "A team for testing the Go SDK.",
+		TeamType:      mate.TeamTypeCustom,
+		ModelProvider: "openai",
+		ModelType:     "gpt-4o",
+		AgentIDs:      []string{}, // Add agent IDs if needed
+		Parameters: mate.TeamParameters{
+			MaxTurns:    10,
+			Temperature: 0.7,
+		},
+	}
+
+	createTeamResp, err := client.Team.CreateTeam(ctx, createTeamReq)
+	if err != nil {
+		log.Fatalf("Failed to create team: %v", err)
+	}
+
+	fmt.Printf("Team created successfully with ID: %s\n", createTeamResp.TeamID)
+}
+```
+
+### `UpdateTeam(ctx context.Context, teamID string, req *UpdateTeamRequest) (*TeamInfo, error)`
+
+Updates an existing team's information.
+
+*   `ctx`: The context for the request.
+*   `teamID`: The ID of the team to update.
+*   `req`: A pointer to `UpdateTeamRequest` containing the fields to update.
+
+Returns: A pointer to the updated `TeamInfo` struct on success, or an error.
+
+```go
+type UpdateTeamRequest struct {
+	Name          string         `json:"name,omitempty"`
+	Description   string         `json:"description,omitempty"`
+	TeamType      TeamType       `json:"team_type,omitempty"`
+	ModelProvider string         `json:"model_provider,omitempty"`
+	ModelType     string         `json:"model_type,omitempty"`
+	AgentIDs      []string       `json:"agent_ids,omitempty"`
+	Parameters    TeamParameters `json:"parameters,omitempty"`
+}
+```
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+	teamToUpdateID := "your-team-id" // Replace with an actual team ID
+
+	updateTeamReq := &mate.UpdateTeamRequest{
+		Name:        "Updated Team Name",
+		Description: "This team has an updated description.",
+	}
+
+	updatedTeam, err := client.Team.UpdateTeam(ctx, teamToUpdateID, updateTeamReq)
+	if err != nil {
+		log.Fatalf("Failed to update team %s: %v", teamToUpdateID, err)
+	}
+
+	fmt.Printf("Team %s updated: New Name=\n", updatedTeam.TeamID, updatedTeam.Name)
+}
+```
+
+## Agent Service (`Client.Agent`)
+
+The `AgentService` provides methods for retrieving information about agents.
+
+### `GetList(ctx context.Context, opts *ListOptions) (*ListAgentsResponse, error)`
+
+Retrieves a paginated list of agents.
+
+*   `ctx`: The context for the request.
+*   `opts`: Optional `ListOptions` for pagination. Can be `nil`.
+
+Returns: A pointer to `ListAgentsResponse` struct on success, or an error.
+
+```go
+type ListAgentsResponse struct {
+	Agents     []AgentInfo `json:"agents"`
+	TotalCount int         `json:"total_count"`
+}
+
+type AgentInfo struct {
+	AgentID       string          `json:"agent_id"`
+	UserID        string          `json:"user_id"`
+	Avatar        string          `json:"avatar"`
+	Name          string          `json:"name"`
+	Description   string          `json:"description"`
+	SystemMessage string          `json:"system_message"`
+	Model         ModelInfo       `json:"model"`
+	AgentType     AgentType       `json:"agent_type"`
+	Parameters    AgentParameters `json:"parameters"`
+	CreatedAt     time.Time       `json:"created_at"`
+	UpdatedAt     time.Time       `json:"updated_at"`
+}
+
+// AgentType defines the type of agent
+type AgentType string
+
+const (
+	AgentTypeAssistant AgentType = "assistant"
+	AgentTypeUser      AgentType = "user"
+	// Add other agent types as defined by the API
+)
+
+// ModelInfo and AgentParameters are defined in Team Service section.
+```
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+
+	listOpts := &mate.ListOptions{
+		Page:     1,
+		PageSize: 10,
+	}
+
+	agentsResponse, err := client.Agent.GetList(ctx, listOpts)
+	if err != nil {
+		log.Fatalf("Failed to list agents: %v", err)
+	}
+
+	fmt.Printf("Found %d agents (Total: %d):\n", len(agentsResponse.Agents), agentsResponse.TotalCount)
+	for _, agent := range agentsResponse.Agents {
+		fmt.Printf("- Agent ID: %s, Name: %s, Type: %s\n", agent.AgentID, agent.Name, agent.AgentType)
+	}
+}
+```
+
+### `GetInfo(ctx context.Context, agentID string) (*AgentInfo, error)`
+
+Retrieves detailed information about a specific agent.
+
+*   `ctx`: The context for the request.
+*   `agentID`: The ID of the agent to retrieve.
+
+Returns: A pointer to `AgentInfo` struct on success, or an error.
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+	agentToGetID := "your-agent-id" // Replace with an actual agent ID
+
+	agentInfo, err := client.Agent.GetInfo(ctx, agentToGetID)
+	if err != nil {
+		log.Fatalf("Failed to get info for agent %s: %v", agentToGetID, err)
+	}
+
+	fmt.Printf("Agent Info: ID=%s, Name=%s, Description=%s\n", agentInfo.AgentID, agentInfo.Name, agentInfo.Description)
+}
+```
+
+## Session Service (`Client.Session`)
+
+The `SessionService` handles session creation, retrieval, and message management.
+
+### `Create(ctx context.Context, req *CreateSessionRequest) (*SessionInfo, error)`
+
+Creates a new session.
+
+*   `ctx`: The context for the request.
+*   `req`: A pointer to `CreateSessionRequest` containing the team ID, agent ID, and initial task for the session.
+
+Returns: A pointer to `SessionInfo` struct on success, or an error.
+
+```go
+type CreateSessionRequest struct {
+	TeamID string `json:"team_id"`
+	AgentID string `json:"agent_id"`
+	Task   string `json:"task"` // Initial task for the session
+}
+
+type SessionInfo struct {
+	SessionID   string            `json:"session_id"`
+	Status      string            `json:"status"`
+	BrowserID   string            `json:"browser_id"`
+	TeamID      string            `json:"team_id"`
+	Name        string            `json:"name"`
+	Messages    []MessageResponse `json:"messages"`
+	Duration    int               `json:"duration"`
+	Attachments []Attachments     `json:"attachments"`
+	Platform    string            `json:"platform"`
+	Visibility  string            `json:"visibility"`
+	CreatedAt   string            `json:"created_at"`
+	UpdatedAt   string            `json:"updated_at"`
+}
+
+// MessageResponse and Attachments are defined in User Service section.
+```
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+
+	teamID := "your-team-id"   // Replace with an actual team ID
+	agentID := "your-agent-id" // Replace with an actual agent ID
+
+	createSessionReq := &mate.CreateSessionRequest{
+		TeamID:  teamID,
+		AgentID: agentID,
+		Task:    "Analyze the latest market trends for cryptocurrency.",
+	}
+
+	session, err := client.Session.Create(ctx, createSessionReq)
+	if err != nil {
+		log.Fatalf("Failed to create session: %v", err)
+	}
+
+	fmt.Printf("Session created successfully: ID=%s, Status=%s\n", session.SessionID, session.Status)
+}
+```
+
+### `GetInfo(ctx context.Context, sessionID string) (*SessionInfo, error)`
+
+Retrieves detailed information about a specific session.
+
+*   `ctx`: The context for the request.
+*   `sessionID`: The ID of the session to retrieve.
+
+Returns: A pointer to `SessionInfo` struct on success, or an error.
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+	sessionToGetID := "your-session-id" // Replace with an actual session ID
+
+	sessionInfo, err := client.Session.GetInfo(ctx, sessionToGetID)
+	if err != nil {
+		log.Fatalf("Failed to get info for session %s: %v", sessionToGetID, err)
+	}
+
+	fmt.Printf("Session Info: ID=%s, Status=%s, TeamID=%s\n", sessionInfo.SessionID, sessionInfo.Status, sessionInfo.TeamID)
+}
+```
+
+### `GetCurrent(ctx context.Context) (*SessionInfo, error)`
+
+Retrieves information about the currently active session for the authenticated user.
+
+*   `ctx`: The context for the request.
+
+Returns: A pointer to `SessionInfo` struct on success, or an error. Returns `nil` if no session is currently active.
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+
+	sessionInfo, err := client.Session.GetCurrent(ctx)
+	if err != nil {
+		log.Fatalf("Failed to get current session: %v", err)
+	}
+
+	if sessionInfo != nil {
+		fmt.Printf("Current Session Info: ID=%s, Status=%s\n", sessionInfo.SessionID, sessionInfo.Status)
+	} else {
+		fmt.Println("No active session found.")
+	}
+}
+```
+
+### `GetMessages(ctx context.Context, sessionID string, opts *ListOptions, filter *MessageFilter) (*GetMessagesResponse, error)`
+
+Retrieves a paginated list of messages from a specific session.
+
+*   `ctx`: The context for the request.
+*   `sessionID`: The ID of the session to retrieve messages from.
+*   `opts`: Optional `ListOptions` for pagination. Can be `nil`.
+*   `filter`: Optional `MessageFilter` to narrow down results. Can be `nil`.
+
+Returns: A pointer to `GetMessagesResponse` struct on success, or an error.
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+	sessionID := "your-session-id" // Replace with an actual session ID
+
+	listOpts := &mate.ListOptions{
+		Page:     1,
+		PageSize: 10,
+	}
+
+	// Filter for 'text' messages
+	msgFilter := &mate.MessageFilter{
+		Type: mate.MessageTypeText,
+	}
+
+	messagesResponse, err := client.Session.GetMessages(ctx, sessionID, listOpts, msgFilter)
+	if err != nil {
+		log.Fatalf("Failed to get messages for session %s: %v", sessionID, err)
+	}
+
+	fmt.Printf("Found %d messages in session %s (Total: %d):\n", len(messagesResponse.Messages), sessionID, messagesResponse.TotalCount)
+	for _, msg := range messagesResponse.Messages {
+		fmt.Printf("- [Type: %s] [Source: %s] %s\n", msg.Type, msg.Source, msg.Content)
+	}
+}
+```
+
+### `GetBetweenMessages(ctx context.Context, sessionID string, startMessageID string, endMessageID string, opts *ListOptions, filter *MessageFilter) (*GetMessagesResponse, error)`
+
+Retrieves messages within a specific range, identified by start and end message IDs.
+
+*   `ctx`: The context for the request.
+*   `sessionID`: The ID of the session.
+*   `startMessageID`: The ID of the starting message (inclusive).
+*   `endMessageID`: The ID of the ending message (inclusive).
+*   `opts`: Optional `ListOptions` for pagination. Can be `nil`.
+*   `filter`: Optional `MessageFilter` to narrow down results. Can be `nil`.
+
+Returns: A pointer to `GetMessagesResponse` struct on success, or an error.
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+	sessionID := "your-session-id"     // Replace with an actual session ID
+	startMsgID := "start-message-id" // Replace with an actual message ID
+	endMsgID := "end-message-id"   // Replace with an actual message ID
+
+	// Retrieve messages between startMsgID and endMsgID
+	messagesResponse, err := client.Session.GetBetweenMessages(ctx, sessionID, startMsgID, endMsgID, nil, nil)
+	if err != nil {
+		log.Fatalf("Failed to get messages between %s and %s: %v", startMsgID, endMsgID, err)
+	}
+
+	fmt.Printf("Found %d messages between %s and %s (Total: %d):\n", len(messagesResponse.Messages), startMsgID, endMsgID, messagesResponse.TotalCount)
+	for _, msg := range messagesResponse.Messages {
+		fmt.Printf("- [Type: %s] [Source: %s] %s\n", msg.Type, msg.Source, msg.Content)
+	}
+}
+```
+
+### `ListSessions(ctx context.Context, opts *ListOptions) (*ListSessionsResponse, error)`
+
+Retrieves a paginated list of sessions for the authenticated user.
+
+*   `ctx`: The context for the request.
+*   `opts`: Optional `ListOptions` for pagination. Can be `nil`.
+
+Returns: A pointer to `ListSessionsResponse` struct on success, or an error.
+
+```go
+type ListSessionsResponse struct {
+	Sessions   []SessionInfo `json:"sessions"`
+	TotalCount int64         `json:"total_count"`
+}
+```
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+
+	listOpts := &mate.ListOptions{
+		Page:     1,
+		PageSize: 10,
+	}
+
+	sessionsResponse, err := client.Session.ListSessions(ctx, listOpts)
+	if err != nil {
+		log.Fatalf("Failed to list sessions: %v", err)
+	}
+
+	fmt.Printf("Found %d sessions (Total: %d):\n", len(sessionsResponse.Sessions), sessionsResponse.TotalCount)
+	for _, session := range sessionsResponse.Sessions {
+		fmt.Printf("- Session ID: %s, Name: %s, Status: %s\n", session.SessionID, session.Name, session.Status)
+	}
+}
+```
+
+### `UpdateSessionName(ctx context.Context, sessionID string, newName string) (*SessionInfo, error)`
+
+Updates the name of a specific session.
+
+*   `ctx`: The context for the request.
+*   `sessionID`: The ID of the session to update.
+*   `newName`: The new name for the session.
+
+Returns: A pointer to the updated `SessionInfo` struct on success, or an error.
+
+```go
+type UpdateSessionNameRequest struct {
+	SessionID string `json:"session_id"`
+	Name      string `json:"name"`
+}
+```
+
+**Example:**
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mate "github.com/matego/mate-sdk-go"
+)
+
+func main() {
+	client, err := mate.NewClient(&mate.ClientOptions{
+		APIKey: "YOUR_API_KEY",
+		BaseURL: "https://api.mate.wyseos.com",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+	sessionToUpdateID := "your-session-id" // Replace with an actual session ID
+	newSessionName := "My Renamed Session"
+
+	updatedSession, err := client.Session.UpdateSessionName(ctx, sessionToUpdateID, newSessionName)
+	if err != nil {
+		log.Fatalf("Failed to update session name for %s: %v", sessionToUpdateID, err)
+	}
+
+	fmt.Printf("Session %s updated. New Name: %s\n", updatedSession.SessionID, updatedSession.Name)
+}
+``` 
